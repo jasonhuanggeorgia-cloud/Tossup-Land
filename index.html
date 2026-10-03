@@ -431,7 +431,7 @@ document.querySelectorAll('#dp [data-k],#dp2 [data-k]').forEach(b=>{b.onpointerd
 async function fight(i,sub,b,bn,sec){if(i<0)await Promise.all(Object.keys(IDX).filter(k=>IDX[k].n>=100).sort(()=>Math.random()-.5).slice(0,12).map(k=>loadSub(...k.split('|'))));else if(bn)await Promise.all(subs(i).map(sb=>loadSub(I[i].n,sb)));else await loadSub(I[i].n,sub);
 const rk=(i<0||bn)?5:ADRK>=0&&ADM()?ADRK:RK(sub);F={i,sub,b,rk,mx:i<0?400:bn?220:40+rk*20,ed:i<0?15:6+rk*2,boss:!!bn,secret:sec,nm:bn||rnd(I[i].mn)+' '+rnd(['Sage','Wraith','Imp','Golem']),last:'',gm:i<0?'thorn':GMK[i]};F.mh=F.mx;hp=100;trk=i<0?'boss':bn?'b'+i:'f'+i+'_'+(hsh(sub)%4);
 $('#mon').replaceChildren(mon(i,b,rk,sub,bn?7:6,bn));$('#hs').replaceChildren(hero(4));$('#battle').style.background=`linear-gradient(#0b1030,${i<0?'#6a2a8a':I[i].c}55)`;
-$('#mn').innerHTML=`${E(F.nm)} <small>${bn?(i<0?'FINAL BOSS | all categories':(sec?'SECRET BOSS':'BOSS')+' | '+E(I[i].n)):E(sub)+' | L'+(rk+1)+' '+LYN[rk]+' ('+RN[rk]+')'}</small>`;$('#mn').insertAdjacentHTML('beforeend',F.gm?'<br><small class="b">'+(F.gm=='leech'?'GIMMICK: heals 5 when you neg':'GIMMICK: negs cost 10 HP')+'</small>':'');$('#pn').innerHTML=`<span style="color:${P.top}">${E(P.name)}</span>`;bars();show('battle');q()}
+$('#mn').innerHTML=`${E(F.nm)} <small>${bn?(i<0?'FINAL BOSS | all categories':(sec?'SECRET BOSS':'BOSS')+' | '+E(I[i].n)):E(sub)+' | L'+(rk+1)+' '+LYN[rk]+' ('+RN[rk]+')'}</small>`;$('#pn').innerHTML=`<span style="color:${P.top}">${E(P.name)}</span>`;bars();show('battle');q()}
 const bars=()=>{const h=$('#hpt');if(h)h.textContent=Math.max(0,hp)+'/100 HP';$('#mh').style.width=Math.max(0,F.mh/F.mx*100)+'%';$('#ph').style.width=Math.max(0,hp/100*100)+'%'};
 const sk=x=>x.q.slice(0,50),mk=it=>{const sp=strip(it.q.replace('(*)','')).split(/(?<=[.?!])\s+/);return{q:it.q,a:strip(it.r),K:keys(it.r),l:sp[sp.length-1],d:it.d,src:it.c}};
 function next(r){const rk=F.rk,all=F.i<0?Object.values(DATA).flat().filter(x=>x.d>=6):F.boss?subs(F.i).flatMap(sb=>[0,1,2,3].flatMap(b=>DATA[I[F.i].n+'|'+sb+'|'+b]||[])):[0,1,2,3].flatMap(b=>DATA[I[F.i].n+'|'+F.sub+'|'+b]||[]);
@@ -439,7 +439,7 @@ for(let k=0;k<6;k++)for(const x of [rk-k,rk+k]){if(x<0||x>5)continue;const a=all
 if(all.length&&!r){all.forEach(y=>SN.delete(sk(y)));return next(1)}
 const a=S.filter(x=>x.s==F.sub&&!SN.has(sk(x))),a2=a.length?a:S.filter(x=>(F.i<0||x.i==F.i)&&!SN.has(sk(x)));if(a2.length)return rnd(a2);SN.clear();return rnd(S)}
 function pick(){if(F.cm)F.cm.mh=F.mh;const m=rnd(F.grp.filter(x=>x.mh>0));F.cm=m;F.i=m.i;F.sub=m.sub;F.b=m.b;F.rk=m.rk;F.mx=m.mx;F.mh=m.mh;F.nm=m.nm;F.gm=m.gm;
-$('#mn').innerHTML=`${E(m.nm)} <small>${E(m.sub)} | L${m.rk+1} ${LYN[m.rk]} | ${F.grp.filter(x=>x.mh>0).length} left</small>`+(m.gm?'<br><small class="b">'+(m.gm=='leech'?'GIMMICK: heals 5 when you neg':'GIMMICK: negs cost 10 HP')+'</small>':'');F.grp.forEach(x=>{x.cv.style.opacity=x.mh>0?1:.25;x.cv.style.outline=x==m?'3px solid #ffd84a':'none'});bars()}
+$('#mn').innerHTML=`${E(m.nm)} <small>${E(m.sub)} | L${m.rk+1} ${LYN[m.rk]} | ${F.grp.filter(x=>x.mh>0).length} left</small>`;F.grp.forEach(x=>{x.cv.style.opacity=x.mh>0?1:.25;x.cv.style.outline=x==m?'3px solid #ffd84a':'none'});bars()}
 function q(){if(F.grp)pick();d=next();F.last=d.q;SN.add(sk(d));if(SN.size>4000)SN.clear();save('tl_s',[...SN]);words=d.q.split(' ');pw=words.indexOf('(*)');if(pw>=0)words.splice(pw,1);n=0;state='read';power=false;
 $('#qt').textContent='';$('#lr').innerHTML='';$('#af').style.display='none';$('#nx').style.display='none';$('#bz').style.display='';$('#idk').style.display='';$('#flee').style.display='';
 $('#qi').textContent=`${F.i<0?'Mixed':F.boss?I[F.i].n+' (all)':F.sub} | ${DL[d.d]||'Sample'} | buzz before the mark for POWER (15)`;clearInterval(timer);clearInterval(tt);
@@ -578,23 +578,30 @@ GMS={thorn:'thornvine',leech:'leech'},MODS=['plottwist','cave','gaze','shadow','
 SECP={'The Bard of Banishment':['wordstorm','regress','plottwist'],'Cleo the Chronicler':['echo','clock','meteor'],'The Quantum Queen':['warp','gravity','prism','chain'],'The Buzzer Beater':['grid','fireball','volcano'],'Neg-a-tron':['invaders','warp','leech','thornvine']},
 ULT=['regress','meteor','warp','dynasty','bounce','mandala','prism','tide','invaders','volcano','curtain','cross'];
 function patsNew(m){const nk=m.boss?m.nm:m.sub||m.nm;
-if(m.i<0||m.nm=='Vector the Variable'){const z=m.i<0?Math.random:RG(H2(nk)),a=Object.keys(FR);for(let i=a.length-1;i>0;i--){const j=Math.floor(z()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-const cs=(CSIG[m.i]||[]).slice(),r=hsh(nk)%3,rot=cs.map((_,i)=>cs[(i+r)%cs.length]),gm=GMS[m.gm];let L;
-if(m.boss){const en=m.mh<m.mx*.5;L=(en&&ULT[m.i]?[ULT[m.i]]:[]).concat(SECP[m.nm]||rot,gm?[gm]:[])}
-else{const sn=((SSIG.find(x=>x[0].test((m.sub||'').toLowerCase()))||[])[1])||[];L=[sn[0],rot[0],gm,sn[1],rot[1],rot[2]]}
-return [...new Set(L.filter(Boolean).concat(PL))]}
+if(m.i<0||m.nm=='Vector the Variable'){const z=m.i<0?Math.random:RG(H2(nk)),a=Object.keys(FR);for(let i=a.length-1;i>0;i--){const j=Math.floor(z()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a[0]}
+const cs=(CSIG[m.i]||[]).slice(),r=hsh(nk)%3,rot=cs.map((_,i)=>cs[(i+r)%cs.length]),gm=GMS[m.gm];
+if(m.boss){const en=m.mh<m.mx*.5;const L=(en&&ULT[m.i]?[ULT[m.i]]:[]).concat(SECP[m.nm]||rot,gm?[gm]:[]);return (L.filter(x=>FR[x])[0])||rot[0]||'rain'}
+const sn=((SSIG.find(x=>x[0].test((m.sub||'').toLowerCase()))||[])[1])||[];
+const L=[gm,sn[0],rot[0],sn[1],rot[1]].filter(Boolean);
+return (L.find(x=>FR[x]))||rot[0]||'rain'}
 
-function startAtk(){if(F.cm)F.cm.mh=F.mh;const ms=F.grp?F.grp.filter(m=>m.mh>0):[F],ak=Math.max(...ms.map(m=>m.rk));F.rd=(F.rd||0)+1;let pool=[];const late=[];
-ms.forEach(m=>{const rep=patsNew(m).filter(x=>FR[x]).slice(0,3+Math.ceil(m.rk/2)+(m.boss?1:0)),en=m.boss&&m.mh<m.mx*.5,sim=Math.min(1+Math.floor((m.rk+1)/2)+(m.boss&&m.i>=0?1:0)+(m.i<0?2:0)+(en?1:0),3+(m.boss?1:0)+(m.i<0?2:0)),n=sim+(m.rk<2?1:0);for(let j=0;j<n;j++){const x=rep[(F.rd+j+m.rk)%rep.length];if(!pool.includes(x)&&!(MODS.includes(x)&&pool.some(y=>MODS.includes(y)))){pool.push(x);if(j>=sim)late.push(x)}}});pool=pool.slice(0,5);
-HD=document.createElement('canvas');HD.width=18;HD.height=12;HD.getContext('2d').drawImage(heroF(1,P,0,0),0,0);K={};const du=(RS=='neg'?5.5:4.2)+ak*.5;
-AT={t:0,dur:du,rk:ak,x:200,y:150,iv:0,fl:0,B:[],Z:[],L:[],X:[],rec:[],sn:{},quiet:0,inv:0,slow:0,dark:0,gz:0,mv:false,sprs:F.grp?ms.map(m=>m.cv):[$('#mon').firstChild],bn:ms.some(m=>m.boss&&m.mh<m.mx*.5)?{s:'PHASE 2: ENRAGED!',t:1.6}:null,cd:{},tr:[],pool,v:hsh(F.boss?F.nm:F.sub||F.nm)%3,l:performance.now()};late.forEach(x=>AT.cd[x]=du*.45);
+function startAtk(){if(F.cm)F.cm.mh=F.mh;const ms=F.grp?F.grp.filter(m=>m.mh>0):[F],ak=Math.max(...ms.map(m=>m.rk));F.rd=(F.rd||0)+1;
+// One hard thematic attack instead of a spammy multi-pattern barrage
+const primary=patsNew(ms[0]);const pool=[primary];
+HD=document.createElement('canvas');HD.width=18;HD.height=12;HD.getContext('2d').drawImage(heroF(1,P,0,0),0,0);K={};
+// Longer, denser single-attack window so it feels like one solid hard pattern
+const du=(RS=='neg'?7.5:6.0)+ak*.7;
+AT={t:0,dur:du,rk:ak,x:200,y:150,iv:0,fl:0,B:[],Z:[],L:[],X:[],rec:[],sn:{},quiet:0,inv:0,slow:0,dark:0,gz:0,mv:false,sprs:F.grp?ms.map(m=>m.cv):[$('#mon').firstChild],cd:{},tr:[],pool,v:hsh(F.boss?F.nm:F.sub||F.nm)%3,l:performance.now(),hard:1};
+// Kick the primary pattern immediately and keep its cooldown short for density
+AT.cd[primary]=0;
 $('#qb').style.display='none';ar.style.display='block';$('#dp2').style.display='ontouchstart' in window?'block':'none';requestAnimationFrame(tick)}
 function hit(A,v){hp-=v;A.iv=1;A.fl=.25;if(!mute&&ac){beep(110,.2,'sawtooth',.08);ns(ac.currentTime,.12,.06)}bars();$('#me').classList.add('hit');setTimeout(()=>$('#me').classList.remove('hit'),300)}
 function tick(now){const A=AT;if(!A)return;const dt=Math.min(.05,(now-A.l)/1000);A.l=now;A.t+=dt;A.iv-=dt;A.fl-=dt;const rk=A.rk,v=A.v,dm=(F.i<0?12:Math.round(4+rk*1.2))+(F.boss&&F.i>=0?2:0);A.dm=dm;
 let dx=(K.ArrowRight||K.d?1:0)-(K.ArrowLeft||K.a?1:0),dy=(K.ArrowDown||K.s?1:0)-(K.ArrowUp||K.w?1:0);A.mv=!!(dx||dy);if(A.inv){dx=-dx;dy=-dy}const m=Math.hypot(dx,dy)||1,sp=(K.Shift?85:175)*(A.slow?.45:1);
 A.x=Math.max(10,Math.min(390,A.x+dx/m*sp*dt));A.y=Math.max(10,Math.min(190,A.y+dy/m*sp*dt));if(dx||dy){A.tr.push({x:A.x,y:A.y,a:.35});if(A.tr.length>5)A.tr.shift()}A.tr.forEach(q=>q.a-=dt);
 A.inv=0;A.slow=0;A.dark=0;A.gz=0;A.rec.push({t:A.t,x:A.x,y:A.y});while(A.rec.length&&A.rec[0].t<A.t-3)A.rec.shift();
-if(A.t<A.dur-.6)A.pool.forEach(p=>{if((A.cd[p]=(A.cd[p]||0)-dt*(1+rk*.1))>0)return;if(A.quiet>A.t)return;FR[p](A,rk,v);if(!A.sn[p]){A.sn[p]=1;A.bn={s:LB[p]||p.toUpperCase(),t:1.7}}});
+if(A.t<A.dur-.6)A.pool.forEach(p=>{// denser fire for the single hard attack
+const rate=A.hard?1.55+rk*.15:1+rk*.1;if((A.cd[p]=(A.cd[p]||0)-dt*rate)>0)return;if(A.quiet>A.t)return;FR[p](A,rk,v);if(!A.sn[p])A.sn[p]=1});
 A.B.forEach(b=>{if(b.o){b.cy+=b.vy*dt;b.a+=b.w*dt;b.x=b.cx+Math.cos(b.a)*b.r;b.y=b.cy+Math.sin(b.a)*b.r}
 else if(b.h){b.life-=dt;const a=Math.atan2(A.y-b.y,A.x-b.x),c=Math.atan2(b.vy,b.vx),n=c+Math.atan2(Math.sin(a-c),Math.cos(a-c))*Math.min(1,dt*1.6),s=62+rk*5;b.vx=Math.cos(n)*s;b.vy=Math.sin(n)*s;b.x+=b.vx*dt;b.y+=b.vy*dt}
 else{b.vy+=(b.ay||0)*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;if(b.sx!=null)b.x=b.sx+Math.sin(b.y*.045+b.ph)*42;if(b.bn>0){if(b.x<5||b.x>395){b.vx*=-1;b.x=Math.max(5,Math.min(395,b.x));b.bn--}if(b.y>195&&b.vy>0){b.vy*=-1;b.bn--}}if(b.ttl!=null)b.ttl-=dt}
@@ -623,7 +630,6 @@ if(v==0){ag.beginPath();ag.arc(b.x,b.y,5*z,0,7);ag.fill()}else if(v==1){ag.begin
 ag.imageSmoothingEnabled=false;A.tr.forEach(q=>{if(q.a>0){ag.globalAlpha=q.a*.6;ag.drawImage(HD,q.x-11,q.y-8,22,15)}});ag.globalAlpha=1;
 if(A.iv<=0||(A.iv*14|0)%2){try{ag.filter=A.gz?'grayscale(1) brightness(.8)':'none'}catch(e){}ag.drawImage(HD,A.x-11,A.y-8,22,15);try{ag.filter='none'}catch(e){}if(K.Shift){ag.fillStyle='#ff2040';ag.fillRect(A.x-1.5,A.y-1.5,3,3)}}
 if(A.dark){const gr=ag.createRadialGradient(A.x,A.y,20,A.x,A.y,85);gr.addColorStop(0,'#00000000');gr.addColorStop(1,'#000000f2');ag.fillStyle=gr;ag.fillRect(0,0,400,200)}
-if(A.bn&&A.bn.t>0){A.bn.t-=dt;ag.globalAlpha=Math.min(1,A.bn.t*2);ag.font='bold 11px monospace';ag.textAlign='center';ag.fillStyle='#000';ag.fillText(A.bn.s,201,17);ag.fillStyle='#ffd84a';ag.fillText(A.bn.s,200,16);ag.globalAlpha=1}
 ag.strokeStyle='#fff';ag.lineWidth=4;ag.strokeRect(2,2,396,196);if(A.fl>0){ag.fillStyle=`rgba(255,32,64,${A.fl*1.6})`;ag.fillRect(0,0,400,200)}
 if(A.t>=A.dur||hp<=0){AT=null;K={};ar.style.display='none';$('#dp2').style.display='none';$('#qb').style.display='';bars();if(hp<=0){hp=100;back();$('#hint').textContent='You fainted, but Professor Power patched you up. HP restored!'}else q();return}
 requestAnimationFrame(tick)}
@@ -634,10 +640,45 @@ $('#nx').onclick=()=>{if(F.cm)F.cm.mh=F.mh;if(F.mh<=0){seq([523,659,784,1046],'t
 if(F.boss&&F.i>=0){bossWin();return}if(F.i<0){story([`The Grand Inquisitor bows. The Great Buzzer hums again!`,`The Great Buzzer hums again. You are the Buzzer Champion, ${P.name}!`,`Keep exploring: every isle still has Keepers, and your Study Hut is waiting.`],()=>{mode='sea';show('map')});return}
 const b4=mcount();if(!db.some(c=>c.a==d.a))db.push({n:F.nm,k:F.i,b:F.b,s:F.sub,a:d.a,f:d.l,rk:F.rk});save('tl_db3',db);G[F.sub]=Math.min(6,(G[F.sub]||0)+1);save('tl_g',G);
 if(mcount()>b4)story([`You mastered ${I[F.i].n}! Every Keeper bows to you.`,`Its Boss now waits at the Boss Shrine in the north. Defeat it to earn BUZZER FUEL!`,'Press E at the Boss Shrine when you feel ready.'],back);else back()}
-else if(RS=='ok'||RS=='idk')q();else startAtk()};
+else if(RS=='ok'||RS=='idk')q();else enemySpeak(startAtk)};
+// ---- enemy dialogue (Undertale-style, N to advance) ----
+const DLG={
+0:['The page turns...','FOR THE ISLAND...','Your answer was incomplete.'],
+1:['History remembers the winners.','You are not one of them.','FOR THE ISLAND...'],
+2:['The equation is unbalanced.','Observe.','FOR THE ISLAND...'],
+3:['The composition falters.','Listen closely.','FOR THE ISLAND...'],
+4:['The old gods stir.','You cannot outrun myth.','FOR THE ISLAND...'],
+5:['Faith is tested.','Bow, or break.','FOR THE ISLAND...'],
+6:['Cogito... but do you?','Doubt is a weapon.','FOR THE ISLAND...'],
+7:['Society watches.','Your choice was noted.','FOR THE ISLAND...'],
+8:['The map folds.','No safe harbor.','FOR THE ISLAND...'],
+9:['Game over? Not yet.','Combo incoming.','FOR THE ISLAND...'],
+10:['This just in...','You are the story.','FOR THE ISLAND...'],
+11:['Q.E.D. is not yet written.','Prove yourself.','FOR THE ISLAND...'],
+boss:['The shrine awakens.','You have come far.','FOR THE ISLAND...'],
+final:['The Buzzer falls silent.','One last question.','FOR THE ISLAND...']
+};
+let DLG_Q=null,DLG_I=0,DLG_CB=null;
+function enemySpeak(cb){
+  const key=F.i<0?'final':(F.boss?'boss':F.i);
+  const lines=(DLG[key]||DLG[0]).slice();
+  // slight variation / lore flavor based on rank or gimmick
+  if(F.gm==='leech')lines.unshift('I feed on your mistakes...');
+  if(F.gm==='thorn')lines.unshift('Every wrong answer draws blood.');
+  if(F.rk>=4)lines.push('The Heart Core pulses.');
+  DLG_Q=lines;DLG_I=0;DLG_CB=cb;state='dlg';
+  $('#lr').innerHTML=`<p class="y" style="min-height:40px">${E(DLG_Q[0])}</p><small style="color:#9fb0ff">Press N to continue</small>`;
+  $('#nx').style.display='none';$('#af').style.display='none';$('#bz').style.display='none';$('#idk').style.display='none';$('#flee').style.display='none';
+}
+function dlgNext(){
+  if(state!=='dlg'||!DLG_Q)return;
+  DLG_I++;
+  if(DLG_I>=DLG_Q.length){const cb=DLG_CB;DLG_Q=null;DLG_CB=null;state='res';cb&&cb();return}
+  $('#lr').innerHTML=`<p class="y" style="min-height:40px">${E(DLG_Q[DLG_I])}</p><small style="color:#9fb0ff">Press N to continue</small>`;
+}
 $('#bz').onclick=buzz;$('#sb').onclick=submit;$('#ai').onkeydown=e=>{if(e.key=='Enter')submit()};
 document.addEventListener('keydown',e=>{const k=e.key.length>1?e.key:e.key.toLowerCase(),on=id=>$(id).classList.contains('on');
-if(on('#battle')){K[k]=1;if(AT&&k.startsWith('Arrow'))e.preventDefault();if(e.code=='Space'&&state=='read'){e.preventDefault();buzz()}return}
+if(on('#battle')){K[k]=1;if(AT&&k.startsWith('Arrow'))e.preventDefault();if(e.code=='Space'&&state=='read'){e.preventDefault();buzz()}if((k==='n'||k==='N')&&state==='dlg'){e.preventDefault();dlgNext()}return}
 if(on('#map')){K[k]=1;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(k))e.preventDefault();if((k=='e'||k==' ')&&!e.repeat)act();if(k=='b'&&mode=='isle'&&!HB)pl={x:BX,y:BY+75}}});
 document.addEventListener('keyup',e=>{K[e.key.length>1?e.key:e.key.toLowerCase()]=0});
 // ---- database ----
