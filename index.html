@@ -80,7 +80,12 @@ box-shadow:0 -3px 0 0 var(--edge),0 3px 0 0 var(--edge),-3px 0 0 0 var(--edge),3
 /* title */
 #tc{position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:-1;image-rendering:pixelated}
 #title .box{max-width:560px;margin-left:auto;margin-right:auto}
-#audio{position:fixed;right:8px;bottom:8px;z-index:150;display:flex;align-items:center;gap:6px;background:var(--plum);padding:4px 8px;color:#fff;font-size:8px;opacity:.85}
+#audio{position:fixed;right:8px;bottom:8px;z-index:150;display:flex;align-items:center;gap:6px;background:var(--plum);padding:4px 8px;color:#fff;font-size:8px;opacity:.85}body.inarena #audio,body:has(#battle.on) #audio{display:none}
+#stm{display:none;position:fixed;left:0;top:0;right:0;bottom:0;z-index:320;background:rgba(0,0,0,.82);overflow:auto;padding:12px}
+#stm .box{max-width:620px;margin:14px auto}#stm h2{font-size:10px;margin:14px 0 4px;color:var(--leafd)}
+.sr{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:2px dotted var(--paper2);font-size:9px}.sr .l{flex:1;line-height:1.5}.sr small{display:block;color:#7a6a7a;font-size:7px}
+.sr input[type=range]{width:120px;accent-color:var(--leafd);height:12px;padding:0;box-shadow:none;background:none}
+.sr button{margin:0;min-width:64px;padding:7px 8px}.sr button.off{background:#8a8a98;text-shadow:0 2px 0 #5d5d6e}
 #audio input{width:70px;padding:0;height:10px;box-shadow:none;background:none;accent-color:var(--gold)}
 #audio button{margin:0;padding:4px 6px;font-size:8px;box-shadow:0 0 0 2px #fff4;background:var(--coral)}
 @media(max-width:600px){body{font-size:9px}.s{padding:8px}button{padding:8px 9px;margin:4px 2px}.box{margin:12px 4px;padding:10px}#hud small{display:block}#qt,#sq{font-size:10px}.logo{letter-spacing:0}}
@@ -106,7 +111,9 @@ box-shadow:0 -3px 0 0 var(--edge),0 3px 0 0 var(--edge),-3px 0 0 0 var(--edge),3
 <div id="slm"><div class="box"><h1 style="font-size:14px">SAVE SLOTS</h1><small>Your game autosaves into the ACTIVE slot. Make as many slots as you like.</small><br>
 <button id="sln">NEW SLOT</button><button id="sli" class="alt">IMPORT FILE</button><button id="slx" class="warn">CLOSE</button><input type="file" id="slf" accept=".json,application/json" style="display:none"></div>
 <div class="box" id="sll"></div></div></div>
-<div id="audio"><button id="mu">SOUND ON</button><input id="vol" type="range" min="0" max="100" value="70" aria-label="Volume"></div>
+<div id="stm"><div class="box"><h1 style="font-size:14px">SETTINGS</h1><small>Saved on this device automatically.</small><h2>AUDIO</h2><div class="sr"><div class="l">Master sound<small>Everything on or off, plus overall volume</small></div><button id="mu">SOUND ON</button><input id="vol" type="range" min="0" max="100" value="70" aria-label="Volume"></div><div id="stb2"></div>
+<p style="margin-top:12px"><button id="stt" class="alt">TEST DIALOGUE VOICE</button><button id="stt2" class="alt">TEST HIT SOUND</button><button id="str" class="warn">RESET</button><button id="stx">CLOSE</button></p><div id="sttx" class="y" style="min-height:18px;font-size:9px"></div></div></div>
+<div id="audio"><button id="setbtn">SETTINGS</button></div>
 
 <div id="title" class="s on">
 <h1 class="logo">TOSSUP<br>LAND</h1>
@@ -128,7 +135,7 @@ box-shadow:0 -3px 0 0 var(--edge),0 3px 0 0 var(--edge),-3px 0 0 0 var(--edge),3
 
 <div id="map" class="s">
 <div class="box" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:8px 12px"><span id="hud"></span>
-<span><button id="sbk" class="alt">SAIL BACK</button><button id="stb" class="alt">STUDY</button><button id="dbb" class="alt">DATABASE</button><button id="chb" class="alt">CHARACTER</button></span></div>
+<span><button id="sbk" class="alt">SAIL BACK</button><button id="stb" class="alt">STUDY</button><button id="dbb" class="alt">DATABASE</button><button id="chb" class="alt">CHARACTER</button><button id="stg" class="alt">SETTINGS</button></span></div>
 <canvas id="cv" width="800" height="460"></canvas><small id="hint" style="color:#fff;text-shadow:0 2px 0 var(--plum)"></small>
 <div id="hub" class="box" style="display:none"></div>
 <div id="dp" style="display:none;text-align:center"><button data-k="ArrowLeft">&lt;</button><button data-k="ArrowUp">^</button><button data-k="ArrowDown">v</button><button data-k="ArrowRight">&gt;</button><button id="eb" class="warn">E</button></div>
@@ -138,7 +145,7 @@ box-shadow:0 -3px 0 0 var(--edge),0 3px 0 0 var(--edge),-3px 0 0 0 var(--edge),3
 <div id="stage"><canvas id="sbg" width="200" height="90"></canvas>
 <div id="np"><div id="mn"></div><div class="bar"><i id="mh"></i></div></div>
 <div id="mon" class="mon"></div></div>
-<canvas id="ar" width="200" height="100"></canvas><div id="dp2" style="display:none;text-align:center"><button data-k="ArrowLeft">&lt;</button><button data-k="ArrowUp">^</button><button data-k="ArrowDown">v</button><button data-k="ArrowRight">&gt;</button></div><div class="box" id="qb"><small id="qi"></small><canvas id="bzc" width="40" height="28" style="width:160px;height:112px;cursor:pointer;display:block;margin:4px auto"></canvas><div id="qt"></div>
+<canvas id="ar" width="200" height="100"></canvas><div id="dp2" style="display:none;text-align:center"><button data-k="ArrowLeft">&lt;</button><button data-k="ArrowUp">^</button><button data-k="ArrowDown">v</button><button data-k="ArrowRight">&gt;</button></div><div class="box" id="qb"><small id="qi"></small><canvas id="bzc" width="48" height="32" style="width:192px;height:128px;image-rendering:pixelated;cursor:pointer;display:block;margin:4px auto"></canvas><div id="qt"></div>
 <button id="bz">BUZZ! (Space)</button>
 <div id="af" style="display:none"><input id="ai" autocomplete="off" placeholder="Type your answer, press Enter"><button id="sb">SUBMIT</button> <span id="tm"></span>s</div>
 <button id="idk" class="alt">I DON'T KNOW</button><button id="flee" class="warn">FLEE</button>
@@ -685,13 +692,17 @@ $('#nm').value=P.name;cz();const READY=init();
 var ERR='',RS='dead',early=false,AT=null,ADRK=-1;
 // ================= AUDIO: shared graph, SFX bus, volume =================
 // Everything is synthesized in WebAudio (no files). Music is scheduled on the AudioContext clock (lookahead scheduler, see MX below).
+/* SETTINGS (device-level, saved in localStorage tl_set). Sliders are 0-100; gain = (v/100)^2 so the default 100 keeps the old loudness. */
+const STD={mus:1,mv:100,sv:100,dv:100,dlg:1,atk:1,hit:1,ui:1,tk:1,amb:1,shake:1,flash:1,dn:1,ts:1};
+const SET=Object.assign({},STD);try{Object.assign(SET,JSON.parse(localStorage.tl_set||'{}'))}catch(e){}
+const sv=()=>Math.pow(SET.sv/100,2),dvol=()=>Math.pow(SET.dv/100,2);let MUSG=null;
 let trk='title',VOL=.7;try{const v=localStorage.tl_vol;if(v!=null)VOL=Math.max(0,Math.min(1,+v))}catch(e){}
 const fq=n=>440*2**((n-69)/12);
 var _o,MG,MCP;
 function AUD(){if(MG)return MG;MG=ac.createGain();MCP=ac.createDynamicsCompressor();MCP.threshold.value=-16;MCP.knee.value=18;MCP.ratio.value=3.2;MCP.attack.value=.006;MCP.release.value=.22;MG.connect(MCP);MCP.connect(ac.destination);applyVol();return MG}
 function applyVol(){if(!MG)return;MG.gain.cancelScheduledValues(ac.currentTime);MG.gain.setTargetAtTime(mute?0:VOL*VOL*.92,ac.currentTime,.05);const s=$('#vol');if(s&&+s.value!=Math.round(VOL*100))s.value=Math.round(VOL*100);const b=$('#mu');if(b)b.textContent=mute?'SOUND OFF':'SOUND ON'}
-function OUT(){if(_o)return _o;AUD();const lp=ac.createBiquadFilter(),m=ac.createGain(),dl=ac.createDelay(),fb=ac.createGain(),wt=ac.createGain();lp.type='lowpass';lp.frequency.value=6000;m.gain.value=.9;dl.delayTime.value=.2;fb.gain.value=.22;wt.gain.value=.14;m.connect(lp);m.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(wt);wt.connect(lp);lp.connect(MG);return _o=m}
-function beep(f,dur=.1,ty='square',v=.05){if(mute||!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(OUT());o.start();g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+dur);o.stop(ac.currentTime+dur)}
+function OUT(){if(_o)return _o;AUD();const lp=ac.createBiquadFilter(),m=ac.createGain(),dl=ac.createDelay(),fb=ac.createGain(),wt=ac.createGain();lp.type='lowpass';lp.frequency.value=6000;m.gain.value=.9*sv();dl.delayTime.value=.2;fb.gain.value=.22;wt.gain.value=.14;m.connect(lp);m.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(wt);wt.connect(lp);lp.connect(MG);return _o=m}
+function beep(f,dur=.1,ty='square',v=.05){if(mute||!ac||!SET.ui)return;const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(OUT());o.start();g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+dur);o.stop(ac.currentTime+dur)}
 const seq=(fs,ty)=>fs.forEach((f,i)=>setTimeout(()=>beep(f,.14,ty),i*110));
 function tn(f,t,d,ty,v){const o=ac.createOscillator(),gn=ac.createGain();o.type=ty;o.frequency.value=f;gn.gain.setValueAtTime(v,t);gn.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(gn);gn.connect(OUT());o.start(t);o.stop(t+d)}
 function ns(t,d,v){const l=ac.sampleRate*d|0,bf=ac.createBuffer(1,l,ac.sampleRate),a=bf.getChannelData(0);for(let i=0;i<l;i++)a[i]=Math.random()*2-1;const s=ac.createBufferSource(),gn=ac.createGain();s.buffer=bf;gn.gain.setValueAtTime(v,t);gn.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(gn);gn.connect(OUT());s.start(t)}
@@ -855,7 +866,7 @@ function wantTrk(){const on=id=>$(id)&&$(id).classList.contains('on');if(on('#ti
 function battleTrk(){if(!F)return'f0';if(F.i<0)return'boss';if(F.secret)return'secret';if(F.boss)return'b'+F.i;return'f'+F.i}
 function wantI(){if(!$('#battle').classList.contains('on')||!F||!F.mx)return 0;const r=F.mh/F.mx;let i=0;if(r<.7||hp<55)i=1;if(r<.35||hp<30||(F.p2))i=2;return i}
 let MXT=null,MXW='';
-function mxStart(){if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)()}AUD();mxInit(ac,MG);if(ac.state=='suspended')ac.resume();if(!MXT)MXT=setInterval(()=>{if(!MX.ok||!ac)return;try{const w=wantTrk();if(w!=MXW&&!(MXW=='f'&&0)){const fast=/^(f|b|boss|secret)/.test(w)&&!/^(i|sea)/.test(MXW);MXW=w;mxPlay(w,{fade:fast?.35:1.4})}mxSetI(wantI());mxLoop()}catch(e){console.error('music',e)}},25)}
+function mxStart(){if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)()}AUD();if(!MUSG||MUSG.context!==ac){MUSG=ac.createGain();MUSG.connect(MG);if(window.applyMus)applyMus()}mxInit(ac,MUSG);if(ac.state=='suspended')ac.resume();if(!MXT)MXT=setInterval(()=>{if(!MX.ok||!ac)return;try{if(!SET.mus){if(MT.cur){try{MT.cur.g.disconnect()}catch(e){}MT.cur=null;MXW=null}return}const w=wantTrk();if(w!=MXW&&!(MXW=='f'&&0)){const fast=/^(f|b|boss|secret)/.test(w)&&!/^(i|sea)/.test(MXW);MXW=w;mxPlay(w,{fade:fast?.35:1.4})}mxSetI(wantI());mxLoop()}catch(e){console.error('music',e)}},25)}
 function music(){mxStart()}
 document.addEventListener('pointerdown',()=>mxStart(),{once:true,capture:true});document.addEventListener('keydown',()=>mxStart(),{once:true,capture:true});
 // offline render (testing / export): schedule a whole track into an OfflineAudioContext
@@ -995,7 +1006,7 @@ SONGS.death={bpm:66,root:52,mode:'min',spb:16,L:{ld:{i:'cello',v:.9,rv:.5},bl:{i
 // ================= SFX + audio UI hooks =================
 // The tossup blips, buzzer, correct / neg / power sounds stay as simple synth beeps (beep/seq in 50_audio.js). UI + stings live here.
 var SFX={
-ui(k){if(!ac||mute)return;AUD();const t=ac.currentTime,o=OUT();
+ui(k){if(!ac||mute||!SET.ui)return;AUD();const t=ac.currentTime,o=OUT();
 if(k=='click'){tn(660,t,.06,'triangle',.05);tn(990,t+.035,.07,'triangle',.04)}
 else if(k=='hover'){tn(520,t,.03,'triangle',.02)}
 else if(k=='wipe'){const n=ac.sampleRate*.3|0,b=ac.createBuffer(1,n,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();s.buffer=b;f.type='bandpass';f.Q.value=2;f.frequency.setValueAtTime(400,t);f.frequency.exponentialRampToValueAtTime(3200,t+.28);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.08);g.gain.linearRampToValueAtTime(0,t+.3);s.connect(f);f.connect(g);g.connect(o);s.start(t);tn(300,t,.25,'sine',.04);tn(600,t+.12,.2,'sine',.03)}
@@ -1015,6 +1026,111 @@ $('#chb').onclick=czOpen;
 function beginGame(){try{U=JSON.parse(LIVE.tl_u||'[]')}catch(e){U=[]}if(ADM())U=I.map((o,k)=>k);ac=ac||new(window.AudioContext||window.webkitAudioContext)();music();
 if(LIVE.tl_st){mode='sea';show('map')}else{lset('tl_st','1');story(INTRO.map(FILL),()=>{mode='sea';show('map')})}}
 /*LORE-START*/
+/* ================= BATTLE SFX (Stage 4): attack sounds, hit sounds, player attack sounds =================
+   All synthesized (WebAudio). Every named attack has its own sound recipe: [windup, fire, shot, pitch].
+   windup = when the attack starts, fire = when its ring/beam/lane/line/entity fires, shot = each bullet it spawns.
+   SFX.hurt = you get hit, SFX.pAtk = your buzzer lines fire, SFX.buzz = buzzer press, SFX.good / SFX.neg = answer results. */
+const BSX=(()=>{let B=null,NB=null;const last={};
+const ok=(k,gap)=>{const n=performance.now();if(n-(last[k]||0)<gap)return 0;last[k]=n;return 1};
+const bus=()=>{if(B&&B.c===ac)return B.g;AUD();const g=ac.createGain(),lp=ac.createBiquadFilter(),cp=ac.createDynamicsCompressor();g.gain.value=3.4*sv();lp.type='lowpass';lp.frequency.value=9500;cp.threshold.value=-14;cp.knee.value=10;cp.ratio.value=4;g.connect(lp);lp.connect(cp);cp.connect(MG);B={g,c:ac};return g};
+const nbuf=()=>{if(NB&&NB.c===ac)return NB.b;const n=ac.sampleRate,b=ac.createBuffer(1,n,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;NB={b,c:ac};return b};
+const T=()=>ac.currentTime;
+function tone(f0,f1,d,ty,v,dl=0,o={}){const t=T()+dl,os=ac.createOscillator(),g=ac.createGain();os.type=ty;os.frequency.setValueAtTime(f0,t);if(f1!==f0)os.frequency.exponentialRampToValueAtTime(Math.max(20,f1),t+d);
+g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+(o.a||.004));g.gain.exponentialRampToValueAtTime(.0001,t+d);
+if(o.vib){const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=o.vib;lg.gain.value=f0*.04;l.connect(lg);lg.connect(os.frequency);l.start(t);l.stop(t+d+.02)}
+os.connect(g);let out=g;if(o.lp){const f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=o.lp;g.connect(f);out=f}out.connect(bus());os.start(t);os.stop(t+d+.02)}
+function noise(d,f0,f1,q,v,ty,dl=0,o={}){const t=T()+dl,s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();s.buffer=nbuf();s.loop=true;f.type=ty||'bandpass';f.Q.value=q||1;f.frequency.setValueAtTime(f0,t);if(f1!==f0)f.frequency.exponentialRampToValueAtTime(Math.max(30,f1),t+d);
+g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+(o.a||.005));if(o.sus)g.gain.setValueAtTime(v,t+d*o.sus);g.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(f);f.connect(g);g.connect(bus());s.start(t,Math.random()*.5);s.stop(t+d+.02)}
+const R={
+whoosh:(m,v)=>noise(.5,500*m,2400*m,1.2,.5*v,'bandpass',0,{a:.12}),
+rwhoosh:(m,v)=>noise(.45,2400*m,400*m,1.2,.5*v,'bandpass',0,{a:.02}),
+zap:(m,v)=>{tone(1900*m,120*m,.18,'sawtooth',.4*v);noise(.14,5000,900,.8,.3*v,'highpass')},
+laser:(m,v)=>{tone(1500*m,260*m,.32,'square',.32*v,0,{lp:5000});tone(3000*m,500*m,.2,'sine',.12*v)},
+charge:(m,v)=>{tone(180*m,900*m,.5,'sawtooth',.14*v,0,{a:.2,lp:2500,vib:14});tone(360*m,1800*m,.5,'sine',.1*v,0,{a:.25})},
+boom:(m,v)=>{tone(140*m,38*m,.5,'sine',.7*v,0,{a:.003});noise(.45,900,80,.6,.55*v,'lowpass')},
+thud:(m,v)=>{tone(110*m,45*m,.22,'sine',.6*v);noise(.1,600,100,.5,.3*v,'lowpass')},
+pluck:(m,v)=>{tone(880*m,780*m,.2,'triangle',.4*v);tone(1760*m,1760*m,.1,'sine',.1*v)},
+bell:(m,v)=>{[1,2.76,5.4,8.9].forEach((r,i)=>tone(660*m*r,660*m*r,1.1/Math.sqrt(i+1),'sine',.22*v/(i+1)))},
+gong:(m,v)=>{[1,1.5,2.1,2.76,3.5].forEach((r,i)=>tone(150*m*r,148*m*r,1.4,'sine',.2*v/(1+i*.4)));noise(.3,2500,500,.5,.15*v,'bandpass')},
+crack:(m,v)=>{noise(.07,6000,2500,.7,.55*v,'highpass');tone(300*m,80*m,.08,'square',.2*v)},
+blip:(m,v)=>tone(1000*m,1300*m,.07,'square',.3*v),
+rumble:(m,v)=>{noise(1.1,300,70,.5,.6*v,'lowpass',0,{a:.25});tone(60*m,40*m,1,'sine',.4*v,0,{a:.2})},
+glitch:(m,v)=>{for(let i=0;i<6;i++)tone(300+Math.random()*2200,200+Math.random()*2000,.04,'square',.14*v,i*.035)},
+swell:(m,v)=>{tone(220*m,330*m,.8,'sawtooth',.12*v,0,{a:.5,lp:1800});tone(330*m,495*m,.8,'sawtooth',.1*v,0,{a:.5,lp:1800})},
+coin:(m,v)=>{tone(988*m,988*m,.08,'square',.16*v);tone(1319*m,1319*m,.28,'square',.16*v,.08)},
+squelch:(m,v)=>{tone(260*m,70*m,.22,'sawtooth',.4*v,0,{lp:900,vib:30});noise(.2,900,300,3,.2*v)},
+patter:(m,v)=>{for(let i=0;i<4;i++)noise(.05,3000+Math.random()*2000,1500,1.5,.25*v,'bandpass',i*.05)},
+slash:(m,v)=>{noise(.2,6000*m,1200*m,2,.6*v,'bandpass',0,{a:.01});tone(2400*m,600*m,.14,'sawtooth',.1*v)},
+fire:(m,v)=>{noise(.7,700,1800,.9,.45*v,'bandpass',0,{a:.15,sus:.6});noise(.5,200,120,.7,.3*v,'lowpass')},
+glass:(m,v)=>{[2093,2637,3136,4186].forEach((f,i)=>tone(f*m,f*m*1.01,.5-i*.07,'sine',.12*v,i*.04))},
+bubble:(m,v)=>{tone(300*m,900*m,.1,'sine',.3*v);tone(500*m,1300*m,.08,'sine',.25*v,.09)},
+warp:(m,v)=>{tone(900*m,90*m,.5,'sawtooth',.2*v,0,{lp:2000});tone(450*m,45*m,.5,'square',.1*v)},
+siren:(m,v)=>{tone(600*m,900*m,.25,'square',.12*v,0,{lp:2500});tone(900*m,600*m,.25,'square',.12*v,.25,{lp:2500})},
+tick:(m,v)=>tone(1800*m,900*m,.03,'square',.34*v),
+organ:(m,v)=>{[1,1.26,1.5,2].forEach(r=>tone(130*m*r,130*m*r,.9,'square',.08*v,0,{a:.08,lp:1400}))},
+harp:(m,v)=>{[1,1.25,1.5,2,2.5].forEach((r,i)=>tone(440*m*r,440*m*r,.5,'triangle',.18*v,i*.045))},
+horn:(m,v)=>{tone(196*m,200*m,.6,'sawtooth',.2*v,0,{a:.08,lp:1100,vib:6});tone(294*m,298*m,.6,'sawtooth',.14*v,0,{a:.08,lp:1100})},
+choir:(m,v)=>{[1,1.5,2].forEach(r=>tone(330*m*r,330*m*r,.9,'sine',.12*v,0,{a:.3,vib:5}))},
+type:(m,v)=>{for(let i=0;i<4;i++){noise(.03,2500,2500,2,.3*v,'bandpass',i*.06);tone(1200,1200,.01,'square',.08*v,i*.06)}},
+page:(m,v)=>{noise(.18,1500,5000,.8,.35*v,'bandpass',0,{a:.04});noise(.12,4000,1000,.8,.3*v,'bandpass',.12)},
+drum:(m,v)=>{tone(200*m,70*m,.2,'sine',.5*v);noise(.1,1500,300,.7,.25*v)},
+spark:(m,v)=>{for(let i=0;i<4;i++)tone(2000*m+i*600,3200*m+i*500,.12,'sine',.1*v,i*.05)},
+eerie:(m,v)=>{tone(400*m,300*m,.9,'sine',.2*v,0,{a:.3,vib:7});tone(412*m,305*m,.9,'sine',.2*v,0,{a:.3,vib:6})},
+buzz:(m,v)=>{tone(110*m,110*m,.25,'sawtooth',.2*v,0,{lp:900,vib:40});noise(.22,3000,1500,.8,.12*v)}};
+// [windup, fire, shot, pitch]
+const AS={wordstorm:['page','type','tick',1],inkblot:['squelch','squelch','bubble',.9],plottwist:['glitch','swell','blip',1],bookworm:['squelch','thud','squelch',.8],
+echo:['eerie','bell','bell',1],dynasty:['rumble','boom','thud',.8],clock:['tick','bell','tick',1],chain:['charge','crack','crack',1],
+gravity:['warp','rumble','tick',.7],prism:['charge','laser','glass',1.2],shells:['charge','zap','blip',1.1],mitosis:['bubble','squelch','bubble',1],meteor:['whoosh','boom','thud',1],
+splatter:['squelch','squelch','bubble',1],staff:['organ','horn','pluck',1],frame:['whoosh','boom','thud',1],crescendo:['swell','horn','pluck',1],stage:['whoosh','thud','tick',.9],
+hydra:['whoosh','slash','squelch',1],smite:['charge','zap','zap',1],gaze:['eerie','laser','glass',1],thornvine:['rwhoosh','slash','slash',1],bell:['bell','gong','bell',1],
+mandala:['choir','bell','glass',1],lantern:['choir','spark','spark',1],prophecy:['choir','swell','bell',1],shadow:['eerie','warp','blip',.8],cave:['eerie','rumble','tick',.7],
+regress:['warp','warp','tick',1.2],gini:['coin','thud','coin',1],peer:['swell','thud','blip',1],tripartite:['charge','zap','zap',1],tide:['whoosh','rumble','bubble',.8],
+volcano:['rumble','boom','fire',1],grid:['charge','zap','tick',1],compass:['bell','laser','tick',1],invaders:['blip','laser','blip',1.3],warp:['glitch','warp','glitch',1],
+fireball:['fire','boom','fire',1],ticker:['tick','siren','tick',1],spot:['charge','laser','tick',1],poll:['type','thud','tick',1],pi:['blip','bell','blip',1],scantron:['type','crack','tick',1],
+proof:['organ','gong','tick',1],leech:['squelch','squelch','bubble',1],sine:['swell','whoosh','blip',1],pendulum:['tick','rwhoosh','tick',1],reaction:['charge','boom','crack',1],
+raster:['charge','laser','tick',1],supernova:['charge','boom','spark',.8],assembly:['tick','thud','tick',1],dodgeball:['whoosh','thud','drum',1],candle:['coin','crack','coin',1],prisoner:['siren','crack','tick',1]};
+const play=(r,m,v)=>{if(mute||!ac||!SET.atk||!R[r])return;try{AUD();if(ac.state=='suspended')ac.resume();R[r](m||1,v==null?1:v)}catch(e){}};
+const API={R,AS,play,tone,noise,ok,
+ reset(){B=null;NB=null},vol(){if(B&&B.c===ac)B.g.gain.value=3.4*sv()},
+ atk(n,w){const a=AS[n]||['whoosh','zap','blip',1];if(!ok('atk'+w,w=='w'?60:25))return;const big=AT&&AT.big;play(a[w=='w'?0:w=='f'?1:2],a[3]*(w=='s'?.92+Math.random()*.2:1),w=='w'?(big?1.2:.9):w=='s'?.5:.85);if(w=='w'&&big)play('thud',.7,.7)},
+ tick(A){if(mute||!ac||!SET.atk)return;const n=A.cur||'';
+  for(const o of A.X){if(o.sx)continue;o.sx=1;if(o.arms){o.fk=o.tel}else if(o.n!=null&&o.safe!=null){o.fk=o.tel}else if(o.r0!=null&&o.gw!=null){o.fk=o.dl||0}else if(ok('xs',140))API.atk(n,'f')}
+  for(const o of A.X)if(o.fk!=null&&!o.fd&&o.t>=o.fk){o.fd=1;API.atk(n,'f')}
+  for(const l of A.L){if(!l.sx){l.sx=1;if(ok('ln',90))play('tick',1.4,.7)}if(l.t>.7&&!l.sf){l.sf=1;API.atk(n,'f')}}
+  let nn=0;for(const b of A.B)if(!b.sx){b.sx=1;nn++}if(nn)API.atk(n,'s');
+  if(A.fin&&!A.sxF){A.sxF=1;play('glitch',1,.5);noise(.5,6000,800,.8,.3,'highpass')}},
+ hurt(v){if(mute||!ac||!SET.hit)return;try{AUD();if(ac.state=='suspended')ac.resume();const big=v>=14;noise(.07,6500,2500,.7,.6,'highpass');tone(240,60,.26,'square',.34,0,{lp:2500});noise(.25,1400,150,.6,.45,'lowpass');tone(520,200,.14,'triangle',.22,.03);if(big){R.boom(1,.7)}}catch(e){}},
+ buzz(){if(mute||!ac||!SET.hit)return;try{AUD();R.thud(1.6,.5);tone(150,150,.28,'sawtooth',.22,.02,{lp:1400,vib:50});tone(158,158,.28,'square',.12,.02,{lp:1200});noise(.04,4000,2000,.8,.3,'highpass')}catch(e){}},
+ pAtk(pw){if(mute||!ac||!SET.hit)return;try{AUD();if(ac.state=='suspended')ac.resume();const N=pw?10:5;for(let i=0;i<N;i++){tone(2200-i*40,700,.11,'square',.12,i*.035,{lp:5000});tone(4400,1400,.09,'sine',.05,i*.035)}
+ const t=.40;for(let i=0;i<(pw?5:3);i++){noise(.09,5000,1800,.8,.35,'highpass',t+i*.04);tone(260-i*20,70,.14,'square',.2,t+i*.04,{lp:2200})}
+ R.boom(1.2,pw?.8:.45);setTimeout(()=>{},0);if(pw){tone(70,40,.5,'sine',.5,t,{a:.003});R.spark(1,.8)}}catch(e){}},
+ good(pw){if(mute||!ac||!SET.hit)return;try{AUD();[523,659,784].concat(pw?[1046,1319]:[]).forEach((f,i)=>tone(f,f,.22,'square',.1,.5+i*.07,{lp:4000}))}catch(e){}},
+ neg(){if(mute||!ac||!SET.hit)return;try{AUD();if(ac.state=='suspended')ac.resume();tone(330,165,.38,'sawtooth',.26,0,{lp:1500,vib:8});tone(247,110,.45,'sawtooth',.22,.18,{lp:1200,vib:6});R.thud(1,.6);noise(.12,3000,800,.8,.2,'highpass')}catch(e){}}};
+return API})();
+Object.assign(SFX,{hurt:BSX.hurt,buzz:BSX.buzz,pAtk:BSX.pAtk,good:BSX.good,neg:BSX.neg,atk:BSX.atk,sx:BSX});
+
+
+/* ================= SETTINGS PANEL ================= */
+function ensureAC(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();AUD();if(ac.state=='suspended')ac.resume()}
+function applyMus(){if(MUSG&&ac)MUSG.gain.setTargetAtTime(SET.mus?Math.pow(SET.mv/100,2):0,ac.currentTime,.08)}
+function stApply(){try{localStorage.tl_set=JSON.stringify(SET)}catch(e){}applyMus();try{BSX.vol()}catch(e){}if(_o&&ac)_o.gain.value=.9*sv()}
+const STROWS=[['t','mus','Music','Background music for every screen','mv'],['r','sv','Sound effects volume','Attacks, hits, buzzer, menus'],
+['t','dlg','Dialogue voices','The Undertale-style blips while characters talk','dv'],['t','atk','Attack sounds','Enemy attack wind-ups, beams, bullets'],['t','hit','Hit & buzzer sounds','Getting hit, buzzing in, right / wrong answers, your buzzer shots'],
+['t','ui','Menu & UI sounds','Clicks, interact beeps, island unlocks'],['t','tk','Question reader ticks','The tick for every word of a tossup'],['t','amb','Ambient sounds','Wind, birds and night crickets on the map'],
+['h','TEXT'],['speed'],['h','VISUAL'],['t','shake','Screen shake','Arena shakes when you get hit'],['t','flash','Hit flash & warning flash','Turn off to reduce flashing'],['t','dn','Day / night cycle','Off keeps the map in full daylight']];
+function stBuild(){const b=$('#stb2');b.innerHTML='';const mk=(h)=>{const d=document.createElement('div');d.className='sr';d.innerHTML=h;b.append(d);return d};
+STROWS.forEach(r=>{if(r[0]=='h'){const h=document.createElement('h2');h.textContent=r[1];b.append(h);return}
+if(r[0]=='speed'){const d=mk('<div class="l">Dialogue text speed<small>Instant shows each line at once</small></div>'),bt=document.createElement('button');bt.className='alt';const nm={1:'NORMAL',.55:'FAST',0:'INSTANT'},cyc=[1,.55,0];const up=()=>bt.textContent=nm[SET.ts];up();bt.onclick=()=>{SET.ts=cyc[(cyc.indexOf(SET.ts)+1)%3];up();stApply()};d.append(bt);return}
+const [ty,k,l,sub,vk]=r,d=mk('<div class="l">'+l+'<small>'+sub+'</small></div>');
+if(ty=='t'){const bt=document.createElement('button');const up=()=>{bt.textContent=SET[k]?'ON':'OFF';bt.classList.toggle('off',!SET[k])};up();bt.onclick=()=>{SET[k]=SET[k]?0:1;up();stApply();if(k=='dlg'&&SET[k])stTestVoice()};d.append(bt)}
+const vkey=ty=='r'?k:vk;if(vkey){const sl=document.createElement('input');sl.type='range';sl.min=0;sl.max=100;sl.value=SET[vkey];sl.oninput=()=>{SET[vkey]=+sl.value;stApply()};sl.onchange=()=>{if(vkey=='dv')stTestVoice();if(vkey=='sv')stTestHit()};d.append(sl)}})}
+function stTestVoice(){ensureAC();const el=$('#sttx');el.textContent='';DTY&&DTY.stop();window.STT&&STT.stop();window.STT=vxType(el,'Greetings, Hero! Can you hear my voice?',voiceOf('Professor Power'))}
+function stTestHit(){ensureAC();if(window.SFX){SFX.buzz();setTimeout(()=>SFX.hurt(10),350)}}
+function stOpen(){stBuild();$('#stm').style.display='block';slClose&&slClose()}
+function stClose(){$('#stm').style.display='none'}
+$('#setbtn').onclick=stOpen;$('#stg').onclick=stOpen;$('#stx').onclick=stClose;$('#stt').onclick=stTestVoice;$('#stt2').onclick=stTestHit;
+$('#str').onclick=()=>{Object.assign(SET,STD);stApply();stBuild()};
+$('#stm').addEventListener('keydown',e=>{e.stopPropagation();if(e.key=='Escape')stClose()});$('#stm').addEventListener('keyup',e=>e.stopPropagation());
 /* ================= STORY AND LORE (Stage 3) =================
    Premise: the Great Buzzer was shattered into 12 pieces and hidden with 12 island Keepers by the Grand Inquisitor (once Quentin Query).
    His one motive: CERTAINTY. No negs, no wrong answers, no surprises. Every Keeper guards a piece because the Inquisitor promised
@@ -1225,7 +1341,7 @@ const seed=k*7+3,pp=[[B.tr,0,-.35,-.25,.28],[B.tr,1,.38,-.1,.25],['bush',0,-.4,.
 pp.forEach(([kd,v,dx,dy,S])=>{const pr=getProp(kd,v,k,un,S*1.05),px=cx+dx*r*1.3-pr.ax,py=cy+dy*r*1.2+r*.35-pr.ay;x.drawImage(pr,Math.round(px),Math.round(py))});return c}
 // ---- day / night ----
 const DK=[[0,255,150,120,.18],[.12,255,255,255,0],[.38,255,255,255,0],[.5,255,120,40,.26],[.62,10,20,80,.5],[.88,10,20,80,.5],[1,255,150,120,.18]];
-function tint(t){const p=(t/1000/240+.15)%1;let i=1;while(DK[i][0]<p)i++;const a=DK[i-1],b=DK[i],f=(p-a[0])/(b[0]-a[0]),c=k=>Math.round(a[k]+(b[k]-a[k])*f),al=a[4]+(b[4]-a[4])*f;return{c:`rgba(${c(1)},${c(2)},${c(3)},${al})`,n:Math.max(0,(al-.3)/.25)}}
+function tint(t){if(!SET.dn)return{c:'rgba(255,255,255,0)',n:0};const p=(t/1000/240+.15)%1;let i=1;while(DK[i][0]<p)i++;const a=DK[i-1],b=DK[i],f=(p-a[0])/(b[0]-a[0]),c=k=>Math.round(a[k]+(b[k]-a[k])*f),al=a[4]+(b[4]-a[4])*f;return{c:`rgba(${c(1)},${c(2)},${c(3)},${al})`,n:Math.max(0,(al-.3)/.25)}}
 function dayfx(t){const T=tint(t);wl.fillStyle=T.c;wl.fillRect(0,0,400,230);if(T.n>0){for(let j=0;j<40;j++){if(Math.sin(t/600+j*1.9)>-.4)RC(wl,(j*97)%400,(j*53)%110,1,1,'#fff')}}return T}
 // ---- sea scene ----
 let bt={x:200,y:150,f:1},WAKE=[];
@@ -1327,7 +1443,7 @@ const ADM=()=>{try{return btoa(P.name||'')==='Tm9vYkF0RXZlcnl0aGluZw=='}catch(e)
 function seaAct(){const k=nearIsle();if(k<0){if(bc()>=12&&Math.hypot(235-bt.x,107-bt.y)<28)story([GI.shrine[0],FILL(GI.shrine[1]),'The Grand Inquisitor: "'+GI.intro+'"','The Grand Inquisitor: "'+GI.motive+'"'],()=>fight(-1,'*',2,'The Grand Inquisitor'));return}
 if(!U.length){U=[k];save('tl_u',U)}else if(!U.includes(k)){if(fuel()>0){U.push(k);save('tl_u',U);seq([392,523,659,784],'triangle')}else{beep(150,.2,'sawtooth');return}}beep(660,.08);sail(k)}
 const act=()=>mode=='isle'?trigger(near()):seaAct();
-setInterval(()=>{if(!ac||mute||!$('#map').classList.contains('on'))return;const n=tint(performance.now()).n,t=ac.currentTime,sa=mode=='sea';ns(t,.9,sa?.022:.012);
+setInterval(()=>{if(!ac||mute||!SET.amb||!$('#map').classList.contains('on'))return;const n=tint(performance.now()).n,t=ac.currentTime,sa=mode=='sea';ns(t,.9,sa?.022:.012);
 if(!sa&&n>.4&&Math.random()<.7)[0,.12,.24].forEach(d=>tn(4300,t+d,.06,'sine',.012));else if(!sa&&n<.2&&Math.random()<.35){const f=2200+Math.random()*900;tn(f,t,.08,'sine',.02);tn(f*1.25,t+.1,.08,'sine',.02)}else if(sa&&Math.random()<.2)tn(1200,t,.4,'sine',.01)},800);
 // ---- present: blit low-res world 2x, then crisp text ----
 function present(){g.imageSmoothingEnabled=false;g.drawImage(WC,0,0,800,460);g.textBaseline='alphabetic';g.font='8px "Press Start 2P",monospace';TXQ.forEach(q=>{g.textAlign=q.al;const x=q.x*2,y=q.y*2;if(q.col!='#3b2a40'){g.fillStyle='#1a1024';[[-2,0],[2,0],[0,-2],[0,2],[2,2]].forEach(([a,b])=>g.fillText(q.s,x+a,y+b))}g.fillStyle=q.col;g.fillText(q.s,x,y)});TXQ.length=0}
@@ -1438,17 +1554,32 @@ $('#mn').innerHTML=`${E(m.nm)} <small>${E(m.sub)} | L${m.rk+1} ${LYN[m.rk]} | ${
 function q(){if(F.grp&&!selWho())return;drawBz(0);d=next();d.pr=0;F.last=d.q;SN.add(sk(d));if(SN.size>4000)SN.clear();save('tl_s',[...SN]);words=d.q.split(' ');pw=words.indexOf('(*)');if(pw>=0)words.splice(pw,1);n=0;state='read';power=false;
 $('#qt').textContent='';$('#lr').innerHTML='';$('#af').style.display='none';$('#nx').style.display='none';$('#bz').style.display='';$('#idk').style.display='';$('#flee').style.display='';
 $('#qi').textContent=`${F.i<0?'Mixed':F.boss?I[F.i].n+' (all)':F.sub} | ${DL[d.d]||'Sample'} | buzz before the mark for POWER (15)`;clearInterval(timer);clearInterval(tt);
-timer=setInterval(()=>{if(n<words.length){n++;$('#qt').textContent=words.slice(0,n).join(' ');beep(880,.02,'square',.015)}else{clearInterval(timer);early=false;ask()}},F.nm=='The Buzzer Beater'?60:130)}
-function buzz(){if(state!='read')return;clearInterval(timer);power=pw>=0&&n<=pw;early=n<words.length;beep(1046,.15);drawBz(1);ask();buzzTaunt()}
+timer=setInterval(()=>{if(n<words.length){n++;$('#qt').textContent=words.slice(0,n).join(' ');SET.tk&&beep(880,.02,'square',.015)}else{clearInterval(timer);early=false;ask()}},F.nm=='The Buzzer Beater'?60:130)}
+function buzz(){if(state!='read')return;clearInterval(timer);power=pw>=0&&n<=pw;early=n<words.length;try{SFX.buzz()}catch(e){beep(1046,.15)}drawBz(1);ask();buzzTaunt()}
 /* PIXEL BUZZER + FX: bzc is the pixel buzzer (0 up/red, 1 pressed, 2 grey after a neg/wrong). fireLines() = red pixel lines from the buzzer to the targeted enemy on correct/power. */
-function drawBz(st){const c=$('#bzc').getContext('2d');c.clearRect(0,0,40,28);c.fillStyle='#14141f';c.fillRect(3,19,34,8);c.fillStyle='#2f3050';c.fillRect(4,18,32,8);c.fillStyle='#5a5c86';c.fillRect(4,18,32,2);c.fillStyle='#1c1d33';c.fillRect(4,25,32,1);
-const col=st==2?'#8d6a70':st==1?'#c4162a':'#ff2a3c',dk=st==2?'#5e4448':st==1?'#80101c':'#b81426',oy=st?4:0;
-if(!st){c.fillStyle='#6b6d90';c.fillRect(9,14,22,4);c.fillStyle='#4a4c70';c.fillRect(9,17,22,1)}
-[[13,27],[9,31],[7,33],[6,34],[6,34],[6,34]].forEach((r,i)=>{c.fillStyle=i==5?dk:col;c.fillRect(r[0],8+oy+i,r[1]-r[0],1)});
-if(st!=1){c.fillStyle=st==2?'#b09296':'#ff9aa4';c.fillRect(12,9+oy,5,1);c.fillRect(9,10+oy,2,2)}}
+function drawBz(st){const cv=$('#bzc'),c=cv.getContext('2d'),W=48,H=32,K='#1a1024',R=(x,y,w,h,col)=>{c.fillStyle=col;c.fillRect(x,y,w,h)};c.clearRect(0,0,W,H);
+const gr=st==2,pr=st==1;
+const M=gr?{hi:'#c9b6ba',mid:'#9a7c82',dk:'#654a50',sp:'#efe2e4',col1:'#8a8a98',col2:'#5d5d6e',col3:'#b0b0c0'}:pr?{hi:'#e8404f',mid:'#c4162a',dk:'#80101c',sp:'#ff9aa4',col1:'#e0a828',col2:'#a8761c',col3:'#ffd84a'}:{hi:'#ff7a86',mid:'#ff2a3c',dk:'#b81426',sp:'#ffffff',col1:'#ffd84a',col2:'#c8962a',col3:'#fff1a0'};
+// soft ground shadow
+c.fillStyle='#0000002e';c.fillRect(3,30,42,2);c.fillRect(5,29,38,1);
+// metal base: two tiers with outline, bevel and bolts
+R(2,22,44,9,K);R(3,23,42,7,'#3a3c62');R(3,23,42,1,'#8a8cb8');R(3,24,42,1,'#5a5c86');R(3,28,42,2,'#23243f');R(2,22,1,1,'#0000');R(45,22,1,1,'#0000');R(2,30,1,1,'#0000');R(45,30,1,1,'#0000');
+R(6,16,36,7,K);R(7,17,34,6,'#4a4c78');R(7,17,34,1,'#a4a6d0');R(7,18,34,1,'#6c6e9c');R(7,22,34,1,'#2f3050');
+[[5,25],[41,25]].forEach(([x,y])=>{R(x,y,2,2,K);R(x,y,1,1,'#c8cae8')});
+// hazard stripe on the lower tier (yellow/black), like a game-show buzzer
+for(let x=10;x<38;x+=4){R(x,26,2,2,'#ffd84a');R(x+2,26,2,2,K)}
+// gold collar
+const cw=pr?15:15,cy=pr?16:15;R(24-cw-1,cy-1,cw*2+2,5,K);R(24-cw,cy,cw*2,3,M.col1);R(24-cw,cy,cw*2,1,M.col3);R(24-cw,cy+2,cw*2,1,M.col2);
+// dome (semi-ellipse, shaded left to right)
+const h=pr?6:12,base=cy+1,wm=12,top=base-h;
+const HW=y=>{const u=Math.min(1,(base-y)/h);return Math.round(wm*Math.sqrt(Math.max(0,1-u*u)))};for(let y=top;y<base;y++){const hw=Math.max(HW(y),HW(y+1)>HW(y)?HW(y+1):0);R(24-hw-1,y,hw*2+2,1,K)}{const t=HW(top)+1;R(24-t,top-1,t*2+1,1,K)}
+for(let y=top;y<base;y++){const u=(base-y)/h,hw=Math.round(wm*Math.sqrt(Math.max(0,1-u*u)));for(let x=-hw;x<=hw;x++){const f=x/Math.max(1,hw),shade=f<-.45?M.hi:f>.4?M.dk:M.mid,low=(base-y)<=2&&f>-.1;R(24+x,y,1,1,low?M.dk:shade)}}
+// specular highlights
+if(!pr){R(16,top+2,5,1,M.sp);R(14,top+3,3,1,M.sp);R(13,top+4,2,2,M.sp);R(22,top+1,2,1,M.hi)}else{R(17,top+1,4,1,M.sp);R(15,top+2,2,1,M.sp)}
+if(st==2){R(20,top+3,8,1,'#0000')}}
 let bzT=0;function bzUp(){clearTimeout(bzT);bzT=setTimeout(()=>drawBz(0),160)}function bzGrey(){clearTimeout(bzT);drawBz(2);bzT=setTimeout(()=>drawBz(0),900)}
 $('#bzc').onclick=()=>buzz();drawBz(0);
-function fireLines(pw){let fx=$('#fx');if(!fx){fx=document.createElement('canvas');fx.id='fx';fx.style.cssText='position:fixed;left:0;top:0;pointer-events:none;z-index:60;image-rendering:pixelated';document.body.appendChild(fx)}
+function fireLines(pw){try{SFX.pAtk(pw)}catch(e){}let fx=$('#fx');if(!fx){fx=document.createElement('canvas');fx.id='fx';fx.style.cssText='position:fixed;left:0;top:0;pointer-events:none;z-index:60;image-rendering:pixelated';document.body.appendChild(fx)}
 const S=4;fx.width=Math.ceil(innerWidth/S);fx.height=Math.ceil(innerHeight/S);fx.style.width=innerWidth+'px';fx.style.height=innerHeight+'px';const g=fx.getContext('2d'),tcv=F.grp&&F.cm&&F.cm.cv?F.cm.cv:$('#mon'),a=$('#bzc').getBoundingClientRect(),b=tcv.getBoundingClientRect(),sx=(a.left+a.width/2)/S,sy=(a.top+a.height/2)/S,tx=(b.left+b.width/2)/S,ty=(b.top+b.height/2)/S,N=pw?10:5,w=pw?3:2,t0=performance.now();
 tcv.style.transition='filter .1s';setTimeout(()=>{tcv.style.filter='brightness(2) sepia(1) saturate(6) hue-rotate(-35deg)';setTimeout(()=>tcv.style.filter='',260)},330);
 (function fr(now){const t=(now-t0)/1000;g.clearRect(0,0,fx.width,fx.height);for(let i=0;i<N;i++){const dl=i*.035,p=Math.min(1,Math.max(0,(t-dl)/.38)),ph=i*1.7,off=(i-N/2)*2.2;for(let u=Math.max(0,p-.4);u<=p&&p>0;u+=.012){const wv=Math.sin(u*10+ph)*9*(1-u),x=sx+(tx-sx)*u+off*(1-u)+wv*.6,y=sy+(ty-sy)*u+wv*.3;g.fillStyle=u>p-.1?'#ffb0b0':'#ff2030';g.fillRect(Math.floor(x),Math.floor(y),w,w)}
@@ -1469,9 +1600,9 @@ $('#af').style.display='none';$('#bz').style.display='none';$('#idk').style.disp
 let TU=0;function submit(){if(state!='ans')return;const tu=TU;TU=0;const v=$('#ai').value.trim(),jr=judge(v,d.K);
 if(jr=='prompt'&&!tu&&!d.pr){d.pr=1;clearInterval(tt);beep(600,.08,'triangle');$('#lr').innerHTML='<p class="y">PROMPT: be more specific!</p><small>You are on the right track. Try again (8 seconds).</small>';$('#ai').value='';$('#ai').focus();ansClock(8);return}
 clearInterval(tt);state='res';const ok=jr=='ok';let msg;
-if(ok){bzUp();fireLines(power);const dm=power?15:10;F.mh=Math.max(0,F.mh-dm);RS='ok';M=M.filter(m=>m.q!=d.q);save('tl_m',M);seq([523,659,784],'square');$('#mon').classList.add('hit');(F.grp&&F.cm&&F.cm.cv?F.cm.cv:$('#mon').firstChild).dataset.st='hurt';setTimeout(()=>{const e=(F.grp&&F.cm&&F.cm.cv?F.cm.cv:$('#mon').firstChild);if(e)e.dataset.st=''},700);msg=`<p class="g">${power?'POWER! ':''}Correct! ${E(F.nm)} takes ${dm}!</p>`}
-else if(early){RS='neg';bzGrey();miss();const ngd=F.nm=='Neg-a-tron'?15:F.gm=='thorn'?10:5;hp-=ngd;if(F.gm=='leech')F.mh=Math.min(F.mx,F.mh+5);seq([196,147],'sawtooth');msg=`<p class="b">NEG! ${v?'Wrong: '+E(v):'No answer.'} You lose ${ngd} HP${F.gm=='leech'?' and it heals 5':''}, then ${E(F.nm)} attacks! Saved to your Study Hut.</p>`}
-else{RS='dead';bzGrey();miss();seq([196,147],'sawtooth');msg=`<p class="b">DEAD (0). ${v?'Wrong: '+E(v):'Time up!'} ${E(F.nm)} attacks! Saved to your Study Hut.</p>`}
+if(ok){bzUp();fireLines(power);const dm=power?15:10;F.mh=Math.max(0,F.mh-dm);RS='ok';M=M.filter(m=>m.q!=d.q);save('tl_m',M);try{SFX.good(power)}catch(e){seq([523,659,784],'square')}$('#mon').classList.add('hit');(F.grp&&F.cm&&F.cm.cv?F.cm.cv:$('#mon').firstChild).dataset.st='hurt';setTimeout(()=>{const e=(F.grp&&F.cm&&F.cm.cv?F.cm.cv:$('#mon').firstChild);if(e)e.dataset.st=''},700);msg=`<p class="g">${power?'POWER! ':''}Correct! ${E(F.nm)} takes ${dm}!</p>`}
+else if(early){RS='neg';bzGrey();miss();const ngd=F.nm=='Neg-a-tron'?15:F.gm=='thorn'?10:5;hp-=ngd;if(F.gm=='leech')F.mh=Math.min(F.mx,F.mh+5);try{SFX.neg()}catch(e){seq([196,147],'sawtooth')}msg=`<p class="b">NEG! ${v?'Wrong: '+E(v):'No answer.'} You lose ${ngd} HP${F.gm=='leech'?' and it heals 5':''}, then ${E(F.nm)} attacks! Saved to your Study Hut.</p>`}
+else{RS='dead';bzGrey();miss();try{SFX.neg()}catch(e){seq([196,147],'sawtooth')}msg=`<p class="b">DEAD (0). ${v?'Wrong: '+E(v):'Time up!'} ${E(F.nm)} attacks! Saved to your Study Hut.</p>`}
 setTimeout(()=>$('#mon').classList.remove('hit'),400);bars();learn(msg,ok)}
 const ar=$('#ar'),ag=ar.getContext('2d');/* NO-TEXT RULE: all arena text is disabled on purpose. ONLY EXCEPTION: Word Storm (FR.wordstorm), which draws the question's own words via ARENA_TEXT. Do not use ARENA_TEXT in any other attack. */const ARENA_TEXT=ag.fillText.bind(ag);ag.fillText=ag.strokeText=()=>{},LB={rain:'CLUE RAIN!',aim:'AIMED CLUE!',ring:'ANSWER RING!',spiral:'SPIRAL OF DOUBT!',sweep:'SWEEPING WALL!',curtain:'CURTAIN FALL!',beam:'f(x) BEAM!',zone:'INTEGRAL ZONE!',orbit:'ORBITING CLUES!',bounce:'BOUNCING FACTS!',homing:'SEEKING DOUBT!',cross:'CROSS LASERS!',snake:'SERPENT WAVE!'};
 
@@ -2459,7 +2590,7 @@ function startAtk(){if(F.cm)F.cm.mh=F.mh;const plan=F.plan||planRound(F);F.rd=(F
 const ms=F.grp?F.grp.filter(m=>m.mh>0):[F],sf=(F.nm||'').split(' ')[1]||'',ts=(sf=='Imp'?1.2:sf=='Golem'?.82:1)*(F.boss&&F.mh<F.mx*.5?1.15:1);
 mkHD();K={};
 AT={t:0,ts,fog:sf=='Wraith',dmx:sf=='Golem'?2:sf=='Imp'?-1:0,rk:F.rk,x:200,y:150,vx:0,vy:0,iv:0,fl:0,B:[],L:[],X:[],S:[],P:[],rec:[],cd:{},tr:[],md:5,cap:20,lbl:null,inv:0,slow:0,dark:0,gz:0,mv:false,sprs:F.grp?ms.map(m=>m.cv):[$('#mon').firstChild],v:hsh(F.boss?F.nm:F.sub||F.nm)%3,l:performance.now(),dp:F.i<0?BPAL.violet:palFrom(I[F.i].c),th:F.i<0?-1:F.i};
-AT.big=F.boss||F.rk>=3||F.i<0;let off=AT.big?.9:.4,end=off;const PE=F.grp?F.pe:null;plan.forEach((n,ix)=>{const s=MV[n];if(!s)return;const o=off,ow=PE&&PE[ix];at(AT,o,()=>{AT.md=s.d;AT.lbl={t:AT.t,txt:s.l};s.s(AT,ow?ow.rk:AT.rk,AT.v);if(AT.big)AT.shk=.5;if(ow&&ow.cv){const c=ow.cv;c.style.transition='transform .12s,filter .12s';c.style.transform='translateY(14px) scale(1.18)';c.style.filter='brightness(2) drop-shadow(0 0 12px #fff)';c.dataset.st='atk';setTimeout(()=>{c.style.transform='';c.style.filter='';c.dataset.st=''},380)}else if(!F.grp){const c=$('#mon').firstChild;if(c){c.dataset.st='atk';setTimeout(()=>{c.dataset.st=''},700)}}});/* Island bosses ONLY: the same attack fired twice. Never a different second attack. */if(F.boss&&F.i>=0&&n!='gaze'){at(AT,o+s.d*.55,()=>{s.s(AT,AT.rk,AT.v)});end=o+s.d*1.55}else end=Math.max(end,o+s.d);off=F.grp?o+.7:F.i<0?o+s.d*.9:end});AT.cap=end+2.4;
+AT.big=F.boss||F.rk>=3||F.i<0;let off=AT.big?.9:.4,end=off;const PE=F.grp?F.pe:null;plan.forEach((n,ix)=>{const s=MV[n];if(!s)return;const o=off,ow=PE&&PE[ix];at(AT,o,()=>{AT.md=s.d;AT.lbl={t:AT.t,txt:s.l};AT.cur=n;try{BSX.atk(n,'w')}catch(e){}s.s(AT,ow?ow.rk:AT.rk,AT.v);if(AT.big)AT.shk=.5;if(ow&&ow.cv){const c=ow.cv;c.style.transition='transform .12s,filter .12s';c.style.transform='translateY(14px) scale(1.18)';c.style.filter='brightness(2) drop-shadow(0 0 12px #fff)';c.dataset.st='atk';setTimeout(()=>{c.style.transform='';c.style.filter='';c.dataset.st=''},380)}else if(!F.grp){const c=$('#mon').firstChild;if(c){c.dataset.st='atk';setTimeout(()=>{c.dataset.st=''},700)}}});/* Island bosses ONLY: the same attack fired twice. Never a different second attack. */if(F.boss&&F.i>=0&&n!='gaze'){at(AT,o+s.d*.55,()=>{s.s(AT,AT.rk,AT.v)});end=o+s.d*1.55}else end=Math.max(end,o+s.d);off=F.grp?o+.7:F.i<0?o+s.d*.9:end});AT.cap=end+2.4;
 $('#qb').style.display='none';ar.style.display='block';document.body.classList.add('inarena');$('#dp2').style.display='ontouchstart' in window?'block':'none';requestAnimationFrame(tick)}
 const dmg0=A=>A.dm||10;
 // hero head sprites: HD = 18x12 (death scene), HDS = 12x8 (arena marker), HDO = outline silhouette, HDG = frozen grey
@@ -2474,7 +2605,7 @@ const g=cv.getContext('2d');g.imageSmoothingEnabled=false;let x=(r.left+A.x*r.wi
 try{g.drawImage(HD,Math.round(x-9),Math.round(y-6))}catch(e){}
 if(y<cv.height+14){requestAnimationFrame(f);return}
 AT=null;K={};ar.style.display='none';document.body.classList.remove('inarena');$('#dp2').style.display='none';$('#qb').style.display='';bars();hp=100;back();if(mode=='isle')pl={x:BX,y:BY+50};$('#hint').textContent=faintMsg();ov.style.opacity=0;setTimeout(()=>ov.remove(),600)})(t0)}
-function hit(A,v){if(A.fin||A.dying)return;hp-=v;bars();A.iv=1;A.fl=.25;A.hk=.25;BURST(A.x,A.y,['#ff4060','#ffffff','#ffb0b8'],10,90,.4,2);RINGFX(A.x,A.y,'#ff4060',30,.3);ar.style.transform='translate('+((Math.random()-.5)*16)+'px,'+((Math.random()-.5)*16)+'px)';setTimeout(()=>ar.style.transform='',90);if(!mute&&ac){try{if(window.SFX&&typeof SFX.hurt=='function')SFX.hurt();else{beep(110,.2,'sawtooth',.08);ns(ac.currentTime,.12,.06)}}catch(e){}}bars();$('#me').classList.add('hit');setTimeout(()=>$('#me').classList.remove('hit'),300)}
+function hit(A,v){if(A.fin||A.dying)return;hp-=v;bars();A.iv=1;A.fl=.25;A.hk=.25;BURST(A.x,A.y,['#ff4060','#ffffff','#ffb0b8'],10,90,.4,2);RINGFX(A.x,A.y,'#ff4060',30,.3);ar.style.transform=!SET.shake?'':'translate('+((Math.random()-.5)*16)+'px,'+((Math.random()-.5)*16)+'px)';setTimeout(()=>ar.style.transform='',90);if(!mute&&ac){try{if(window.SFX&&typeof SFX.hurt=='function')SFX.hurt(v);else{beep(110,.2,'sawtooth',.08);ns(ac.currentTime,.12,.06)}}catch(e){}}bars();$('#me').classList.add('hit');setTimeout(()=>$('#me').classList.remove('hit'),300)}
 function tick(now){const A=AT;if(!A)return;requestAnimationFrame(tick);const dt=Math.min(.05,(now-A.l)/1000),dg=dt*A.ts;A.l=now;A.t+=dg;A.iv-=dt;A.fl-=dt;A.hk=(A.hk||0)-dt;const rk=A.rk,v=A.v,dm=Math.max(6,(F.i<0?34:Math.round(7+rk*2.6))+(F.boss&&F.i>=0?10:0)+A.dmx);A.dm=dm;
 let dx=(K.ArrowRight||K.d?1:0)-(K.ArrowLeft||K.a?1:0),dy=(K.ArrowDown||K.s?1:0)-(K.ArrowUp||K.w?1:0);A.mv=!!(dx||dy);if(A.inv){dx=-dx;dy=-dy}const m=Math.hypot(dx,dy)||1,sp=(K.Shift?85:175)*(A.slow?.45:1),ox=A.x,oy=A.y;
 A.x=cl(A.x+dx/m*sp*dt,10,390);A.y=cl(A.y+dy/m*sp*dt,10,190);A.vx=(A.vx||0)*.6+(A.x-ox)/Math.max(dt,.001)*.4;A.vy=(A.vy||0)*.6+(A.y-oy)/Math.max(dt,.001)*.4;
@@ -2491,7 +2622,7 @@ if(b.sp>0&&b.y>b.spy&&!b.dead){b.dead=1;BURST(b.x,b.y,palOf(b.pal),5,50,.3);[-1,
 if(A.iv<=0&&!b.dead&&Math.hypot(b.x-A.x,b.y-A.y)<(b.hr||7.5)){hit(A,dm);if(b.lc){b.dead=1;F.mh=Math.min(F.mx,F.mh+3);bars()}}});
 A.B=A.B.filter(b=>{const out=b.life<=0||b.ttl<=0||b.dead;if(out&&b.dead!==1&&b.x>0&&b.x<400&&b.y>0&&b.y<200&&b.fx!==0)BURST(b.x,b.y,palOf(b.pal),4,36,.25);return!out&&b.x>-30&&b.x<430&&b.y>-40&&b.y<230});
 A.L.forEach(l=>{l.t+=dg;if(l.t>.7&&l.t<1.15&&A.iv<=0&&(l.h?Math.abs(A.y-l.p)<6:Math.abs(A.x-l.p)<6))hit(A,dm+1)});A.L=A.L.filter(l=>l.t<1.25);
-A.X.forEach(o=>{o.t+=dg;try{if(o.u)o.u(o,dg,A);if(A.iv<=0&&o.h&&o.h(o,A))hit(A,o.dm||dm)}catch(e){console.error('ent',e)}});A.X=A.X.filter(o=>o.t<o.life);stepP(A,dg);
+A.X.forEach(o=>{o.t+=dg;try{if(o.u)o.u(o,dg,A);if(A.iv<=0&&o.h&&o.h(o,A))hit(A,o.dm||dm)}catch(e){console.error('ent',e)}});A.X=A.X.filter(o=>o.t<o.life);stepP(A,dg);try{BSX.tick(A)}catch(e){}
 A.x=cl(A.x,10,390);A.y=cl(A.y,10,190);
 const th=A.th,bgc=F.i<0?'#7a3aa0':I[F.i].c,bl=lt(bgc);A.bl=bl;
 /* ---------- render (half-res canvas, nearest-neighbour upscale; no text anywhere in here) ---------- */
@@ -2510,8 +2641,8 @@ if(A.iv<=0||(A.iv*14|0)%2){const o1=A.gz?HDG:HDS;[[-2,0],[2,0],[0,-2],[0,2]].for
 }
 if(A.fin){const cvr=Math.min(1,A.fin/.4),bg=mixc(bgc,OUTC,.9);ag.fillStyle=bg;for(let cx=0;cx<50;cx++)for(let cy=0;cy<25;cy++){const r=Math.abs(Math.sin(cx*12.9898+cy*78.233+st*37.719)*43758.5453)%1;if(r<cvr)ag.fillRect(cx*8,cy*8,8,8)}}
 if(A.dark||A.fog){const r0=A.dark?20:55,r1=A.dark?85:125;for(let i=0;i<5;i++){const R=r0+(r1-r0)*(i/4);ag.save();ag.beginPath();ag.rect(0,0,400,200);ag.moveTo(A.x+R,A.y);ag.arc(A.x,A.y,R,0,6.2832,true);ag.fillStyle='rgba(6,2,14,'+(A.dark?.3:.2)+')';ag.fill('evenodd');ag.restore()}}
-VIGN();if(A.big&&A.t<.9)BRACEFX(A);
-FRAME(A,bgc);if(A.fl>0){ag.fillStyle='rgba(255,32,64,'+Math.min(.5,A.fl*1.6)+')';ag.fillRect(8,8,384,184)}
+VIGN();if(A.big&&A.t<.9&&SET.flash)BRACEFX(A);
+FRAME(A,bgc);if(A.fl>0&&SET.flash){ag.fillStyle='rgba(255,32,64,'+Math.min(.5,A.fl*1.6)+')';ag.fillRect(8,8,384,184)}
 const done=!A.S.length&&!A.X.length&&!A.L.length&&A.t>.8;
 /* ATTACK END: when the attack script finishes, everything left freezes, becomes harmless, and pixel-flickers/dissolves for .5s (A.fin) before the arena closes. */if(A.fin)A.fin+=dt;if(hp<=0&&!A.dying){A.dying=1;A.ts=0;A.S=[];deathSeq(A)}if((done||A.t>=A.cap)&&!A.fin&&!A.dying){A.fin=.001;A.ts=0;A.S=[]}
 if(A.fin>.5){AT=null;K={};ar.style.display='none';document.body.classList.remove('inarena');$('#dp2').style.display='none';$('#qb').style.display='';bars();if(hp<=0){hp=100;back();if(mode=='isle')pl={x:BX,y:BY+50};$('#hint').textContent=faintMsg()}else q();return}}
@@ -2698,8 +2829,8 @@ return BW[k]=ac.createPeriodicWave(re,im)}
 let BLL=null;
 /* One short blip per letter, like Undertale: fixed pitch per character, a tiny pitch dip, hard cut when the next letter arrives.
    v.tm picks the timbre: sq tri saw sin p12 p25 (thin pulses) gruff (low, growly) org (organ-ish) bell (cold, glassy) fm (wobbly) */
-function blip(v,i,ch){if(mute||!ac)return;try{AUD();const t=ac.currentTime,tm=v.tm||({square:'sq',triangle:'tri',sawtooth:'saw',sine:'sin'}[v.ty]||'sq'),
-k=(VPAT[v.pat]||VPAT.flat)(i)*(ch=='?'?1.12:ch=='!'?1.06:1)*(/[aeiouAEIOU]/.test(ch)?1.03:1),f=v.f*k,len=Math.max(.03,v.len),vol=.06*(v.vol||1);
+function blip(v,i,ch){if(mute||!ac||!SET.dlg)return;try{AUD();const t=ac.currentTime,tm=v.tm||({square:'sq',triangle:'tri',sawtooth:'saw',sine:'sin'}[v.ty]||'sq'),
+k=(VPAT[v.pat]||VPAT.flat)(i)*(ch=='?'?1.12:ch=='!'?1.06:1)*(/[aeiouAEIOU]/.test(ch)?1.03:1),f=v.f*k,len=Math.max(.03,v.len),vol=.26*(v.vol||1)*dvol();if(ac.state=='suspended')ac.resume();
 if(BLL){const b=BLL;b.g.gain.cancelScheduledValues(t);b.g.gain.setTargetAtTime(0,t,.004);b.n.forEach(o=>{try{o.stop(t+.03)}catch(e){}})}
 const g=ac.createGain(),lp=ac.createBiquadFilter(),nodes=[];lp.type='lowpass';lp.frequency.value={sq:3600,tri:5000,saw:2600,sin:6000,p12:4200,p25:4200,gruff:1100,org:3000,bell:7000,fm:4000}[tm]||3600;lp.Q.value=.5;
 const mk=(type,fr,amp)=>{const o=ac.createOscillator(),a=ac.createGain();if(type[0]=='w')o.setPeriodicWave(bw(type.slice(1)));else o.type=type;o.frequency.setValueAtTime(fr*1.03,t);o.frequency.exponentialRampToValueAtTime(fr*.985,t+len);a.gain.value=amp;o.connect(a);a.connect(lp);o.start(t);o.stop(t+len+.03);nodes.push(o);return o};
@@ -2715,8 +2846,8 @@ function vxType(el,text,v){let n=0,fin=false,tm=null;text=String(text);v=v||NARR
 const api={done:()=>fin,skip:()=>{if(fin)return;clearTimeout(tm);fin=true;if(el)el.textContent=text},stop:()=>{clearTimeout(tm);fin=true}};
 const step=()=>{if(fin)return;if(!el||!el.isConnected){fin=true;return}n++;el.textContent=text.slice(0,n);const c=text.charAt(n-1);
 if(/[A-Za-z0-9?!]/.test(c)&&(v.sp>=22||n%2==0))blip(v,n,c);
-if(n>=text.length){fin=true;return}tm=setTimeout(step,v.sp+(/[,;:]/.test(c)?90:/[.!?]/.test(c)&&text.charAt(n)==' '?200:0))};
-el.textContent='';step();return api}
+if(n>=text.length){fin=true;return}tm=setTimeout(step,(v.sp+(/[,;:]/.test(c)?90:/[.!?]/.test(c)&&text.charAt(n)==' '?200:0))*(SET.ts||1))};
+el.textContent='';if(SET.ts===0){fin=true;el.textContent=text;blip(v,1,text.charAt(0));return api}step();return api}
 let DTY=null,STY=null;
 /*VOICE-END*/
 let DLG_Q=null,DLG_I=0,DLG_CB=null,DT=null,DF='',DN=0;
