@@ -71,7 +71,8 @@ box-shadow:0 -4px 0 0 var(--plum),0 4px 0 0 var(--plum),-4px 0 0 0 var(--plum),4
 #np{position:relative;z-index:2;display:inline-block;min-width:min(100%,300px);max-width:100%;background:var(--paper);color:var(--ink);padding:8px 12px;margin:0 0 6px;
 box-shadow:0 -3px 0 0 var(--edge),0 3px 0 0 var(--edge),-3px 0 0 0 var(--edge),3px 0 0 0 var(--edge),inset 0 0 0 2px var(--paper2)}
 #np small{display:block}
-#pn span{background:var(--plum);padding:2px 6px;display:inline-block}
+#pn{margin:0 0 4px}#pn .pnp{display:inline-block;background:var(--paper);color:var(--ink);padding:3px 10px 3px 8px;border-left:8px solid var(--ec);--ec:var(--edge);box-shadow:0 -2px 0 0 var(--ec),0 2px 0 0 var(--ec),2px 0 0 0 var(--ec),-2px 0 0 0 var(--ec),4px 4px 0 0 #0004;font-size:11px;letter-spacing:.5px}
+#ph.low{background:linear-gradient(#ff9aa8 0 35%,#ff4060 35% 70%,#c02040 70%)}#ph.hit{filter:brightness(2.2)}#ph{transition:none!important}
 #cz>div{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:2px 0}#cz>div button{margin:2px}#cz>div span{min-width:70px;text-align:center}
 #me{display:flex;gap:12px;align-items:center}
 #me canvas{background:var(--sky);box-shadow:0 0 0 3px var(--plum)}
@@ -85,10 +86,7 @@ box-shadow:0 -3px 0 0 var(--edge),0 3px 0 0 var(--edge),-3px 0 0 0 var(--edge),3
 @media(max-width:600px){body{font-size:9px}.s{padding:8px}button{padding:8px 9px;margin:4px 2px}.box{margin:12px 4px;padding:10px}#hud small{display:block}#qt,#sq{font-size:10px}.logo{letter-spacing:0}}
 
 /* Stage 4: live HP HUD, save slots, difficulty */
-#ahud{display:none;position:fixed;top:6px;left:50%;transform:translateX(-50%);width:min(320px,86vw);z-index:90;background:var(--plum);padding:4px 8px;color:#fff;text-align:center;pointer-events:none;box-shadow:0 0 0 2px #fff4;font-size:10px}
-body.inarena #ahud{display:block}#ahud .bar{margin:2px 0}#ahb{transition:none!important}
-#ahud.low #ahb{background:linear-gradient(#ff9aa8 0 35%,#ff4060 35% 70%,#c02040 70%)}#ahud.hit{filter:brightness(2.2)}
-#slbtn{position:fixed;left:8px;bottom:8px;z-index:150}body.inarena #slbtn{display:none}
+#slbtn{position:fixed;left:8px;bottom:8px;z-index:150}body.inarena #slbtn,body:has(#battle.on) #slbtn{display:none}
 #slm{display:none;position:fixed;left:0;top:0;right:0;bottom:0;z-index:300;background:rgba(0,0,0,.82);overflow:auto;padding:12px}
 .slc{border:2px solid #fff4;padding:6px;margin:6px 0}.slc.act{border-color:var(--gold)}#dpre small,#dcus{display:block;margin:2px 0 8px}
 #diff select{font:inherit;margin:4px;max-width:100%}
@@ -104,7 +102,6 @@ body.inarena #ahud{display:block}#ahud .bar{margin:2px 0}#ahb{transition:none!im
 </style></head><body>
 <canvas id="tc"></canvas>
 <canvas id="trc" class="tr"></canvas>
-<div id="ahud"><span id="ahn">HP 100/100</span><div class="bar"><i id="ahb"></i></div></div>
 <button id="slbtn" class="alt">SAVES</button>
 <div id="slm"><div class="box"><h1 style="font-size:14px">SAVE SLOTS</h1><small>Your game autosaves into the ACTIVE slot. Make as many slots as you like.</small><br>
 <button id="sln">NEW SLOT</button><button id="sli" class="alt">IMPORT FILE</button><button id="slx" class="warn">CLOSE</button><input type="file" id="slf" accept=".json,application/json" style="display:none"></div>
@@ -119,7 +116,7 @@ body.inarena #ahud{display:block}#ahud .bar{margin:2px 0}#ahb{transition:none!im
 <input id="nm" maxlength="20" placeholder="Your name"><div id="cz"></div>
 <div id="pv" style="margin:8px 0;text-align:center"></div></div>
 <div class="box"><small id="ls">Loading question bank...</small></div>
-<p style="text-align:center"><button id="go" class="big">NEXT &gt;</button></p>
+<p style="text-align:center"><button id="go" class="big">NEXT &gt;</button> <button id="cxl" class="alt" style="display:none">CANCEL</button></p>
 </div>
 
 <div id="diff" class="s"><div class="box"><h1 style="font-size:16px">CHOOSE DIFFICULTY</h1><small id="dsub"></small></div>
@@ -131,7 +128,7 @@ body.inarena #ahud{display:block}#ahud .bar{margin:2px 0}#ahb{transition:none!im
 
 <div id="map" class="s">
 <div class="box" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:8px 12px"><span id="hud"></span>
-<span><button id="sbk" class="alt">SAIL BACK</button><button id="stb" class="alt">STUDY</button><button id="dbb" class="alt">DATABASE</button></span></div>
+<span><button id="sbk" class="alt">SAIL BACK</button><button id="stb" class="alt">STUDY</button><button id="dbb" class="alt">DATABASE</button><button id="chb" class="alt">CHARACTER</button></span></div>
 <canvas id="cv" width="800" height="460"></canvas><small id="hint" style="color:#fff;text-shadow:0 2px 0 var(--plum)"></small>
 <div id="hub" class="box" style="display:none"></div>
 <div id="dp" style="display:none;text-align:center"><button data-k="ArrowLeft">&lt;</button><button data-k="ArrowUp">^</button><button data-k="ArrowDown">v</button><button data-k="ArrowRight">&gt;</button><button id="eb" class="warn">E</button></div>
@@ -528,7 +525,7 @@ try{const L=k=>JSON.parse(localStorage[k]||'null');db=L('tl_db3')||[];G=L('tl_g'
    write is mirrored into the ACTIVE SLOT, which lives in IndexedDB (a separate database, so there is no practical slot limit; it falls
    back to localStorage if IndexedDB is blocked). Updating index.html never touches slots: they are versioned (GAME_VER), missing keys
    fall back to defaults, and EXPORT saves any slot to a file as a backup. Add new save keys to SLOT_KEYS and they are covered. */
-const GAME_VER=1,SLOT_KEYS=['tl_db3','tl_g','tl_m','tl_s','tl_p2','tl_u','tl_bd','tl_sb','tl_st','tl_arr','tl_diff'];
+let CZM=null;const GAME_VER=1,SLOT_KEYS=['tl_db3','tl_g','tl_m','tl_s','tl_p2','tl_u','tl_bd','tl_sb','tl_st','tl_arr','tl_diff'];
 const LIVE={};SLOT_KEYS.forEach(k=>{try{if(localStorage[k]!=null)LIVE[k]=localStorage[k]}catch(e){}});
 let SLOT=null,snapT=0,SDBH=null,SLOT_OK=true;
 const uid=()=>'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -571,19 +568,17 @@ return{boss:Object.keys(bd).length,diff:df?dName(df):(d.tl_p2?'EXPERT (original)
 async function slRender(){const L=$('#sll');if(!L)return;await SLOTS_READY;const all=(await sAll()).sort((a,b)=>b.updated-a.updated);
 L.innerHTML=all.map(s=>{const i=slInfo(s),act=SLOT&&SLOT.id==s.id,b=(a,t,c)=>'<button data-a="'+a+'" data-id="'+s.id+'"'+(c?' class="'+c+'"':'')+'>'+t+'</button>';
 return'<div class="slc'+(act?' act':'')+'"><b>'+E(s.name)+'</b>'+(act?' <span class="y">[ACTIVE]</span>':'')+'<br><small>'+E(i.hero||'-')+' | '+E(i.diff)+' | bosses '+i.boss+'/12 | '+new Date(s.updated).toLocaleString()+'</small><br>'+
-(act?b('save','SAVE NOW')+b('diff','DIFFICULTY','alt'):b('load','LOAD')+b('over','OVERWRITE WITH CURRENT','alt'))+b('ren','RENAME','alt')+b('exp','EXPORT','alt')+b('del','DELETE','warn')+'</div>'}).join('')||'<small>No slots yet.</small>';
+(act?b('save','SAVE NOW')+b('char','CHARACTER','alt')+b('diff','DIFFICULTY','alt'):b('load','LOAD')+b('over','OVERWRITE WITH CURRENT','alt'))+b('ren','RENAME','alt')+b('exp','EXPORT','alt')+b('del','DELETE','warn')+'</div>'}).join('')||'<small>No slots yet.</small>';
 L.querySelectorAll('button').forEach(b=>b.onclick=()=>slAct(b.dataset.a,b.dataset.id))}
-function slAct(a,id){if(a=='load')slLoad(id);else if(a=='over')slOver(id);else if(a=='ren')slRename(id);else if(a=='exp')slExport(id);else if(a=='del')slDelete(id);else if(a=='save')slFlush().then(slRender);else if(a=='diff'){slClose();dOpen('change')}}
-function slStat(){const g=$('#go');if(g)g.textContent=(!LIVE.tl_diff&&!LIVE.tl_st)?'NEXT >':'CONTINUE >';const e=$('#slcur');if(!e||!SLOT)return;e.textContent='Active slot: '+SLOT.name+' | '+(LIVE.tl_diff?dName(DIFF):'difficulty not chosen yet')+(SLOT_OK?' | autosaves as you play':' | WARNING: could not save (storage full?). Use EXPORT.')}
+function slAct(a,id){if(a=='load')slLoad(id);else if(a=='over')slOver(id);else if(a=='ren')slRename(id);else if(a=='exp')slExport(id);else if(a=='del')slDelete(id);else if(a=='save')slFlush().then(slRender);else if(a=='char')czOpen();else if(a=='diff'){slClose();dOpen('change')}}
+function slStat(){const g=$('#go');if(g&&!CZM)g.textContent=(!LIVE.tl_diff&&!LIVE.tl_st)?'NEXT >':'CONTINUE >';const e=$('#slcur');if(!e||!SLOT)return;e.textContent='Active slot: '+SLOT.name+' | '+(LIVE.tl_diff?dName(DIFF):'difficulty not chosen yet')+(SLOT_OK?' | autosaves as you play':' | WARNING: could not save (storage full?). Use EXPORT.')}
 const slOpen=()=>{$('#slm').style.display='block';slRender()},slClose=()=>{$('#slm').style.display='none'};
 $('#slbtn').onclick=slOpen;$('#slopen').onclick=slOpen;$('#slx').onclick=slClose;$('#sln').onclick=slNew;$('#sli').onclick=()=>$('#slf').click();$('#slf').onchange=e=>{if(e.target.files[0])slImport(e.target.files[0]);e.target.value=''};
 /*SLOTS-END*/
 const LYN=['Outer Shell','Husk','Mantle','Armor Core','Inner Core','Heart Core'],RN=['MS','Easy HS','Regular HS','Hard HS','College','Hard College'],RR=[[1,1],[2,2],[3,3],[4,5],[6,7],[8,10]],DL=['','Middle School','Easy HS','Regular HS','Hard HS','National HS','Easy College','Regular College','Hard College','Nationals','Open'],RK=s=>DRK(G[s]||0);
 /*DIFF-START*/
 /* DIFFICULTY (Stage 4). DIFF = {p:preset, min, max} question levels (1 Middle School ... 10 Open; see DL).
-   The six layers keep their original level bands in RR ([1],[2],[3],[4-5],[6-7],[8-10]). A difficulty keeps only the layers that touch
-   [min,max] and clips each band to it, so Easy = layers 1-2, Medium = 1-4 (levels 1-5), Hard = 1-5 (levels 1-7), Expert = all 6 (the
-   original game). Mastering an isle / opening its shrine needs every kept layer. ALL bosses (and the final boss) ask only level "max",
+   Layers: one per level up to 6 (see DBANDS): Easy = 2 layers, Medium = 5, Hard = 6 (levels 1-7), Expert = 6 (the original 1|2|3|4-5|6-7|8-10). Mastering an isle / opening its shrine needs every kept layer. ALL bosses (and the final boss) ask only level "max",
    falling back to the nearest level if the bank has none. Custom lets you choose min and max.
    Each difficulty card has its own small animated pixel scene (128x44 canvas, nearest-neighbour upscale, one palette per scene):
    Easy = flower meadow, Medium = autumn woods, Hard = storm over the peaks, Expert = volcano, Custom = starry night. */
@@ -591,10 +586,16 @@ const DPRESETS={easy:{n:'EASY',min:1,max:2},medium:{n:'MEDIUM',min:1,max:5},hard
 const DMETA={easy:{t:'Flower Meadow',s:'A stroll through the flowers.',c:'#ff8fb0'},medium:{t:'Autumn Woods',s:'The leaves are turning. And biting.',c:'#f2a72a'},hard:{t:'Storm Peaks',s:'Thunder on the ridge. Hold on.',c:'#8fb4ff'},expert:{t:'Volcano',s:'The mountain wakes. No mercy.',c:'#ff5a1a'},custom:{t:'Starry Night',s:'Your sky. Your rules.',c:'#c08bff'}};
 let DIFF={p:'expert',min:1,max:10};
 try{const x=JSON.parse(localStorage.tl_diff||'null');if(x&&x.min>=1&&x.max<=10&&x.min<=x.max)DIFF=x}catch(e){}
-function dLayers(){const o=[];RR.forEach((w,x)=>{if(w[1]>=DIFF.min&&w[0]<=DIFF.max)o.push(x)});return o.length?o:[5]}
-const dFirst=()=>dLayers()[0],dNL=()=>dLayers().length,DRK=g=>dFirst()+Math.min(dNL()-1,g|0),dWin=x=>[Math.max(RR[x][0],DIFF.min),Math.min(RR[x][1],DIFF.max)];
+/* LAYERS = one layer per question level, up to 6. Easy 1-2 -> 2 layers, Medium 1-5 -> 5 layers. With more than 6 levels there are still
+   6 layers and the extra levels are merged into the harder layers (7 levels: last layer = levels 6-7; 10 levels: 1|2|3|4-5|6-7|8-10). */
+const DBANDS={1:[1],2:[1,1],3:[1,1,1],4:[1,1,1,1],5:[1,1,1,1,1],6:[1,1,1,1,1,1],7:[1,1,1,1,1,2],8:[1,1,1,1,2,2],9:[1,1,1,2,2,2],10:[1,1,1,2,2,3]};
+const dBands=(a,b)=>{const n=Math.max(1,Math.min(10,b-a+1)),o=[];let s=a;DBANDS[n].forEach(k=>{o.push([s,s+k-1]);s+=k});return o};
+const dNL=()=>dBands(DIFF.min,DIFF.max).length,dLayers=()=>[...Array(dNL()).keys()],dFirst=()=>0,DRK=g=>Math.min(dNL()-1,g|0),dWin=x=>dBands(DIFF.min,DIFF.max)[x]||[DIFF.max,DIFF.max];
+const dLbl=x=>{const w=dWin(x);return w[0]==w[1]?DL[w[0]]:DL[w[0]]+' to '+DL[w[1]]};
+const NUMWD=['zero','one','two','three','four','five','six'];
+const layerText=()=>{const n=dNL();return n==1?'a single LAYER':NUMWD[n]+' LAYERS'},coreText=()=>{const n=dNL();return n>1?'The '+LYN[n-1]+' is the strongest.':'Just one layer to crack, so make it count.'};
 const dName=x=>DPRESETS[x&&x.p]?DPRESETS[x.p].n:'CUSTOM '+x.min+'-'+x.max;
-const dInfo=(a,b)=>{const L=RR.filter(w=>w[1]>=a&&w[0]<=b).length||1;return L+' layer'+(L>1?'s':'')+' per subject. Questions: level '+a+' ('+DL[a]+') to level '+b+' ('+DL[b]+'). Bosses ask level '+b+' only.'};
+const dInfo=(a,b)=>{const L=dBands(a,b).length;return L+' layer'+(L>1?'s':'')+' per subject. Questions: level '+a+' ('+DL[a]+') to level '+b+' ('+DL[b]+'). Bosses ask level '+b+' only.'};
 /* ---- pixel scenes ---- */
 const dR=(g,x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(Math.round(x),Math.round(y),w,h)};
 const dDisc=(g,cx,cy,r,c)=>{for(let dy=-r;dy<=r;dy++){const w=Math.floor(Math.sqrt(r*r-dy*dy+.5));dR(g,cx-w,cy+dy,2*w+1,1,c)}};
@@ -646,7 +647,7 @@ for(let x=0;x<W;x++){const h=34+Math.sin(x/9)*3+Math.sin(x/4)*1.5|0;dR(g,x,h,1,D
 const DKEYS=['easy','medium','hard','expert'],DCACHE={};let DCV=[],DACT=0,DLT=0,DFK=null;
 const dScene=k=>DCACHE[k]||(DCACHE[k]=DSC[k]());
 function dMk(cv,k){const g=cv.getContext('2d');g.imageSmoothingEnabled=false;const f=dScene(k);DCV.push({g,f});f(g,2.2)}
-const dPips=(a,b)=>{const n=RR.filter(w=>w[1]>=a&&w[0]<=b).length||1;return RR.map(w=>'<i class="dpip'+(w[1]>=a&&w[0]<=b?' on':'')+'"></i>').join('')+'<span class="dcs"> '+n+' of 6 layers</span>'};
+const dPips=(a,b)=>{const n=dBands(a,b).length;return [0,1,2,3,4,5].map(i=>'<i class="dpip'+(i<n?' on':'')+'"></i>').join('')+'<span class="dcs"> '+n+' of 6 layers</span>'};
 const dReduce=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}};
 function dLoop(ms){if(!DACT)return;requestAnimationFrame(dLoop);if(ms-DLT<40||dReduce())return;DLT=ms;const d=$('#diff');if(!d||!d.classList.contains('on'))return;const t=ms/1000;DCV.forEach(c=>c.f(c.g,t))}
 let DMODE='new',DPEND={p:'medium',min:1,max:5},DPREV='title';
@@ -889,8 +890,12 @@ $('#vol').value=Math.round(VOL*100);
 $('#vol').addEventListener('input',e=>{VOL=e.target.value/100;try{localStorage.tl_vol=VOL}catch(x){}applyVol()});
 $('#mu').onclick=()=>{mute=!mute;applyVol();$('#mu').textContent=mute?'SOUND OFF':'SOUND ON'};
 // ---- story ----
-function story(lines,cb){show('story');let i=0;$('#sp').replaceChildren(hero(6,{hair:'#eeeeee',skin:'#f2c9a0',top:'#7a3fbf',bot:'#3a3f7a',hs:1,fs:1,ts:4,bs:0}));const go=()=>{$('#stx').textContent=lines[i]};go();$('#snx').onclick=()=>{beep(520,.05);if(++i>=lines.length)cb();else go()}}
-$('#go').onclick=async()=>{await READY;await SLOTS_READY;P.name=$('#nm').value.trim()||'Hero';save('tl_p2',P);dOpen('new')};
+function story(lines,cb){show('story');let i=0;$('#sp').replaceChildren(hero(6,{hair:'#eeeeee',skin:'#f2c9a0',top:'#7a3fbf',bot:'#3a3f7a',hs:1,fs:1,ts:4,bs:0}));STY&&STY.stop();const go=()=>{const l=lines[i],s=storySpk(l);STY=vxType($('#stx'),l,s?voiceOf(s):NARR)};go();$('#snx').onclick=()=>{if(STY&&!STY.done()){STY.skip();return}STY&&STY.stop();beep(520,.05);if(++i>=lines.length)cb();else go()}}
+$('#go').onclick=async()=>{await READY;await SLOTS_READY;P.name=$('#nm').value.trim()||'Hero';save('tl_p2',P);if(CZM){czClose(CZM);return}dOpen('new')};
+function czOpen(){const cur=document.querySelector('.s.on'),id=cur&&cur.id;slClose();if(id=='title'||!cur)return;if(id!='map'){return}CZM=id;$('#nm').value=P.name;cz();pv();$('#go').textContent='SAVE CHARACTER >';$('#cxl').style.display='';show('title')}
+function czClose(to){CZM=null;$('#cxl').style.display='none';slStat();show(to||'map')}
+$('#cxl').onclick=()=>{if(!CZM)return;try{Object.assign(P,JSON.parse(LIVE.tl_p2||'{}'))}catch(e){}czClose(CZM)};
+$('#chb').onclick=czOpen;
 function beginGame(){try{U=JSON.parse(LIVE.tl_u||'[]')}catch(e){U=[]}if(ADM())U=I.map((o,k)=>k);ac=ac||new(window.AudioContext||window.webkitAudioContext)();music();
 if(LIVE.tl_st){mode='sea';show('map')}else{lset('tl_st','1');story(INTRO.map(FILL),()=>{mode='sea';show('map')})}}
 /*LORE-START*/
@@ -1014,12 +1019,12 @@ const INTRO=[
 'Professor Power: "Last night the Great Buzzer shattered. Twelve pieces, scattered. Every Keeper on every island forgot their answers. The Blackout."',
 'Professor Power: "A masked figure did it: the Grand Inquisitor. I cannot leave the Lab. My Lamp is keeping Tossup Land from fading. So I am sending you."',
 'Pip: "Hi! I\'m Pip, Lab intern! I run the Copier. Break a layer of a Keeper and I copy it into the Lab so you can practice it."',
-'Professor Power: "Each Keeper wears six LAYERS. The outer shell is the weakest, because the Inquisitor\'s promise is thin there. The Heart Core is the strongest."',
+'Professor Power: "Each Keeper wears {layers}. The outer shell is the weakest, because the Inquisitor\'s promise is thin there. {core}"',
 'Professor Power: "Pick one HOME isle to start. Master every subject, then beat its Boss at the shrine for BUZZER FUEL. Fuel unlocks the next isle."',
 'Professor Power: "Go in order, 1 to 12, if you can. Each Boss carries a scrap of a letter. Read them in order, and you will learn what the Inquisitor wants."',
 'Captain Neggins: "I\'ll sail ye there! I\'m Captain Neggins. Yes, that\'s the name. Don\'t ask."',
 'Professor Power: "Buzz early for POWER. And {p}... be brave. Wrong is allowed. Silence is not."'];
-const FILL=s=>String(s).replace(/\{p\}/g,(typeof P!='undefined'&&P&&P.name)||'Hero');
+const FILL=s=>String(s).replace(/\{p\}/g,(typeof P!='undefined'&&P&&P.name)||'Hero').replace(/\{layers\}/g,()=>layerText()).replace(/\{core\}/g,()=>coreText());
 function arrive(k){const L=LK[k],seen=JSON.parse(LIVE.tl_arr||'{}');if(!seen[k]&&!ADM()){seen[k]=1;lset('tl_arr',JSON.stringify(seen));
 story(L.arr.map(FILL),()=>{mode='isle';show('map')})}else say(L.short)}
 function bossIntro(i,cb){const L=LK[i];story([L.open,'Moderator Moe: "Tossup for the '+L.pc+'. '+L.nm+' versus '+((typeof P!='undefined'&&P.name)||'Hero')+'. Buzz when ready."',L.nm+': "'+FILL(L.intro)+'"'],cb)}
@@ -1284,7 +1289,7 @@ requestAnimationFrame(titleScene);
 let PS=[];
 async function practice(l){await Promise.all(l.map(x=>loadSub(I[cur].n,x.s)));const ms=l.map(x=>{const mx=40+x.L*20;return{i:cur,sub:x.s,b:x.b,rk:x.L,mx,mh:mx,nm:rnd(I[cur].mn)+' '+rnd(['Sage','Wraith','Imp','Golem']),gm:GMK[cur],boss:false}});
 F={i:cur,sub:ms[0].sub,b:ms[0].b,rk:ms[0].rk,mx:1,mh:1,ed:0,boss:false,nm:'',last:'',gm:0,prac:1,grp:ms,rd:0};hp=100;trk='f'+cur+'_'+(hsh(ms[0].sub)%4);
-$('#mon').replaceChildren(...ms.map(m=>m.cv=mon(m.i,m.b,m.rk,m.sub,msc(ms.length>2?5:6))));stageBG(cur);$('#hs').replaceChildren(hero(4));$('#pn').innerHTML=`<span style="color:${P.top}">${E(P.name)}</span>`;show('battle');q()}
+$('#mon').replaceChildren(...ms.map(m=>m.cv=mon(m.i,m.b,m.rk,m.sub,msc(ms.length>2?5:6))));stageBG(cur);$('#hs').replaceChildren(hero(4));$('#pn').innerHTML=`<span class="pnp" style="--ec:${P.top}">${E(P.name)}</span>`;show('battle');q()}
 function hub(){HB=1;const h=$('#hub'),A=ADM();h.style.display='block';h.innerHTML='<p class="y">LAB - teleport to any Keeper whose first form you have beaten</p>';
 const mb=(t,f,dis)=>{const b=document.createElement('button');b.innerHTML=t;if(dis){b.disabled=true;b.style.opacity=.4}else b.onclick=()=>{HB=0;h.style.display='none';f()};h.append(b)},hd=t=>h.insertAdjacentHTML('beforeend','<p class="y">'+t+'</p>'),
 tg=(t,s,L,b)=>{const k=s+'#'+L,on=PS.some(x=>x.k==k),bt=document.createElement('button');bt.innerHTML=t;if(on)bt.className='sel';bt.onclick=()=>{if(on)PS=PS.filter(x=>x.k!=k);else if(PS.length<4)PS.push({k,s,L,b});hub()};h.append(bt)};
@@ -1303,13 +1308,13 @@ document.querySelectorAll('#dp [data-k],#dp2 [data-k]').forEach(b=>{b.onpointerd
 async function fight(i,sub,b,bn,sec){if(i<0)await Promise.all(Object.keys(IDX).filter(k=>IDX[k].n>=100).sort(()=>Math.random()-.5).slice(0,12).map(k=>loadSub(...k.split('|'))));else if(bn)await Promise.all(subs(i).map(sb=>loadSub(I[i].n,sb)));else await loadSub(I[i].n,sub);
 const rk=(i<0||bn)?5:ADRK>=0&&ADM()?ADRK:RK(sub);F={i,sub,b,rk,mx:i<0?520:bn?300:40+rk*20,ed:i<0?15:6+rk*2,boss:!!bn,secret:sec,nm:bn||rnd(I[i].mn)+' '+rnd(['Sage','Wraith','Imp','Golem']),last:'',gm:i<0?'thorn':GMK[i]};F.mh=F.mx;hp=100;trk=i<0?'boss':bn?'b'+i:'f'+i+'_'+(hsh(sub)%4);
 $('#mon').replaceChildren(mon(i,b,rk,sub,msc(bn?(i<0?7:6):6),bn));stageBG(i);$('#hs').replaceChildren(hero(4));
-$('#mn').innerHTML=`${E(F.nm)} <small>${bn?(i<0?'FINAL BOSS | all categories':(sec?'SECRET BOSS':'BOSS')+' | '+E(I[i].n)):E(sub)+' | L'+(rk+1)+' '+LYN[rk]+' ('+RN[rk]+')'}</small>`;$('#pn').innerHTML=`<span style="color:${P.top}">${E(P.name)}</span>`;bars();show('battle');q()}
-const bars=()=>{const h=$('#hpt');if(h)h.textContent=Math.max(0,hp)+'/100 HP';$('#mh').style.width=Math.max(0,F.mh/F.mx*100)+'%';$('#ph').style.width=Math.max(0,hp/100*100)+'%';const ah=$('#ahb'),an=$('#ahn'),au=$('#ahud');if(ah)ah.style.width=Math.max(0,Math.min(100,hp))+'%';if(an)an.textContent='HP '+Math.max(0,Math.round(hp))+'/100';if(au){au.classList.toggle('low',hp<=30);if(hp<LH){au.classList.add('hit');setTimeout(()=>au.classList.remove('hit'),160)}}LH=hp};
+$('#mn').innerHTML=`${E(F.nm)} <small>${bn?(i<0?'FINAL BOSS | all categories':(sec?'SECRET BOSS':'BOSS')+' | '+E(I[i].n)):E(sub)+' | L'+(rk+1)+' '+LYN[rk]+' ('+dLbl(rk)+')'}</small>`;$('#pn').innerHTML=`<span class="pnp" style="--ec:${P.top}">${E(P.name)}</span>`;bars();show('battle');q()}
+const bars=()=>{const h=$('#hpt');if(h)h.textContent=Math.max(0,hp)+'/100 HP';$('#mh').style.width=Math.max(0,F.mh/F.mx*100)+'%';$('#ph').style.width=Math.max(0,hp/100*100)+'%';const pb=$('#ph');if(pb){pb.classList.toggle('low',hp<=30);if(hp<LH){pb.classList.add('hit');setTimeout(()=>pb.classList.remove('hit'),160)}}LH=hp};
 let LH=100;
 const sk=x=>x.q.slice(0,50),mk=it=>{const sp=strip(it.q.replace('(*)','')).split(/(?<=[.?!])\s+/);return{q:it.q,a:strip(it.r),K:keys(it.r),l:sp[sp.length-1],d:it.d,src:it.c}};
 function next(r){const rk=F.rk,all=F.i<0?Object.values(DATA).flat():F.boss?subs(F.i).flatMap(sb=>[0,1,2,3].flatMap(b=>DATA[I[F.i].n+'|'+sb+'|'+b]||[])):[0,1,2,3].flatMap(b=>DATA[I[F.i].n+'|'+F.sub+'|'+b]||[]);
 if(F.boss||F.i<0){const lv=[];for(let q=DIFF.max;q>=DIFF.min;q--)lv.push(q);for(let q=DIFF.max+1;q<=10;q++)lv.push(q);for(const q of lv){const al=all.filter(y=>y.d==q);if(!al.length)continue;let a=al.filter(y=>!SN.has(sk(y)));if(!a.length){al.forEach(y=>SN.delete(sk(y)));a=al}return mk(rnd(a))}}
-else{const fl=dLayers();for(let k=0;k<6;k++)for(const x of [rk-k,rk+k]){if(!fl.includes(x))continue;const w=dWin(x),a=all.filter(y=>y.d>=w[0]&&y.d<=w[1]&&!SN.has(sk(y)));if(a.length)return mk(rnd(a))}}
+else{for(let k=0;k<6;k++)for(const x of [rk-k,rk+k]){if(x<0||x>=dNL())continue;const w=dWin(x),a=all.filter(y=>y.d>=w[0]&&y.d<=w[1]&&!SN.has(sk(y)));if(a.length)return mk(rnd(a))}}
 if(all.length&&!r){all.forEach(y=>SN.delete(sk(y)));return next(1)}
 const a=S.filter(x=>x.s==F.sub&&!SN.has(sk(x))),a2=a.length?a:S.filter(x=>(F.i<0||x.i==F.i)&&!SN.has(sk(x)));if(a2.length)return rnd(a2);SN.clear();return rnd(S)}
 function pick(mm){if(F.cm)F.cm.mh=F.mh;const m=mm||rnd(F.grp.filter(x=>x.mh>0));F.cm=m;F.i=m.i;F.sub=m.sub;F.b=m.b;F.rk=m.rk;F.mx=m.mx;F.mh=m.mh;F.nm=m.nm;F.gm=m.gm;
@@ -2524,17 +2529,69 @@ else{const gl=m.gm&&Q.gm&&Q.gm[m.gm];if(r<.03)f=dpick(Q.rr);else if(m.mh<m.mx*.2
 if(f)L.push(f);if(Math.random()<1/150)L=[dpick(Q.ul)];
 const a=MV[plan[0]],b=plan[1]&&MV[plan[1]];L.push('* '+nm+' uses '+a.l+(b?' ...then '+b.l:'')+' '+a.t);return L.map(fx)}
 function buzzTaunt(){const Q=pools(F),r=Math.random();let ln;if(power){if(r<.8)ln=dpick(Q.pw)}else if(F.mh<F.mx*.25&&r<.4)ln=dpick(Q.lo);else if(r<.1)ln=dpick(Q.rr);else if(r<.5)ln=dpick(Q.bz);
-if(ln)$('#lr').innerHTML='<p class="y" style="margin:4px 0">'+E(F.nm)+': '+E(ln.replace(/\{p\}/g,P.name||'Hero').replace(/\{e\}/g,F.nm))+'</p>'}
+if(ln){$('#lr').innerHTML='<p class="y" style="margin:4px 0">'+E(F.nm)+': <span id="btx"></span></p>';vxType($('#btx'),ln.replace(/\{p\}/g,P.name||'Hero').replace(/\{e\}/g,F.nm),voiceOf(F.nm))}}
 /*DLG-END*/
+/*VOICE-START*/
+/* TALKING DIALOGUE (Stage 4b). Every line is typed out letter by letter with an Undertale-style blip per letter.
+   Every speaker has their own voice: pitch, wave shape, blip length, speed and pitch pattern. Enemies get a voice from their name
+   ("Bookworm Sage"): the monster sets the pitch, the suffix sets wave/speed/pattern, so all 96 enemies sound different.
+   Keepers, secret bosses, the Inquisitor and the crew have hand-tuned voices. Narration ("* ...") uses a soft narrator voice.
+   Click / N / Enter / Space: first press finishes the line, next press moves on. Blips use their own dry channel (volume + mute respected). */
+const NARR={f:240,ty:'sine',len:.03,sp:24,pat:'flat',vol:.7};
+const VT={
+'Professor Power':{f:150,ty:'triangle',len:.05,sp:30,pat:'alt'},
+'Pip':{f:620,ty:'square',len:.03,sp:20,pat:'up',vol:.8},
+'Captain Neggins':{f:104,ty:'sawtooth',len:.06,sp:34,pat:'rnd',vol:.8},
+'Moderator Moe':{f:196,ty:'sine',len:.05,sp:28,pat:'flat'},
+'Nova Quickdraw':{f:440,ty:'square',len:.022,sp:15,pat:'rnd',vol:.8},
+'Quentin Query':{f:330,ty:'triangle',len:.04,sp:26,pat:'up'},
+'The Grand Inquisitor':{f:74,ty:'sawtooth',len:.09,sp:44,pat:'warble',vol:.9},
+'The Prose Phantasm':{f:310,ty:'sine',len:.07,sp:40,pat:'warble'},
+'Emperor Chronos':{f:88,ty:'square',len:.08,sp:42,pat:'flat',vol:.8},
+'Dr. Absolute Zero':{f:520,ty:'triangle',len:.035,sp:24,pat:'alt'},
+'Count Composition':{f:240,ty:'triangle',len:.06,sp:32,pat:'up'},
+'Archon Allemande':{f:176,ty:'sine',len:.06,sp:30,pat:'alt'},
+'High Priest Pontifex':{f:118,ty:'triangle',len:.08,sp:40,pat:'warble'},
+'Sophist Supreme':{f:276,ty:'sawtooth',len:.04,sp:26,pat:'warble',vol:.7},
+'Professor Paradigm':{f:208,ty:'square',len:.05,sp:28,pat:'alt',vol:.8},
+'Baron Von Border':{f:98,ty:'triangle',len:.07,sp:38,pat:'rnd'},
+'DJ Trendsetter':{f:700,ty:'square',len:.025,sp:16,pat:'warble',vol:.7},
+'Anchor Annihilator':{f:82,ty:'square',len:.1,sp:46,pat:'rnd',vol:.9},
+'The Prompt Master':{f:372,ty:'sawtooth',len:.03,sp:20,pat:'flat',vol:.7},
+'The Bard of Banishment':{f:262,ty:'triangle',len:.07,sp:36,pat:'up'},
+'Cleo the Chronicler':{f:392,ty:'sine',len:.05,sp:30,pat:'alt'},
+'The Quantum Queen':{f:560,ty:'sine',len:.04,sp:22,pat:'warble'},
+'The Buzzer Beater':{f:880,ty:'square',len:.02,sp:12,pat:'rnd',vol:.7},
+'Neg-a-tron':{f:130,ty:'square',len:.045,sp:26,pat:'flat',vol:.85},
+'Vector the Variable':{f:156,ty:'sawtooth',len:.045,sp:30,pat:'up',vol:.8}};
+const VALIAS={'Nova':'Nova Quickdraw','Quentin':'Quentin Query','Professor':'Professor Power','Moe':'Moderator Moe','Neggins':'Captain Neggins','Inquisitor':'The Grand Inquisitor','The Inquisitor':'The Grand Inquisitor'};
+const VSUF={Sage:{m:1,ty:'triangle',len:.04,sp:28,pat:'alt'},Wraith:{m:1.31,ty:'sine',len:.07,sp:38,pat:'warble'},Imp:{m:1.74,ty:'square',len:.022,sp:16,pat:'rnd',vol:.75},Golem:{m:.53,ty:'sawtooth',len:.08,sp:44,pat:'flat',vol:.85}};
+function voiceOf(n){n=VALIAS[n]||n||'';if(VT[n])return VT[n];const p=n.split(' '),sf=VSUF[p[p.length-1]],mn=Object.keys(MON),mi=mn.indexOf(p.slice(0,-1).join(' '));
+if(sf&&mi>=0)return{f:Math.round(92*Math.pow(1.078,mi)*sf.m*10)/10,ty:sf.ty,len:sf.len,sp:sf.sp,pat:sf.pat,vol:sf.vol||1};
+const h=hsh2(n);return{f:90+h%420+(h>>9)%7/10,ty:['square','triangle','sawtooth','sine'][h%4],len:.03+(h>>3)%6*.012,sp:16+(h>>5)%30,pat:['rnd','alt','up','warble','flat'][(h>>7)%5],vol:1}}
+const enemyVoice=voiceOf;
+function storySpk(l){const m=/^([A-Z][A-Za-z.' -]{1,28}?):\s/.exec(l||'');return m&&(VT[VALIAS[m[1]]||m[1]]||/^(Professor|Captain|Moderator|Dr|The|DJ|Count|Emperor|Baron|High|Sophist|Archon|Anchor)/.test(m[1]))?m[1]:null}
+const VPAT={rnd:(i)=>1+(Math.random()-.5)*.2,alt:i=>i%2?1.14:.92,up:i=>1+(i%4)*.07,warble:i=>1+Math.sin(i*1.25)*.11,flat:i=>1};
+function blip(v,i,ch){if(mute||!ac)return;try{AUD();const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime,k=(VPAT[v.pat]||VPAT.flat)(i)*(ch=='?'?1.12:1);o.type=v.ty;o.frequency.value=v.f*k;g.gain.setValueAtTime(.05*(v.vol||1),t);g.gain.exponentialRampToValueAtTime(.0001,t+v.len);o.connect(g);g.connect(MG);o.start(t);o.stop(t+v.len+.01)}catch(e){}}
+/* vxType(el,text,voice): types text into el. Returns {done(),skip(),stop()}. Stops by itself if el leaves the page. */
+function vxType(el,text,v){let n=0,fin=false,tm=null;text=String(text);v=v||NARR;
+const api={done:()=>fin,skip:()=>{if(fin)return;clearTimeout(tm);fin=true;if(el)el.textContent=text},stop:()=>{clearTimeout(tm);fin=true}};
+const step=()=>{if(fin)return;if(!el||!el.isConnected){fin=true;return}n++;el.textContent=text.slice(0,n);const c=text.charAt(n-1);
+if(/[A-Za-z0-9?!]/.test(c)&&(v.sp>=22||n%2==0))blip(v,n,c);
+if(n>=text.length){fin=true;return}tm=setTimeout(step,v.sp+(/[,;:]/.test(c)?90:/[.!?]/.test(c)&&text.charAt(n)==' '?200:0))};
+el.textContent='';step();return api}
+let DTY=null,STY=null;
+/*VOICE-END*/
 let DLG_Q=null,DLG_I=0,DLG_CB=null,DT=null,DF='',DN=0;
-function dshow(){const s=DLG_Q[DLG_I],nar=s.charAt(0)=='*',bp=220+(hsh(F.nm||'')%8)*35;DF=s;DN=0;clearInterval(DT);
+function dshow(){const s=DLG_Q[DLG_I],nar=s.charAt(0)=='*';DF=s;DN=0;clearInterval(DT);DTY&&DTY.stop();
 $('#lr').innerHTML='<p class="'+(nar?'':'y')+'" style="min-height:48px;'+(nar?'color:#9fb0ff':'')+'"><span id="dtx"></span></p><small>'+(nar?'':E(F.nm)+' | ')+'N / NEXT to continue</small>';
-DT=setInterval(()=>{DN++;const e=$('#dtx');if(e)e.textContent=DF.slice(0,DN);if(DN%2==0)beep(nar?300:bp+Math.random()*60,.02,'square',.012);if(DN>=DF.length)clearInterval(DT)},22)}
-function dlgNext(){if(state!=='dlg'||!DLG_Q)return;if(DN<DF.length){clearInterval(DT);DN=DF.length;const e=$('#dtx');if(e)e.textContent=DF;return}
-DLG_I++;if(DLG_I>=DLG_Q.length){const cb=DLG_CB;DLG_Q=null;DLG_CB=null;state='res';clearInterval(DT);$('#nx').style.display='none';$('#qt').style.display='';$('#qi').style.display='';cb&&cb();return}dshow()}
+DTY=vxType($('#dtx'),s,nar?NARR:voiceOf(F.nm))}
+function dlgNext(){if(state!=='dlg'||!DLG_Q)return;if(DTY&&!DTY.done()){DTY.skip();return}
+DLG_I++;if(DLG_I>=DLG_Q.length){const cb=DLG_CB;DLG_Q=null;DLG_CB=null;state='res';clearInterval(DT);DTY&&DTY.stop();$('#nx').style.display='none';$('#qt').style.display='';$('#qi').style.display='';cb&&cb();return}dshow()}
 function enemySpeak(cb){F.plan=planRound(F);DLG_Q=mkDlg(F,F.plan);DLG_I=0;DLG_CB=cb;state='dlg';$('#qt').style.display='none';$('#qi').style.display='none';$('#nx').style.display='';$('#nx').textContent='NEXT >';$('#af').style.display='none';$('#bz').style.display='none';$('#idk').style.display='none';$('#flee').style.display='none';dshow()}
 $('#bz').onclick=buzz;$('#sb').onclick=submit;$('#ai').onkeydown=e=>{if(e.key=='Enter')submit()};
 document.addEventListener('keydown',e=>{const k=e.key.length>1?e.key:e.key.toLowerCase(),on=id=>$(id).classList.contains('on');
+if(on('#story')){if((k=='Enter'||k==' '||k=='n'||k=='z')&&!e.repeat){e.preventDefault();$('#snx').click()}return}
 if(on('#battle')){K[k]=1;if(AT&&k.startsWith('Arrow'))e.preventDefault();if(e.code=='Space'&&state=='read'){e.preventDefault();buzz()}if(state==='dlg'&&(k==='n'||k==='Enter')){e.preventDefault();dlgNext()}return}
 if(on('#map')){K[k]=1;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(k))e.preventDefault();if((k=='e'||k==' ')&&!e.repeat)act();if(k=='b'&&mode=='isle'&&!HB)pl={x:BX,y:BY+50}}});
 document.addEventListener('keyup',e=>{K[e.key.length>1?e.key:e.key.toLowerCase()]=0});
