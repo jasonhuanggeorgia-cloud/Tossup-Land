@@ -83,20 +83,49 @@ box-shadow:0 -3px 0 0 var(--edge),0 3px 0 0 var(--edge),-3px 0 0 0 var(--edge),3
 #audio input{width:70px;padding:0;height:10px;box-shadow:none;background:none;accent-color:var(--gold)}
 #audio button{margin:0;padding:4px 6px;font-size:8px;box-shadow:0 0 0 2px #fff4;background:var(--coral)}
 @media(max-width:600px){body{font-size:9px}.s{padding:8px}button{padding:8px 9px;margin:4px 2px}.box{margin:12px 4px;padding:10px}#hud small{display:block}#qt,#sq{font-size:10px}.logo{letter-spacing:0}}
+
+/* Stage 4: live HP HUD, save slots, difficulty */
+#ahud{display:none;position:fixed;top:6px;left:50%;transform:translateX(-50%);width:min(320px,86vw);z-index:90;background:var(--plum);padding:4px 8px;color:#fff;text-align:center;pointer-events:none;box-shadow:0 0 0 2px #fff4;font-size:10px}
+body.inarena #ahud{display:block}#ahud .bar{margin:2px 0}#ahb{transition:none!important}
+#ahud.low #ahb{background:linear-gradient(#ff9aa8 0 35%,#ff4060 35% 70%,#c02040 70%)}#ahud.hit{filter:brightness(2.2)}
+#slbtn{position:fixed;left:8px;bottom:8px;z-index:150}body.inarena #slbtn{display:none}
+#slm{display:none;position:fixed;left:0;top:0;right:0;bottom:0;z-index:300;background:rgba(0,0,0,.82);overflow:auto;padding:12px}
+.slc{border:2px solid #fff4;padding:6px;margin:6px 0}.slc.act{border-color:var(--gold)}#dpre small,#dcus{display:block;margin:2px 0 8px}
+#diff select{font:inherit;margin:4px;max-width:100%}
+.dgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px 18px;margin:18px 8px}#dpre{display:contents}.dgrid #dcc{grid-column:1/-1}
+.dcard{background:var(--paper);color:var(--ink);position:relative;cursor:pointer;outline:0;--ec:var(--edge);box-shadow:0 -4px 0 0 var(--ec),0 4px 0 0 var(--ec),-4px 0 0 0 var(--ec),4px 0 0 0 var(--ec),0 12px 0 0 #0003;transition:transform .12s}
+.dcard:hover,.dcard:focus-visible{transform:translateY(-3px)}
+.dcard.sel{box-shadow:0 -4px 0 0 var(--gold),0 4px 0 0 var(--gold),-4px 0 0 0 var(--gold),4px 0 0 0 var(--gold),0 -8px 0 0 var(--ec),0 8px 0 0 var(--ec),-8px 0 0 0 var(--ec),8px 0 0 0 var(--ec),0 16px 0 0 #0004}
+.dcard canvas{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;image-rendering:-moz-crisp-edges}
+.dcb{padding:8px 12px 12px;border-top:4px solid var(--ec)}.dct{margin:0 0 2px;font-size:12px}.dcs{font-size:8px;opacity:.85}.dsc{margin:2px 0 6px}
+.dcp{margin:4px 0}.dpip{display:inline-block;width:10px;height:10px;margin-right:3px;background:#0002;box-shadow:inset 0 0 0 2px #0003;vertical-align:middle}.dpip.on{background:var(--ec);box-shadow:inset 0 0 0 2px #0005}
+.dtag{position:absolute;right:8px;top:8px;background:var(--gold);color:var(--plum);padding:4px 6px;font-size:8px;display:none;box-shadow:0 0 0 2px var(--plum)}.dcard.sel .dtag{display:block}
+@media(max-width:640px){.dgrid{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){.dcard{transition:none}.dcard:hover{transform:none}}
 </style></head><body>
 <canvas id="tc"></canvas>
 <canvas id="trc" class="tr"></canvas>
+<div id="ahud"><span id="ahn">HP 100/100</span><div class="bar"><i id="ahb"></i></div></div>
+<button id="slbtn" class="alt">SAVES</button>
+<div id="slm"><div class="box"><h1 style="font-size:14px">SAVE SLOTS</h1><small>Your game autosaves into the ACTIVE slot. Make as many slots as you like.</small><br>
+<button id="sln">NEW SLOT</button><button id="sli" class="alt">IMPORT FILE</button><button id="slx" class="warn">CLOSE</button><input type="file" id="slf" accept=".json,application/json" style="display:none"></div>
+<div class="box" id="sll"></div></div></div>
 <div id="audio"><button id="mu">SOUND ON</button><input id="vol" type="range" min="0" max="100" value="70" aria-label="Volume"></div>
 
 <div id="title" class="s on">
 <h1 class="logo">TOSSUP<br>LAND</h1>
 <div class="tag">~ buzz early. dodge hard. save the Great Buzzer ~</div>
+<div class="box"><p class="y">SAVE SLOTS</p><small id="slcur">Loading saves...</small><br><button id="slopen" class="alt">SAVE SLOTS</button></div>
 <div class="box"><p class="y">CREATE YOUR CHARACTER</p>
 <input id="nm" maxlength="20" placeholder="Your name"><div id="cz"></div>
 <div id="pv" style="margin:8px 0;text-align:center"></div></div>
 <div class="box"><small id="ls">Loading question bank...</small></div>
-<p style="text-align:center"><button id="go" class="big">START ADVENTURE</button></p>
+<p style="text-align:center"><button id="go" class="big">NEXT &gt;</button></p>
 </div>
+
+<div id="diff" class="s"><div class="box"><h1 style="font-size:16px">CHOOSE DIFFICULTY</h1><small id="dsub"></small></div>
+<div class="dgrid"><div id="dpre"></div>
+<div class="dcard" id="dcc" tabindex="0" role="radio" aria-checked="false"><canvas id="dcv" width="256" height="44"></canvas><span class="dtag">SELECTED</span><div class="dcb"><p class="dct">CUSTOM <span class="dcs">your own range</span></p><p class="dcs dsc">Starry Night: Your sky. Your rules.</p><label class="dcs">Easiest level <select id="dmin"></select></label> <label class="dcs">Hardest level <select id="dmax"></select></label><div class="dcp" id="dcpips"></div><small id="dcus"></small></div></div></div>
+<p style="text-align:center"><button id="dok" class="big">CONFIRM</button> <button id="dbk" class="alt">BACK</button></p></div>
 
 <div id="story" class="s"><div class="box"><div id="sp" style="text-align:center"></div><div id="stx" style="min-height:130px;font-size:11px;line-height:2.1"></div><button id="snx">NEXT</button></div></div>
 
@@ -398,24 +427,249 @@ const S=[[0,'American Literature',"The narrator of this novel watches a green li
 [10,'Current Events',"This organization, headquartered in New York, has a Security Council with five (*) permanent members. For 10 points, name this body founded in 1945.","United Nations|UN","Five permanent Security Council members."],
 [11,'Other Academic',"This number, about 3.14159, is the ratio of a circle's (*) circumference to its diameter. For 10 points, name this constant.","Pi","Circumference over diameter."]].map(x=>({i:x[0],s:x[1],q:x[2],a:x[3].split('|')[0],K:x[3].split('|'),l:x[4],d:2,src:''}));
 // ---- answers ----
-const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim().replace(/^(the |an |a )+/,'');
+/*CHECKER-START*/
+/* ANSWER CHECKER (Stage 3). judge(user, K) -> 'ok' | 'prompt' | 'no'.  okAns(user, K) -> boolean.
+   K comes from keys(rawAnswerLine) (or an array of plain answers, for the built-in samples).
+   Add your own synonyms to ALIASES: key = the answer in normalized form (lowercase, no punctuation/articles, numbers as digits,
+   e.g. 'world war 1'), value = list of other ways to say it. Groups work in both directions. */
+const ALIASES={
+'world war 1':['great war','first world war','wwi','war to end all wars'],'world war 2':['second world war','wwii'],
+'united states':['us','usa','united states of america','america'],'united kingdom':['uk','great britain','britain'],
+'soviet union':['ussr','union of soviet socialist republics'],'united nations':['un'],'european union':['eu'],
+'north atlantic treaty organization':['nato'],'franklin d roosevelt':['fdr'],'john f kennedy':['jfk'],'martin luther king':['mlk'],
+'lyndon b johnson':['lbj'],'federal bureau of investigation':['fbi'],'central intelligence agency':['cia'],'new york city':['nyc'],
+'washington dc':['dc','district of columbia'],'carbon dioxide':['co2'],'water':['h2o'],'sodium chloride':['nacl','salt','table salt'],
+'mount everest':['everest'],'nile river':['nile'],'amazon river':['amazon'],'pacific ocean':['pacific'],'atlantic ocean':['atlantic'],
+'alexander the great':['alexander','alexander of macedon'],'helium':['he'],'lithium':['li'],'beryllium':['be'],'neon':['ne'],'sodium':['na'],
+'magnesium':['mg'],'aluminum':['al','aluminium'],'silicon':['si'],'chlorine':['cl'],'argon':['ar'],'calcium':['ca'],'iron':['fe'],'copper':['cu'],
+'zinc':['zn'],'silver':['ag'],'gold':['au'],'mercury':['hg'],'lead':['pb'],'tin':['sn'],'manganese':['mn'],'nickel':['ni']};
+const NUMW={};('zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty').split(' ').forEach((w,i)=>NUMW[w]=i);
+('zeroth first second third fourth fifth sixth seventh eighth ninth tenth eleventh twelfth thirteenth fourteenth fifteenth sixteenth seventeenth eighteenth nineteenth twentieth').split(' ').forEach((w,i)=>NUMW[w]=i);
+('thirty forty fifty sixty seventy eighty ninety').split(' ').forEach((w,i)=>NUMW[w]=30+i*10);
+('thirtieth fortieth fiftieth sixtieth seventieth eightieth ninetieth').split(' ').forEach((w,i)=>NUMW[w]=30+i*10);
+const ROM=/^(x{0,3})(ix|iv|v?i{0,3})$/,romv=t=>{let v=0;for(const c of t)v+=c=='x'?10:c=='v'?5:1;if(/iv|ix/.test(t))v-=2;return v};
+const WORDSET=s=>new Set(s.split(' '));
+const COMMON=WORDSET('john george william james henry charles thomas robert richard david michael joseph edward louis peter paul mary elizabeth anne anna jane franklin benjamin samuel daniel andrew alexander arthur frederick frank harry jack jim tom bill bob sam ben alan albert alfred walter walt oliver oscar victor victoria catherine margaret charlotte emily emma mark martin matthew stephen steven kenneth kevin larry gary jerry ronald donald douglas isaac jacob jordan jesse john jean marie maria sarah susan ruth rachel rebecca ann kate katherine helen lucy laura nancy alice eleanor dorothy virginia florence grace hannah amy leo max sean ryan eric adam nathan simon hugh ralph roger ray phil tim ted carl karl otto hans peter pierre jacques juan jose luis carlos miguel pedro');
+const NAMES=new Set([...COMMON,...('abraham abe albus severus immanuel isaiah ezra leonardo michelangelo raphael vincent pablo salvador claude edgar emile friedrich ludwig johann wolfgang franz fyodor leo anton nikolai ivan vladimir joseph jean jules gustave marcel thomas ernest scott zora toni maya langston ralph herman nathaniel mark harper jane emily charlotte virginia sylvia edith gertrude willa flannery tennessee arthur miguel gabriel isabel pablo octavio jorge julio gabriela rene blaise baruch niccolo thales sigmund carl erik ivan ada marie nikola galileo johannes tycho enrico werner niels max erwin stephen alan isaac rosalind linus gregor louis lise lucius marcus julius gaius publius augustus tiberius nero cato cicero vladimir mao xi ho kim jawaharlal mohandas winston margaret otto bismarck oliver cleopatra nefertiti ramses tutankhamun hannibal genghis kublai attila saladin charlemagne ferdinand isabella philip catherine peter ivan akbar hirohito cheryl harry hermione ronald draco luke leia han frodo bilbo gandalf aragorn sherlock hercule dorian ebenezer tiny holden atticus jay daisy nick huckleberry tom ishmael ahab pip estella oliver fagin heathcliff darcy elizabeth emma anakin obi walter jesse hank dwight michael pam jim ludwig franz giuseppe giacomo antonio johannes george frederic igor sergei dmitri claude maurice erik aaron leonard duke miles john ella billie nina bob jimi elvis freddie mick keith paul ringo kurt amy taylor lady bruce barack donald joe bill hillary ronald jimmy gerald richard lyndon dwight harry franklin herbert calvin warren woodrow theodore ulysses rutherford chester grover millard zachary andrew martin thurgood sonia ruth antonin earl harriet frederick sojourner rosa susan elizabeth clara florence amelia sacagawea pocahontas squanto crazy sitting geronimo cochise tecumseh pontiac vasco ferdinand amerigo marco christopher hernan francisco juan henry roald ernest robert fridtjof edmund tenzing neil buzz yuri sally valentina').split(' ')]);
+const FAMOUS=WORDSET('napoleon cleopatra galileo leonardo michelangelo raphael rembrandt elvis beyonce madonna oprah voltaire nostradamus confucius buddha muhammad saladin genghis kublai charlemagne hannibal attila tutankhamun nefertiti ramses sherlock gandalf frodo hamlet macbeth ahab ishmael heathcliff gatsby hannibal vlad machiavelli dante homer virgil ovid sappho aristotle socrates plato');
+const TITLES=WORDSET('dr mr mrs ms sir dame lord lady king queen prince princess emperor empress tsar czar pope saint st sultan general captain count duke baron baroness professor prof rev father mother president sister brother sheikh lieutenant colonel admiral marshal chief mahatma');
+const PARTS=WORDSET('de da di del della van von der den la le bin ibn al el du des dos das mac mc');
+const NOTPERSON=WORDSET('falls river lake sea ocean island islands mountain mountains mount city state states web war wall act party empire republic kingdom union treaty battle house hall tower bridge canal desert bay gulf strait valley park square street avenue university college school church cathedral palace castle gate line club cup bowl games series prize award law theory effect principle rule model test problem paradox syndrome disease fever system project plan pact crisis doctrine revolution rebellion uprising massacre riot dynasty company corporation organization band orchestra quartet symphony concerto sonata opera novel story tales book poem song album film movie show game garden gardens museum library station airport bank institute academy association society league conference convention declaration constitution amendment proclamation');
+const FILLER=WORDSET('i it its is was are the a an this that think guess maybe answer my is it\'s im probably possibly then so um uh');
+function canonToks(s){s=String(s).normalize('NFKD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/&/g,' and ').replace(/\b(?:[a-z]\.){2,}/g,m=>m.replace(/\./g,'')).replace(/['’`]/g,'').replace(/[^a-z0-9 ]/g,' ').trim();
+let t=s.split(/\s+/).filter(Boolean);while(t.length>1&&/^(the|a|an)$/.test(t[0]))t.shift();t=t.filter((w,i)=>w!='the'||i==0&&t.length==1);
+t=t.map(w=>{let m;if(/^\d+$/.test(w))return String(+w);if(m=w.match(/^(\d+)(st|nd|rd|th)$/))return String(+m[1]);if(NUMW[w]!=null)return String(NUMW[w]);
+if(w.length<=4&&ROM.test(w)&&w)return String(romv(w));if((m=w.match(/^([bcdfghjklmnpqrstvwxz]{2,4})([ivx]{1,4})$/))&&ROM.test(m[2]))return m[1]+romv(m[2]);return w});
+const o=[];for(let i=0;i<t.length;i++){const a=+t[i],b=+t[i+1];if(/^\d+$/.test(t[i])&&a>=20&&a%10==0&&a<100&&/^\d$/.test(t[i+1]||'')&&b>0){o.push(String(a+b));i++}else o.push(t[i])}
+return o.filter((w,i)=>!(i==o.length-1&&o.length>1&&(w=='jr'||w=='sr')))}
+const norm=s=>canonToks(s).join(' ');
 const strip=s=>s.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/\s+/g,' ').trim();
-function keys(raw){const K=[],add=p=>{const u=[...p.matchAll(/<u>(.*?)<\/u>/gs)].map(m=>strip(m[1])).filter(Boolean);if(u.length)K.push(u.join(' '));const t=strip(p.replace(/\([^)]*\)/g,''));if(t)K.push(t)};
-add(raw.split('[')[0]);for(const m of raw.matchAll(/\[([^\]]*)\]/g)){if(/^(prompt|do not|don't|reject|anti|read|underlined|bold)/i.test(strip(m[1])))continue;
-m[1].replace(/^\s*(or|accept)\s+/i,'').split(/\s+(?:until|before|after)\s+/)[0].split(/;|\s+or\s+|\s+accept\s+/).forEach(p=>{if(!/^\s*(prompt|do not|reject)/i.test(strip(p)))add(p)})}return K}
-function lev(a,b){let p=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){const c=[i];for(let j=1;j<=b.length;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]==b[j-1]?0:1));p=c}return p[b.length]}
-function okAns(x,K){x=norm(x);if(!x)return false;return K.some(k=>{const c=norm(k);if(!c)return false;if(x==c)return true;const L=c.length,t=L<=3?0:L<=7?1:L<=12?2:3;
-if(t&&Math.abs(x.length-L)<=t&&lev(x,c)<=t)return true;return L>=4&&(' '+x+' ').includes(' '+c+' ')})}
+const digs=s=>(s.match(/\d+/g)||[]).join(',');
+function osa(a,b){const n=a.length,m=b.length,d=[];for(let i=0;i<=n;i++){d[i]=[i];for(let j=1;j<=m;j++)d[i][j]=i?0:j}
+for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]==b[j-1]?0:1));if(i>1&&j>1&&a[i-1]==b[j-2]&&a[i-2]==b[j-1])d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1)}return d[n][m]}
+/* typo tolerance: <=4 chars exact; 5-7 chars one missing/extra letter or one swap (never a swapped-in letter, so Plato != Pluto); 8-10: 1; 11-15: 2; 16+: 3. Numbers must always match exactly. */
+function typoNear(x,c){if(x==c)return true;if(digs(x)!=digs(c))return false;const L=c.length;if(L<=4||Math.abs(x.length-L)>3)return false;
+const t=L<=7?1:L<=10?1:L<=15?2:3,d=osa(x,c);if(d>t)return false;if(L<=7&&d==1&&x.length==c.length){let i=0;while(x[i]==c[i])i++;return x[i]==c[i+1]&&x[i+1]==c[i]}return true}
+const jn=a=>a.join(''),loose=a=>a.filter(w=>w!='and'&&w!='of');
+function same(x,c,exact){const a=x.join(' '),b=c.join(' ');if(a==b||jn(x)==jn(c)||jn(loose(x))==jn(loose(c)))return true;return !exact&&typoNear(jn(loose(x)),jn(loose(c)))}
+const initials=t=>jn(t.filter(w=>!/^(of|and|for|the|a|an|in|on)$/.test(w)).map(w=>w[0])),initialsAll=t=>jn(t.map(w=>w[0]));
+function personForms(raw){const T=raw.replace(/[.,]/g,' ').split(/\s+/).filter(Boolean);if(T.length<2||T.length>6)return null;let ok=true,hint=false;
+for(const w of T){const l=w.toLowerCase();if(PARTS.has(l)){hint=true;continue}if(TITLES.has(l)){hint=true;continue}if(/^[A-Z]$/.test(w)){hint=true;continue}if(/^(jr|sr)$/i.test(w))continue;if(/^[IVX]+$/.test(w)&&ROM.test(w.toLowerCase()))continue;if(!/^[A-Z][A-Za-z'’\-À-ɏ]*$/.test(w)){ok=false;break}}
+if(!ok)return null;const first=T.find(w=>!TITLES.has(w.toLowerCase())&&!/^[A-Z]$/.test(w));if(!first)return null;if(!(hint||NAMES.has(first.toLowerCase().replace(/[^a-z]/g,''))))return null;
+let N=T.filter(w=>!TITLES.has(w.toLowerCase())&&!/^(jr|sr)$/i.test(w));const hadTitle=N.length<T.length;const nm=N.filter(w=>!/^[A-Z]$/.test(w)),lastRaw=nm[nm.length-1]||'';
+const num=/^[IVX]+$/.test(lastRaw)&&ROM.test(lastRaw.toLowerCase());const tail=N.filter(w=>!(/^[IVX]+$/.test(w)&&ROM.test(w.toLowerCase())));const nn=tail.filter(w=>!/^[A-Z]$/.test(w));
+const F=[],P=[],add=(a,k)=>{const c=canonToks(a.join(' '));if(c.length)k.push(c)};add(N,F);add(N.filter(w=>!/^[A-Z]$/.test(w)),F);
+if(num){add(nn,P);return{F,P,name:true}}
+const last=nn[nn.length-1],fl=nn[0],lc=last.toLowerCase();
+if(nn.length>=2&&!NOTPERSON.has(lc)){add([last],F);add([fl,last],F);const pi=tail.length-2;if(pi>=0&&PARTS.has(tail[pi].toLowerCase()))add([tail[pi],last],F);if(nn.length>=3)add(nn.slice(-2),F)}
+const f=fl.toLowerCase().replace(/[^a-z]/g,'');if(nn.length==1||(!COMMON.has(f)&&!hadTitle&&nn.length>=2)||FAMOUS.has(f)||(hadTitle&&nn.length==1))add([fl],F);
+return{F,P,name:true}}
+function compile(texts,plain){const forms=[],promptForms=[];let sole=false;const push=(c,nameOk)=>{if(c.length)forms.push({c,nameOk})};
+for(const raw of texts){const u=[...raw.matchAll(/<u>(.*?)<\/u>/gs)].map(m=>strip(m[1])).filter(Boolean),t=strip(raw.replace(/\([^)]*\)/g,''));if(!t)continue;
+const single=canonToks(t).length==1;push(canonToks(t),single);if(u.length)push(canonToks(u.join(' ')),true);
+for(const part of t.split(/\s*[:;]\s*|,\s+or,?\s+/)){if(part&&part!=t)push(canonToks(part),canonToks(part).length==1)}
+const pf=plain?null:personForms(t);if(pf){pf.F.forEach(c=>push(c,false));pf.P.forEach(c=>promptForms.push(c))}
+const c=canonToks(t);if(!plain&&c.length>=2&&c.length<=6&&/[A-Z]{2,}|^([A-Z]\w*\s*)+$/.test(t))push([initials(c)],false);
+for(const m of plain?[]:raw.matchAll(/\(([^)]*)\)/g)){const p=strip(m[1]);if(/^[A-Z][a-z]$|^[A-Z0-9]{2,6}$/.test(p))push(canonToks(p),false)}}
+for(const f of plain?[]:[...forms]){const g=EQ[f.c.join(' ')];if(g)g.forEach(a=>forms.push({c:canonToks(a),nameOk:false}))}
+return{forms,promptForms}}
+const EQ={};for(const k in ALIASES){const g=[k,...ALIASES[k]].map(a=>canonToks(a).join(' '));g.forEach(a=>{(EQ[a]=EQ[a]||new Set()).add(g[0]);g.forEach(b=>EQ[a].add(b))})}
+function ansHit(x,list,contain){return list.some(f=>{if(!f.c.length)return false;if(same(x,f.c))return true;const fl=f.c.join(' ');
+const ini=x.length>=2&&x.length<=7?initialsAll(loose(x)):'';if(f.c.length==1&&fl.length>=2&&fl.length<=6&&/^[a-z]+$/.test(fl)&&x.length>=2&&(initials(x)==fl||initialsAll(x)==fl||ini==fl))return true;
+if(!contain||fl.length<4||x.length<=f.c.length||x.length>f.c.length+6)return false;
+for(let i=0;i+f.c.length<=x.length;i++){if(x.slice(i,i+f.c.length).join(' ')==fl){const rest=[...x.slice(0,i),...x.slice(i+f.c.length)];
+return rest.every(w=>FILLER.has(w)||f.nameOk&&rest.length==1&&NAMES.has(w))}}return false})}
+function keys(raw){const acc=[],rej=[],prm=[];const clauses=[];
+let main=raw.split('[')[0];const par=[...main.matchAll(/\(([^)]*)\)/g)].map(m=>m[1]);const br=[...raw.matchAll(/\[([^\]]*)\]/g)].map(m=>m[1]);
+const either=/accept either|either answer/i.test(raw);
+[...par,...br].forEach(c=>strip(c).split(/\s*;\s*/).forEach(x=>clauses.push(x)));
+acc.push(main);if(either)main.split(/\s+or\s+/i).forEach(p=>p.trim()&&acc.push(p));
+const unq=s=>s.replace(/^["'“‘]+|["'”’]+$/g,'').trim();
+const lst=t=>{const q=[...t.matchAll(/["“]([^"”]+)["”]|(?:^|[\s(])'([^']+)'(?=$|[\s,;).])/g)].map(m=>(m[1]||m[2]).trim());if(q.length)return q;return t.split(/\s*(?:,\s*or\s+|\s+or\s+)\s*/).map(unq).filter(Boolean)};
+for(let c of clauses){c=c.trim();if(!c||/describ|equivalent|similar|synonym|any answer|answers (that|like|such)|read as|pronounc|underlin|emphasi|bold|as in|until|^read\b|^after\b|^before\b/i.test(c)&&!/^(do not|don't|reject|prompt)/i.test(c))continue;
+let m;if(m=c.match(/^(?:do not|don't|never)\s+(?:accept|allow)(?:\s+or\s+prompt(?:\s+on)?)?\s*(.*)$/i)||c.match(/^(?:reject|anti-accept)\s*(.*)$/i)){lst(m[1]).forEach(x=>rej.push(x));continue}
+if(m=c.match(/^prompt(?:\s+on)?\s*(.*)$/i)){lst(m[1]).forEach(x=>prm.push(x));continue}
+if(m=c.match(/^(?:also\s+)?(?:accept|or)\s+(.*)$/i)){m[1].split(/\s+(?:until|before|after)\s+/)[0].split(/\s*(?:,\s*or\s+|\s+or\s+|\s+accept\s+)\s*/).map(unq).filter(Boolean).forEach(x=>acc.push(x))}}
+const A=compile(acc),R=compile(rej,1),Pm=compile(prm,1);return{raw,acc:A.forms,aliasPrompt:A.promptForms,rej:R.forms,prm:Pm.forms}}
+const KC=new WeakMap();function asKeys(K){if(K&&K.acc&&K.raw!=null)return K;if(Array.isArray(K)){if(!KC.has(K)){const A=compile(K);KC.set(K,{raw:K[0],acc:A.forms,aliasPrompt:A.promptForms,rej:[],prm:[]})}return KC.get(K)}return{acc:[],aliasPrompt:[],rej:[],prm:[]}}
+function judge(user,K){const k=asKeys(K),x=canonToks(String(user||'').replace(/^\s*(?:i\s+(?:think|guess|believe|say|know)|maybe|probably|perhaps)\s+(?:(?:it|that)\s+(?:is|was|would be)\s+|it'?s\s+)?/i,'').replace(/^\s*(?:it|that)\s*(?:is|was|'?s)\s+/i,''));if(!x.length||!x.join(''))return'no';
+const strict=l=>l.some(f=>same(x,f.c,1));if(k.rej.length&&strict(k.rej))return'no';
+if(ansHit(x,k.acc,true))return'ok';
+if(k.prm.length&&ansHit(x,k.prm,false))return'prompt';if(k.aliasPrompt.length&&k.aliasPrompt.some(c=>same(x,c)))return'prompt';return'no'}
+const okAns=(x,K)=>judge(x,K)=='ok';
+/*CHECKER-END*/
 // ---- state ----
 let U=[],IDX={},LD={},P={name:'',hair:'#3a2a1a',skin:'#f2c9a0',top:'#4fd0ff',bot:'#3a3f7a',hs:0,fs:0,ts:0,bs:0},db=[],G={},DATA={},M=[],SB={},SN=new Set(),hp=30,F,d,words,pw,n,timer,tt,state,power,ac,mute=false,hov=-1,cur=0,mi=0,mode='sea',NP=[],TR=[],pl={x:400,y:385},tg=null,pend=null,ST,K={};
 const EX=400,EY=235,RX=350,RY=175;
 var BD={},SB2={};
 try{const L=k=>JSON.parse(localStorage[k]||'null');db=L('tl_db3')||[];G=L('tl_g')||{};M=L('tl_m')||[];SN=new Set(L('tl_s')||[]);P=Object.assign(P,L('tl_p2')||{});U=L('tl_u')||[];BD=L('tl_bd')||{};SB2=L('tl_sb')||{}}catch(e){}
-const save=(k,v)=>{try{localStorage[k]=JSON.stringify(v)}catch(e){}};
-const LYN=['Outer Shell','Husk','Mantle','Armor Core','Inner Core','Heart Core'],RN=['MS','Easy HS','Regular HS','Hard HS','College','Hard College'],RR=[[1,1],[2,2],[3,3],[4,5],[6,7],[8,10]],DL=['','Middle School','Easy HS','Regular HS','Hard HS','National HS','Easy College','Regular College','Hard College','Nationals','Open'],RK=s=>Math.min(5,G[s]||0);
+/*SLOTS-START*/
+/* SAVE SLOTS (Stage 4). The game still reads and writes its tl_* keys in localStorage (so no other code had to change), and every
+   write is mirrored into the ACTIVE SLOT, which lives in IndexedDB (a separate database, so there is no practical slot limit; it falls
+   back to localStorage if IndexedDB is blocked). Updating index.html never touches slots: they are versioned (GAME_VER), missing keys
+   fall back to defaults, and EXPORT saves any slot to a file as a backup. Add new save keys to SLOT_KEYS and they are covered. */
+const GAME_VER=1,SLOT_KEYS=['tl_db3','tl_g','tl_m','tl_s','tl_p2','tl_u','tl_bd','tl_sb','tl_st','tl_arr','tl_diff'];
+const LIVE={};SLOT_KEYS.forEach(k=>{try{if(localStorage[k]!=null)LIVE[k]=localStorage[k]}catch(e){}});
+let SLOT=null,snapT=0,SDBH=null,SLOT_OK=true;
+const uid=()=>'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function lset(k,s){LIVE[k]=s;try{localStorage[k]=s}catch(e){}snapSoon()}
+const save=(k,v)=>lset(k,JSON.stringify(v));
+const sOpen=()=>new Promise(res=>{try{const r=indexedDB.open('tossup_land_saves',1);r.onupgradeneeded=()=>{r.result.createObjectStore('slots',{keyPath:'id'})};r.onsuccess=()=>{SDBH=r.result;res(true)};r.onerror=()=>res(false);r.onblocked=()=>res(false)}catch(e){res(false)}});
+const lsAll=()=>{const o=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf('tlslot_')==0)o.push(JSON.parse(localStorage[k]))}}catch(e){}return o};
+const sAll=()=>SDBH?new Promise(r=>{try{const q=SDBH.transaction('slots').objectStore('slots').getAll();q.onsuccess=()=>r(q.result||[]);q.onerror=()=>r([])}catch(e){r([])}}):Promise.resolve(lsAll());
+const sPut=rec=>SDBH?new Promise(r=>{try{const t=SDBH.transaction('slots','readwrite');t.objectStore('slots').put(rec);t.oncomplete=()=>r(true);t.onerror=t.onabort=()=>r(false)}catch(e){r(false)}}):Promise.resolve((()=>{try{localStorage['tlslot_'+rec.id]=JSON.stringify(rec);return true}catch(e){return false}})());
+const sDel=id=>SDBH?new Promise(r=>{try{const t=SDBH.transaction('slots','readwrite');t.objectStore('slots').delete(id);t.oncomplete=()=>r(true);t.onerror=t.onabort=()=>r(false)}catch(e){r(false)}}):Promise.resolve((()=>{try{localStorage.removeItem('tlslot_'+id);return true}catch(e){return false}})());
+function snapNow(){if(!SLOT)return Promise.resolve();SLOT.hero=P.name||SLOT.hero||'';SLOT.updated=Date.now();SLOT.ver=GAME_VER;SLOT.data=Object.assign({},LIVE);return sPut(SLOT).then(ok=>{SLOT_OK=ok;slStat()})}
+function snapSoon(){clearTimeout(snapT);snapT=setTimeout(snapNow,350)}
+const slFlush=()=>{clearTimeout(snapT);return snapNow()};
+addEventListener('pagehide',()=>{clearTimeout(snapT);snapNow()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){clearTimeout(snapT);snapNow()}});
+const SLOTS_READY=(async()=>{await sOpen();try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+const all=await sAll();let id=null;try{id=localStorage.tl_active}catch(e){}const rec=all.find(s=>s.id==id)||(!Object.keys(LIVE).length&&all.length?all.slice().sort((a,b)=>b.updated-a.updated)[0]:null);
+if(rec){try{localStorage.tl_active=rec.id}catch(e){}const had=Object.keys(LIVE).length>0,sd=rec.data||{};let rs=0;try{rs=sessionStorage.tl_rest;if(had)sessionStorage.removeItem('tl_rest')}catch(e){}
+ if(!had&&Object.keys(sd).length&&!rs){try{sessionStorage.tl_rest=1}catch(e){}SLOT_KEYS.forEach(k=>{if(sd[k]!=null)try{localStorage[k]=sd[k]}catch(e){}});location.reload();return}
+ SLOT=rec}
+else{const legacy=Object.keys(LIVE).length>0;SLOT={id:uid(),name:legacy?'Adventure 1 (imported)':'Adventure '+(all.length+1),created:Date.now(),data:{}};try{localStorage.tl_active=SLOT.id}catch(e){}await snapNow()}
+slStat()})();
+const clearLive=()=>{SLOT_KEYS.forEach(k=>{try{localStorage.removeItem(k)}catch(e){}delete LIVE[k]})};
+async function slLoad(id){await slFlush();const rec=(await sAll()).find(s=>s.id==id);if(!rec)return;SLOT=null;clearLive();SLOT_KEYS.forEach(k=>{const v=rec.data&&rec.data[k];if(v!=null)try{localStorage[k]=v}catch(e){}});try{localStorage.tl_active=id}catch(e){}location.reload()}
+async function slNew(){await slFlush();const all=await sAll(),nm=(prompt('Name your new save slot:','Adventure '+(all.length+1))||'').trim();if(!nm)return;
+const rec={id:uid(),name:nm.slice(0,40),created:Date.now(),updated:Date.now(),ver:GAME_VER,hero:'',data:{}};await sPut(rec);SLOT=null;clearLive();try{localStorage.tl_active=rec.id}catch(e){}location.reload()}
+async function slDelete(id){const all=await sAll(),r=all.find(s=>s.id==id);if(!r||!confirm('Delete save slot "'+r.name+'"? This cannot be undone.'))return;
+if(SLOT&&SLOT.id==id){clearTimeout(snapT);SLOT=null;await sDel(id);const f={id:uid(),name:'Adventure 1',created:Date.now(),updated:Date.now(),ver:GAME_VER,hero:'',data:{}};await sPut(f);clearLive();try{localStorage.tl_active=f.id}catch(e){}location.reload();return}
+await sDel(id);slRender()}
+async function slOver(id){const r=(await sAll()).find(s=>s.id==id);if(!r||!SLOT||!confirm('Replace slot "'+r.name+'" with your CURRENT game ("'+SLOT.name+'")? The old contents of that slot are lost.'))return;
+await slFlush();r.data=Object.assign({},LIVE);r.hero=P.name||'';r.updated=Date.now();r.ver=GAME_VER;await sPut(r);slRender()}
+async function slRename(id){const r=(await sAll()).find(s=>s.id==id);if(!r)return;const nm=(prompt('Rename slot:',r.name)||'').trim();if(!nm)return;
+if(SLOT&&SLOT.id==id){SLOT.name=nm.slice(0,40);await snapNow()}else{r.name=nm.slice(0,40);await sPut(r)}slRender()}
+async function slExport(id){if(SLOT&&SLOT.id==id)await slFlush();const r=(await sAll()).find(s=>s.id==id);if(!r)return;
+const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(r)],{type:'application/json'}));a.download='tossup-land-'+r.name.replace(/[^a-z0-9]+/gi,'_')+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+function slImport(file){const fr=new FileReader();fr.onload=async()=>{try{const o=JSON.parse(fr.result);if(!o||typeof o.data!='object')throw 0;const data={};SLOT_KEYS.forEach(k=>{if(typeof o.data[k]=='string')data[k]=o.data[k]});
+const rec={id:uid(),name:String(o.name||'Imported').slice(0,32)+' (imported)',created:Date.now(),updated:Date.now(),ver:GAME_VER,hero:String(o.hero||''),data};await sPut(rec);slRender()}catch(e){alert('That file is not a Tossup Land save.')}};fr.readAsText(file)}
+function slInfo(rec){const d=rec.data||{},J=k=>{try{return JSON.parse(d[k])}catch(e){return null}},df=J('tl_diff'),bd=J('tl_bd')||{};
+return{boss:Object.keys(bd).length,diff:df?dName(df):(d.tl_p2?'EXPERT (original)':'not started'),hero:(J('tl_p2')||{}).name||rec.hero||''}}
+async function slRender(){const L=$('#sll');if(!L)return;await SLOTS_READY;const all=(await sAll()).sort((a,b)=>b.updated-a.updated);
+L.innerHTML=all.map(s=>{const i=slInfo(s),act=SLOT&&SLOT.id==s.id,b=(a,t,c)=>'<button data-a="'+a+'" data-id="'+s.id+'"'+(c?' class="'+c+'"':'')+'>'+t+'</button>';
+return'<div class="slc'+(act?' act':'')+'"><b>'+E(s.name)+'</b>'+(act?' <span class="y">[ACTIVE]</span>':'')+'<br><small>'+E(i.hero||'-')+' | '+E(i.diff)+' | bosses '+i.boss+'/12 | '+new Date(s.updated).toLocaleString()+'</small><br>'+
+(act?b('save','SAVE NOW')+b('diff','DIFFICULTY','alt'):b('load','LOAD')+b('over','OVERWRITE WITH CURRENT','alt'))+b('ren','RENAME','alt')+b('exp','EXPORT','alt')+b('del','DELETE','warn')+'</div>'}).join('')||'<small>No slots yet.</small>';
+L.querySelectorAll('button').forEach(b=>b.onclick=()=>slAct(b.dataset.a,b.dataset.id))}
+function slAct(a,id){if(a=='load')slLoad(id);else if(a=='over')slOver(id);else if(a=='ren')slRename(id);else if(a=='exp')slExport(id);else if(a=='del')slDelete(id);else if(a=='save')slFlush().then(slRender);else if(a=='diff'){slClose();dOpen('change')}}
+function slStat(){const g=$('#go');if(g)g.textContent=(!LIVE.tl_diff&&!LIVE.tl_st)?'NEXT >':'CONTINUE >';const e=$('#slcur');if(!e||!SLOT)return;e.textContent='Active slot: '+SLOT.name+' | '+(LIVE.tl_diff?dName(DIFF):'difficulty not chosen yet')+(SLOT_OK?' | autosaves as you play':' | WARNING: could not save (storage full?). Use EXPORT.')}
+const slOpen=()=>{$('#slm').style.display='block';slRender()},slClose=()=>{$('#slm').style.display='none'};
+$('#slbtn').onclick=slOpen;$('#slopen').onclick=slOpen;$('#slx').onclick=slClose;$('#sln').onclick=slNew;$('#sli').onclick=()=>$('#slf').click();$('#slf').onchange=e=>{if(e.target.files[0])slImport(e.target.files[0]);e.target.value=''};
+/*SLOTS-END*/
+const LYN=['Outer Shell','Husk','Mantle','Armor Core','Inner Core','Heart Core'],RN=['MS','Easy HS','Regular HS','Hard HS','College','Hard College'],RR=[[1,1],[2,2],[3,3],[4,5],[6,7],[8,10]],DL=['','Middle School','Easy HS','Regular HS','Hard HS','National HS','Easy College','Regular College','Hard College','Nationals','Open'],RK=s=>DRK(G[s]||0);
+/*DIFF-START*/
+/* DIFFICULTY (Stage 4). DIFF = {p:preset, min, max} question levels (1 Middle School ... 10 Open; see DL).
+   The six layers keep their original level bands in RR ([1],[2],[3],[4-5],[6-7],[8-10]). A difficulty keeps only the layers that touch
+   [min,max] and clips each band to it, so Easy = layers 1-2, Medium = 1-4 (levels 1-5), Hard = 1-5 (levels 1-7), Expert = all 6 (the
+   original game). Mastering an isle / opening its shrine needs every kept layer. ALL bosses (and the final boss) ask only level "max",
+   falling back to the nearest level if the bank has none. Custom lets you choose min and max.
+   Each difficulty card has its own small animated pixel scene (128x44 canvas, nearest-neighbour upscale, one palette per scene):
+   Easy = flower meadow, Medium = autumn woods, Hard = storm over the peaks, Expert = volcano, Custom = starry night. */
+const DPRESETS={easy:{n:'EASY',min:1,max:2},medium:{n:'MEDIUM',min:1,max:5},hard:{n:'HARD',min:1,max:7},expert:{n:'EXPERT',min:1,max:10}};
+const DMETA={easy:{t:'Flower Meadow',s:'A stroll through the flowers.',c:'#ff8fb0'},medium:{t:'Autumn Woods',s:'The leaves are turning. And biting.',c:'#f2a72a'},hard:{t:'Storm Peaks',s:'Thunder on the ridge. Hold on.',c:'#8fb4ff'},expert:{t:'Volcano',s:'The mountain wakes. No mercy.',c:'#ff5a1a'},custom:{t:'Starry Night',s:'Your sky. Your rules.',c:'#c08bff'}};
+let DIFF={p:'expert',min:1,max:10};
+try{const x=JSON.parse(localStorage.tl_diff||'null');if(x&&x.min>=1&&x.max<=10&&x.min<=x.max)DIFF=x}catch(e){}
+function dLayers(){const o=[];RR.forEach((w,x)=>{if(w[1]>=DIFF.min&&w[0]<=DIFF.max)o.push(x)});return o.length?o:[5]}
+const dFirst=()=>dLayers()[0],dNL=()=>dLayers().length,DRK=g=>dFirst()+Math.min(dNL()-1,g|0),dWin=x=>[Math.max(RR[x][0],DIFF.min),Math.min(RR[x][1],DIFF.max)];
+const dName=x=>DPRESETS[x&&x.p]?DPRESETS[x.p].n:'CUSTOM '+x.min+'-'+x.max;
+const dInfo=(a,b)=>{const L=RR.filter(w=>w[1]>=a&&w[0]<=b).length||1;return L+' layer'+(L>1?'s':'')+' per subject. Questions: level '+a+' ('+DL[a]+') to level '+b+' ('+DL[b]+'). Bosses ask level '+b+' only.'};
+/* ---- pixel scenes ---- */
+const dR=(g,x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(Math.round(x),Math.round(y),w,h)};
+const dDisc=(g,cx,cy,r,c)=>{for(let dy=-r;dy<=r;dy++){const w=Math.floor(Math.sqrt(r*r-dy*dy+.5));dR(g,cx-w,cy+dy,2*w+1,1,c)}};
+const dRng=s=>()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const DW=128,DH=44;
+const DSC={
+easy(){const r=dRng(7),FL=[];for(let i=0;i<34;i++)FL.push({x:2+(r()*122|0),y:30+(r()*12|0),c:['#ff8fb0','#ffd84a','#ffffff','#c08bff','#ff6f8f'][i%5],p:r()*6});FL.sort((a,b)=>a.y-b.y);
+return(g,t)=>{dR(g,0,0,DW,12,'#8fd8ff');dR(g,0,12,DW,10,'#aee4ff');dR(g,0,22,DW,12,'#cdeeff');
+dDisc(g,106,9,7,'#fff3a0');dDisc(g,106,9,5,'#ffe05a');for(let i=0;i<8;i++){const a=i*.785+t*.3;dR(g,106+Math.cos(a)*11,9+Math.sin(a)*11,2,2,'#fff3a0')}
+for(let i=0;i<3;i++){const x=((t*5+i*47)%(DW+36))-18,y=6+i*5;dR(g,x,y,18,4,'#fff');dR(g,x+3,y-2,10,3,'#fff');dR(g,x+2,y+4,14,1,'#dff4ff')}
+for(let x=0;x<DW;x++){const h=21+Math.sin(x/13)*3|0;dR(g,x,h,1,DH-h,'#b4eb94')}
+for(let x=0;x<DW;x++){const h=27+Math.sin(x/8+1.5)*2|0;dR(g,x,h,1,DH-h,'#86d86c')}
+dR(g,0,33,DW,DH-33,'#6bbf59');for(let x=0;x<DW;x+=3)dR(g,x,33+(x*7%4),1,2,'#4fa04a');
+FL.forEach(f=>{const s=Math.round(Math.sin(t*2+f.p)*.9);dR(g,f.x+1,f.y+3,1,4,'#3f8f4a');dR(g,f.x+s,f.y,3,3,f.c);dR(g,f.x+s+1,f.y+1,1,1,f.c=='#ffd84a'?'#ff9a2a':'#ffd84a')});
+for(let i=0;i<2;i++){const bx=30+i*50+Math.sin(t*.6+i*2)*22,by=12+i*6+Math.sin(t*1.4+i)*4,w=(t*9|0)%2,c=i?'#ffd84a':'#ff8fb0';dR(g,bx,by-w,2,2+w,c);dR(g,bx+3,by-w,2,2+w,c);dR(g,bx+2,by+1,1,2,'#3b2a40')}}},
+medium(){const r=dRng(21),TC=['#e8541c','#f2a72a','#c83a1c','#ffd24a'],TR=[],LV=[];for(let i=0;i<9;i++)TR.push({x:6+i*14+(r()*6|0),y:24+(r()*6|0),c:TC[i%4]});for(let i=0;i<16;i++)LV.push({x:r()*DW,p:r()*6,c:TC[i%4]});
+return(g,t)=>{dR(g,0,0,DW,12,'#ffb878');dR(g,0,12,DW,10,'#ffcf8a');dR(g,0,22,DW,12,'#ffe3b0');
+dDisc(g,34,26,9,'#fff0b0');dDisc(g,34,26,7,'#ffd870');
+for(let x=0;x<DW;x++){const h=25+Math.sin(x/10+.5)*3|0;dR(g,x,h,1,DH-h,'#c8742c')}
+TR.forEach(a=>{dR(g,a.x,a.y,3,DH-a.y,'#6a3a1a');dR(g,a.x-5,a.y-7,13,8,a.c);dR(g,a.x-3,a.y-10,9,4,a.c);dR(g,a.x-5,a.y,13,1,'#0002')});
+dR(g,0,35,DW,DH-35,'#9a5a24');for(let x=0;x<DW;x+=4)dR(g,x+(x%3),36+(x%5),2,1,LV[(x/4|0)%16].c);
+LV.forEach(l=>{const y=(t*9+l.p*8)%(DH+6)-4,x=l.x+Math.sin(t*1.2+l.p)*5;dR(g,x,y,2,2,l.c);dR(g,x+1,y+1,1,1,'#0003')})}},
+hard(){const r=dRng(5),RN=[];for(let i=0;i<46;i++)RN.push({x:r()*DW,p:r()*40,s:50+r()*30});
+return(g,t)=>{dR(g,0,0,DW,12,'#262d4a');dR(g,0,12,DW,10,'#323a5e');dR(g,0,22,DW,22,'#3f4872');
+for(let x=0;x<DW;x+=2){const h=4+Math.sin(x/5+t*.4)*2+Math.sin(x/11)*2|0;dR(g,x,0,2,h,'#171b30')}
+for(let x=0;x<DW;x++){const seg=Math.floor((x+6)/20),p=((x+6)%20)/20,tri=1-Math.abs(p*2-1),ph=[17,26,21,29,19,24,28][seg%7],h=Math.round(40-ph*tri-2);dR(g,x,h,1,DH-h,tri>.5?'#232a4c':'#1d2240');if(ph>20&&tri>.55)dR(g,x,h,1,Math.round((tri-.5)*9)+1,'#e6eeff')}
+for(let x=0;x<DW;x++){const p=((x+3)%13)/13,tri=1-Math.abs(p*2-1),h=Math.round(35-8*tri);dR(g,x,h,1,DH-h,'#141830')}
+dR(g,0,40,DW,4,'#0c0f20');
+const ph=t%4.4,fl=ph<.14||(ph>.26&&ph<.34);
+if(fl){g.fillStyle='rgba(255,255,230,.28)';g.fillRect(0,0,DW,DH);let x=84,y=0;while(y<30){const nx=x+(((y*7)%5)-2)*2;dR(g,Math.min(x,nx),y,Math.abs(nx-x)+2,3,'#fffbd0');x=nx;y+=3}}
+RN.forEach(d=>{const y=(t*d.s+d.p)%(DH+6)-3,x=(d.x-y*.35+DW*2)%DW;dR(g,x,y,1,3,'#8fb4ff')})}},
+expert(){const r=dRng(9),EM=[];for(let i=0;i<30;i++)EM.push({x:r()*70+29,p:r()*10,s:6+r()*10,c:['#ffb040','#ff7a1a','#ffd84a'][i%3]});
+return(g,t)=>{dR(g,0,0,DW,12,'#12060c');dR(g,0,12,DW,12,'#2a0a14');dR(g,0,24,DW,20,'#4a0f1a');
+for(let i=0;i<4;i++)dDisc(g,64,14,22-i*4,i%2?'#6a1a14':'#541216');
+for(let y=14;y<DH;y++){const hw=Math.round(10+(y-14)*1.55);dR(g,64-hw,y,hw*2,1,'#241016');dR(g,64+Math.round(hw*.35),y,Math.round(hw*.65),1,'#1a0a10')}
+dR(g,52,12,24,3,'#ff7a1a');dR(g,56,11,16,2,((t*6)|0)%2?'#ffd84a':'#ffb040');
+for(const sx of [-1,1])for(let y=15;y<DH;y++){const x=64+sx*(3+(y-15)*(sx>0?.45:.55)),on=((y+t*12)|0)%7<3;dR(g,x,y,2,1,on?'#ff5a1a':'#ff9a2a')}
+for(let i=0;i<4;i++){const x=((t*3+i*38)%(DW+40))-20,y=2+(i%2)*4;dDisc(g,x,y,5,'#2c2026');dDisc(g,x+5,y+1,4,'#3a2a30')}
+EM.forEach(e=>{const y=DH-((t*e.s+e.p*5)%DH),x=e.x+Math.sin(t*2+e.p)*3;if(y<38)dR(g,x,y,1,1,e.c)});
+dR(g,0,39,DW,5,'#c8300f');for(let x=0;x<DW;x+=6)dR(g,(x+t*8)%DW,40+(x%3),4,1,'#ff9a2a')}},
+custom(){const W=256,r=dRng(33),ST=[];for(let i=0;i<128;i++)ST.push({x:r()*W|0,y:r()*30|0,p:r()*6});const CN=[[18,9],[32,15],[46,10],[60,19],[54,27]],CM=[[150,8],[164,13],[176,8],[188,16],[200,12]];
+return(g,t)=>{dR(g,0,0,W,12,'#0e0a2a');dR(g,0,12,W,12,'#1a1244');dR(g,0,24,W,20,'#2a1a5e');
+ST.forEach(s=>{const b=Math.sin(t*2+s.p);dR(g,s.x,s.y,b>.6?2:1,b>.6?2:1,b>-.2?'#ffffff':'#8f84c8')});
+for(let dy=-7;dy<=7;dy++)for(let dx=-7;dx<=7;dx++){if(dx*dx+dy*dy<=49&&(dx-3)*(dx-3)+(dy+2)*(dy+2)>38)dR(g,222+dx,12+dy,1,1,'#fff3c0')}
+[CN,CM].forEach(C=>{for(let i=0;i<C.length-1;i++){const a=C[i],b=C[i+1];for(let k=0;k<=8;k+=2)dR(g,a[0]+(b[0]-a[0])*k/8,a[1]+(b[1]-a[1])*k/8,1,1,'#7a6ac0')}C.forEach(c=>dR(g,c[0]-1,c[1]-1,3,3,'#ffe27a'))});
+const q=(t%7)/1.2;if(q<1){dR(g,130-q*100,3+q*24,6,1,'#fff');dR(g,136-q*100,2+q*24,2,2,'#bfe9ff')}
+for(let x=0;x<W;x++){const h=34+Math.sin(x/9)*3+Math.sin(x/4)*1.5|0;dR(g,x,h,1,DH-h,'#0a0720')}}}};
+/* ---- cards ---- */
+const DKEYS=['easy','medium','hard','expert'],DCACHE={};let DCV=[],DACT=0,DLT=0,DFK=null;
+const dScene=k=>DCACHE[k]||(DCACHE[k]=DSC[k]());
+function dMk(cv,k){const g=cv.getContext('2d');g.imageSmoothingEnabled=false;const f=dScene(k);DCV.push({g,f});f(g,2.2)}
+const dPips=(a,b)=>{const n=RR.filter(w=>w[1]>=a&&w[0]<=b).length||1;return RR.map(w=>'<i class="dpip'+(w[1]>=a&&w[0]<=b?' on':'')+'"></i>').join('')+'<span class="dcs"> '+n+' of 6 layers</span>'};
+const dReduce=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}};
+function dLoop(ms){if(!DACT)return;requestAnimationFrame(dLoop);if(ms-DLT<40||dReduce())return;DLT=ms;const d=$('#diff');if(!d||!d.classList.contains('on'))return;const t=ms/1000;DCV.forEach(c=>c.f(c.g,t))}
+let DMODE='new',DPEND={p:'medium',min:1,max:5},DPREV='title';
+function dOpen(mode){DMODE=mode;DPREV=(document.querySelector('.s.on')||{}).id||'title';DPEND=(mode=='change'||LIVE.tl_diff||LIVE.tl_st)?Object.assign({},DIFF):{p:'medium',min:1,max:5};$('#dok').textContent=mode=='change'?'APPLY':'START ADVENTURE';dDraw();if(!DACT){DACT=1;requestAnimationFrame(dLoop)}show('diff')}
+function dDraw(){const pre=$('#dpre');pre.innerHTML='';DCV=[];
+DKEYS.forEach(k=>{const p=DPRESETS[k],M=DMETA[k],c=document.createElement('div'),sel=DPEND.p==k;c.className='dcard'+(sel?' sel':'');c.tabIndex=0;c.setAttribute('role','radio');c.setAttribute('aria-checked',sel);c.style.setProperty('--ec',M.c);
+c.innerHTML='<canvas width="'+DW+'" height="'+DH+'"></canvas><span class="dtag">SELECTED</span><div class="dcb"><p class="dct">'+p.n+' <span class="dcs">levels '+p.min+'-'+p.max+'</span></p><p class="dcs dsc">'+M.t+': '+M.s+'</p><div class="dcp">'+dPips(p.min,p.max)+'</div><small>'+dInfo(p.min,p.max)+'</small></div>';
+const pick=()=>{DFK=k;DPEND={p:k,min:p.min,max:p.max};dDraw()};c.onclick=pick;c.onkeydown=e=>{if(e.key=='Enter'||e.key==' '){e.preventDefault();pick()}};pre.appendChild(c);dMk(c.querySelector('canvas'),k)});
+const cc=$('#dcc'),a=$('#dmin'),z=$('#dmax'),cs=DPEND.p=='custom';cc.classList.toggle('sel',cs);cc.setAttribute('aria-checked',cs);cc.style.setProperty('--ec',DMETA.custom.c);
+if(!a.options.length)for(let i=1;i<=10;i++){a.add(new Option(i+' '+DL[i],i));z.add(new Option(i+' '+DL[i],i))}
+a.value=DPEND.min;z.value=DPEND.max;$('#dcus').textContent=dInfo(DPEND.min,DPEND.max);$('#dcpips').innerHTML=dPips(DPEND.min,DPEND.max);dMk($('#dcv'),'custom');
+$('#dsub').textContent=DMODE=='change'?'This slot keeps all its progress. Layers you already cleared still count.':'Pick how deep the questions go. You can change it later in SAVE SLOTS.';
+if(DFK){const e=DFK=='custom'?cc:pre.children[DKEYS.indexOf(DFK)];DFK=null;e&&e.focus()}}
+const dCus=()=>{DFK='custom';DPEND={p:'custom',min:+$('#dmin').value,max:+$('#dmax').value};dDraw()};
+$('#dcc').onclick=e=>{if(e.target.closest('select,label'))return;dCus()};$('#dcc').onkeydown=e=>{if(e.target.closest('select'))return;if(e.key=='Enter'||e.key==' '){e.preventDefault();dCus()}};
+$('#dmin').onchange=()=>{let a=+$('#dmin').value,b=DPEND.max;if(a>b)b=a;DFK='custom';DPEND={p:'custom',min:a,max:b};dDraw()};
+$('#dmax').onchange=()=>{let b=+$('#dmax').value,a=DPEND.min;if(b<a)a=b;DFK='custom';DPEND={p:'custom',min:a,max:b};dDraw()};
+$('#dok').onclick=async()=>{DIFF={p:DPEND.p,min:DPEND.min,max:DPEND.max};save('tl_diff',DIFF);DACT=0;if(DMODE=='change'){await slFlush();location.reload();return}beginGame()};
+$('#dbk').onclick=()=>{DACT=0;show(DMODE=='change'?DPREV:'title')};
+/*DIFF-END*/
 function mkSB(){SB={};for(const k in IDX){const a=k.split('|');(SB[a[0]]=SB[a[0]]||[]).push([a[1],IDX[k].n])}for(const k in SB)SB[k]=SB[k].sort((a,b)=>b[1]-a[1]).map(x=>x[0])}
 const subs=k=>{const a=[...new Set(S.filter(x=>x.i==k).map(x=>x.s))];return SB[I[k].n]||(a.length?a:[I[k].n])};
-const pr=k=>subs(k).reduce((a,s)=>a+Math.min(6,G[s]||0),0)/(6*subs(k).length),mast=k=>pr(k)>=1,bc=()=>Object.keys(BD).length,mcount=()=>I.filter((o,k)=>mast(k)).length,fuel=()=>Math.max(0,bc()-Math.max(0,U.length-1));
+const pr=k=>subs(k).reduce((a,s)=>a+Math.min(dNL(),G[s]||0),0)/(dNL()*subs(k).length),mast=k=>pr(k)>=1,bc=()=>Object.keys(BD).length,mcount=()=>I.filter((o,k)=>mast(k)).length,fuel=()=>Math.max(0,bc()-Math.max(0,U.length-1));
 const nd=()=>Object.values(IDX).reduce((a,b)=>a+b.n,0);
 const status=m=>$('#ls').textContent=m||(nd()?`${nd()} real tossups ready across ${Object.values(SB).flat().length} subjects.`:'Question bank not found: using 6 sample questions. Could not read data/index.json (open via GitHub Pages or a local server, not by double-clicking). '+ERR);
 const show0=id=>{document.querySelectorAll('.s').forEach(e=>e.classList.toggle('on',e.id==id));if(id=='map')hud()};
@@ -434,7 +688,7 @@ let trk='title',VOL=.7;try{const v=localStorage.tl_vol;if(v!=null)VOL=Math.max(0
 const fq=n=>440*2**((n-69)/12);
 var _o,MG,MCP;
 function AUD(){if(MG)return MG;MG=ac.createGain();MCP=ac.createDynamicsCompressor();MCP.threshold.value=-16;MCP.knee.value=18;MCP.ratio.value=3.2;MCP.attack.value=.006;MCP.release.value=.22;MG.connect(MCP);MCP.connect(ac.destination);applyVol();return MG}
-function applyVol(){if(!MG)return;MG.gain.cancelScheduledValues(ac.currentTime);MG.gain.setTargetAtTime(mute?0:VOL*VOL*.92,ac.currentTime,.05);const s=$('#vol');if(s&&+s.value!=Math.round(VOL*100))s.value=Math.round(VOL*100);const b=$('#mu');if(b)b.textContent=mute?'SOUND OFF':'SOUND ON'}
+function applyVol(){if(!MG)return;MG.gain.cancelScheduledValues(ac.currentTime);MG.gain.setTargetAtTime(mute?0:VOL*VOL*1.15,ac.currentTime,.05);const s=$('#vol');if(s&&+s.value!=Math.round(VOL*100))s.value=Math.round(VOL*100);const b=$('#mu');if(b)b.textContent=mute?'SOUND OFF':'SOUND ON'}
 function OUT(){if(_o)return _o;AUD();const lp=ac.createBiquadFilter(),m=ac.createGain(),dl=ac.createDelay(),fb=ac.createGain(),wt=ac.createGain();lp.type='lowpass';lp.frequency.value=6000;m.gain.value=.9;dl.delayTime.value=.2;fb.gain.value=.22;wt.gain.value=.14;m.connect(lp);m.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(wt);wt.connect(lp);lp.connect(MG);return _o=m}
 function beep(f,dur=.1,ty='square',v=.05){if(mute||!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(OUT());o.start();g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+dur);o.stop(ac.currentTime+dur)}
 const seq=(fs,ty)=>fs.forEach((f,i)=>setTimeout(()=>beep(f,.14,ty),i*110));
@@ -604,7 +858,7 @@ function mxStart(){if(!ac){ac=new(window.AudioContext||window.webkitAudioContext
 function music(){mxStart()}
 document.addEventListener('pointerdown',()=>mxStart(),{once:true,capture:true});document.addEventListener('keydown',()=>mxStart(),{once:true,capture:true});
 // offline render (testing / export): schedule a whole track into an OfflineAudioContext
-function mxOffline(key,secs,I,sr){const c=new OfflineAudioContext(2,Math.ceil((sr||32000)*secs),sr||32000),out=c.createGain();out.gain.value=.75;const cp=c.createDynamicsCompressor();cp.threshold.value=-16;cp.knee.value=18;cp.ratio.value=3.2;out.connect(cp);cp.connect(c.destination);MX.ok=0;mxInit(c,out);const T0=SONGS[key],T=T0.steps?T0:mx_compile(T0);MT.I=I==null?2:I;const TI=mx_mkInstance(key,T,0,out,0);TI.I=MT.I;mx_sched(TI,secs);const p=c.startRendering();p.then(()=>{MX.ok=0});return p}
+function mxOffline(key,secs,I,sr){const c=new OfflineAudioContext(2,Math.ceil((sr||32000)*secs),sr||32000),out=c.createGain();out.gain.value=.9;const cp=c.createDynamicsCompressor();cp.threshold.value=-16;cp.knee.value=18;cp.ratio.value=3.2;out.connect(cp);cp.connect(c.destination);MX.ok=0;mxInit(c,out);const T0=SONGS[key],T=T0.steps?T0:mx_compile(T0);MT.I=I==null?2:I;const TI=mx_mkInstance(key,T,0,out,0);TI.I=MT.I;mx_sched(TI,secs);const p=c.startRendering();p.then(()=>{MX.ok=0});return p}
 // dev-only validator: bar lengths, chord-tone ratio on strong beats, leaps
 function mxCheck(key){const T=SONGS[key],spb=T.spb||16,md=MODES[T.mode||'maj'],rep=[];T.S.forEach((sec,si)=>{const chs=sec.ch.trim().split(/\s+/).map(c=>mx_chord(c,md));for(const id in sec.p){const P=sec.p[id];if(P.m==null)continue;const bars=String(P.m).split('|').map(b=>mx_parseM(b).total||0);bars.forEach((n,bi)=>{if(n!=spb&&String(P.m).includes('|'))rep.push(`${key} sec${si} ${id} bar${bi+1}: ${n} steps (want ${spb})`)});const tot=bars.reduce((a,b)=>a+b,0);if(tot!=sec.n*spb&&tot&&(sec.n*spb)%tot)rep.push(`${key} sec${si} ${id}: total ${tot} vs ${sec.n*spb}`);
 const mel=mx_parseM(P.m);let bad=0,strong=0,prev=null;mel.forEach(n=>{const midi=md[(n.d-1)%7]+n.a+12*(Math.floor((n.d-1)/7)+n.o);if(prev!=null&&Math.abs(midi-prev)>12)rep.push(`${key} sec${si} ${id}: leap ${midi-prev} at step ${n.s}`);prev=midi;const bar=Math.floor(n.s/spb),ch=chs[bar%chs.length],bs=n.s%spb;if(bs%(spb==12?6:4)==0&&n.l>=2){strong++;const pc=((midi-ch.r)%12+12)%12;if(!ch.t.some(t=>t%12==pc)&&!(ch.t.length==3&&[2,9,11].includes(pc)&&0)){bad++;if(bad<=4)rep.push(`${key} sec${si} ${id} bar${bar+1}: scale deg ${n.d}${n.a?'*':''} not in chord ${ch.sym} (step ${bs})`)}}});if(strong&&bad/strong>.35)rep.push(`${key} sec${si} ${id}: ${bad}/${strong} strong-beat non-chord tones`)}});return rep}
@@ -621,122 +875,6 @@ S:[{n:4,ch:'1 5 6m 4',p:{pno:{st:'arp',g:'x.x.x.x.x.x.x.x.',ord:'up',v:.7},pad:{
 {n:8,ch:'1 5 6m 3m 4 1 4 5',p:{lead:{m:T_A},pno:{st:'arp',g:'x.x.x.x.x.x.x.x.',ord:'ud',v:.7},gtr:{st:'strum',g:'D.d.DuD.D.d.DuD.',v:.8},pad:{st:'pad',v:.6},bas:{st:'bass',g:'R.......5.......'},drm:{d:{k:'x.......x.x.....',sr:'....x.......x...',h:'x.x.x.x.x.x.x.x.',sh:'..x...x...x...x.'},fill:'snare'}}},
 {n:8,ch:'6m 3m 4 1 6m 2m 4 5',p:{lead:{m:T_B},pno:{st:'arp',g:'x.xxx.xxx.xxx.xx',ord:'ud',v:.8},gtr:{st:'strum',g:'D.d.DuD.D.d.DuD.',v:.9},stl:{m:'r:128'},pad:{st:'pad',v:.8},bas:{st:'bass',g:'R...R.R.5...R.5.'},drm:{d:{k:'x...x...x...x...',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',ho:'..............o.'},fill:'toms',cr:1}}},
 {n:8,ch:'1 5 6m 3m 4 1 5 1',p:{lead:{m:T_C,v:.9},horn:{m:T_C},stl:{m:T_C,v:.7},pno:{st:'arp',g:'xxxxxxxxxxxxxxxx',ord:'ud',v:.75},gtr:{st:'strum',g:'D.dUDuD.D.dUDuDu',v:1},pad:{st:'pad',v:.9},bas:{st:'bass',g:'R.R.R.R.R.R.R.R.'},drm:{d:{k:'x..xx..xx..xx.x.',s:'....X.......X...',h:'x.x.x.x.x.x.x.x.',ho:'..............o.'},fill:'toms',cr:1},tim:{d:{tp:'x.......x.......'}}}}]};
-
-// ================= ISLAND SONG GENERATOR =================
-// Each island has a leitmotif (mA, mB). Map = calm arrangement; Keeper battle = same motif in the parallel minor, faster, driven;
-// Boss = the motif again, heavier (brass + choir + timpani), with more intensity layers.
-const DGR={16:{m:{rock:{k:'x.......x.x.....',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.'},fold:{k:'x.......x.......',tb:'..x...x...x...x.',sh:'x.x.x.x.x.x.x.x.'},funk:{k:'x...x...x...x...',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',cl:'....x.......x...'},jazz:{rd:'x..xx..xx..xx..x',k:'x...............',sr:'....x.......x...'},march:{k:'x...x...x...x...',s:'..x...x...x...x.',tb:'x...............'},soft:{sh:'x...x...x...x...',k:'x...............'},none:{sh:'x...............'}},
- b:{k:'x..xx..xx..xx.x.',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',ho:'..............o.'},c:{k:'xx.xx.xxxx.xx.xx',s:'....x.......x...',h:'xxxxxxxxxxxxxxxx',ho:'..o...o...o...o.'}},
- 12:{m:{waltz:{k:'x...........',s:'....x...x...',h:'x.x.x.x.x.x.'},soft:{sh:'x...x...x...',k:'x...........'},jig:{k:'x.....x.....',s:'....x...x...',h:'x.x.x.x.x.x.'}},
- b:{k:'x..x..x..x..',s:'..x..x..x..x',h:'x.x.x.x.x.x.',ho:'..........o.'},c:{k:'xx.xx.xx.xx.',s:'..x..x..x..x',h:'xxxxxxxxxxxx',ho:'..o...o...o.'}}};
-const ARPG={16:'x.x.x.x.x.x.x.x.',12:'x.x.x.x.x.x.'},BSG={16:'R.......5.......',12:'R.......5...'},BSB={16:'R.R.R.R.R.R.R.R.',12:'R.R.R.R.R.R.'},GTG={16:'D.d.D.D.D.d.D.DU',12:'D.d.D.D.d.D.'},PADL={16:'x...............',12:'x...........'};
-const PAR={maj:'min',lyd:'min',mix:'min',dor:'dor',min:'min',hmin:'hmin',phr:'phr',pmin:'pmin'};
-const mxDbl=(m)=>m.replace(/:(\d+)/g,(a,n)=>':'+Math.max(1,Math.round(n/2)));
-function mkMap(s){const spb=s.spb||16,D=DGR[spb].m[s.gr||(spb==12?'waltz':'rock')],cp=Object.assign({st:'arp',g:ARPG[spb],ord:'ud',v:.8},s.cs||{});
-const bs=Object.assign({st:'bass',g:BSG[spb]},s.bs||{});const px=s.px||{};
-const L={ld:{i:s.lead,v:.95,p:.12,rv:.35,dl:.14,oct:s.lo||0},l2:{i:s.l2,v:.7,p:-.2,rv:.3,oct:s.l2o==null?1:s.l2o,dl:.1},cp:Object.assign({i:s.comp,v:.62,p:-.32,rv:.25,lo:s.clo||48},s.cL||{}),pd:{i:s.pad||'str',v:.4,p:.3,rv:.45,lo:48},bs:{i:s.bass,v:.85,lo:s.blo||34},dm:{i:'drums',v:.55,rm:.15},pc:{i:'drums',v:.55}};
-const base=(m,ch)=>({n:8,ch,p:{cp,pd:{st:'pad',v:.7},bs,dm:{d:D,fill:s.fill||'snare',fe:4},ld:{m}}});
-const A=base(s.mA,s.chA),B=base(s.mB,s.chB),A2=base(s.mA,s.chA);B.p.l2={m:s.mB,v:.7};B.p.pc={d:px.d||{}};A2.p.l2={m:s.mA};A2.p.ld={m:s.mA,v:1};
-if(!px.d)delete B.p.pc;
-return{bpm:s.bpm,root:s.root,mode:s.mode,spb,sw:s.sw||0,loop:0,L,S:[A,B,A2]}}
-function mkBat(s,boss){const spb=s.spb||16,md=PAR[s.mode]||'min',bs=boss&&md=='min'&&s.mode!='dor'&&s.mode!='min'?'phr':md,DB=DGR[spb][boss?'c':'b'],bp=Math.min(176,Math.round(s.bpm*(boss?1.5:1.38))),px=s.px||{};
-const L={ld:{i:boss?(s.bb||'brass'):(s.bl||'dist'),v:.9,p:.05,rv:.25,dl:.12,o:boss?undefined:{shape:3.2,cut:3600}},ct:{i:s.bc||'trumpet',v:.65,p:-.25,rv:.3,minI:1,oct:s.bco==null?1:s.bco},hi:{i:'str',v:.6,p:.3,rv:.4,minI:2,oct:1},
- gt:{i:'dist',v:.7,p:-.4,rv:.15,lo:40,o:{shape:3,cut:3200}},bs:{i:'ebass',v:.9,lo:s.blo||34},st:{i:'str',v:.4,p:.2,rv:.4,lo:48},dm:{i:'drums',v:.62,rm:.12},pc:{i:'drums',v:.6,minI:1},ch:{i:'choir',v:.5,p:0,rv:.5,lo:52,minI:boss?1:2},tp:{i:'drums',v:.8,rv:.3,f:73.4,minI:boss?0:1},ar:{i:'arp',v:.4,p:.4,dl:.25,minI:2,lo:60}};
-const gt={st:'strum',g:GTG[spb],v:.85},bsl={st:'bass',g:BSB[spb]};
-const sec=(m,ch,m2)=>{const p={ld:{m},gt,bs:bsl,st:{st:'pad',v:.8},dm:{d:DB,fill:'toms',fe:4,cr:1},pc:{d:Object.assign({tb:'..x...x...x...x.'.slice(0,spb)},px.b||{})},ch:{st:'pad',v:.8},ar:{st:'arp',g:ARPG[spb],ord:'up',v:.8,up:1}};p.ct={m:m};p.tp={d:{tp:spb==12?'x.....x.....':'x.......x.......'}};return{n:8,ch,p}};
-const S=[];if(boss)S.push({n:2,ch:s.chA.split(/\s+/).slice(0,2).join(' '),p:{tp:{d:{tp:spb==12?'x..x..x..x..':'x.x.x.x.xxxxxxxx'}},ch:{st:'pad',v:.9},bs:{st:'bass',g:BSG[spb]},dm:{d:{k:'x...............'.slice(0,spb)}}}});
-S.push(sec(s.mA,s.chA,s.mB),sec(boss?s.mB:s.mB,s.chB,s.mA),sec(s.mA,s.chA,boss?s.mB:s.mA));
-return{bpm:bp,root:s.root-(boss?0:0),mode:boss?bs:md,spb,loop:boss?1:0,L,S}}
-const ISP=[
-{n:'Literature',root:65,mode:'maj',bpm:100,spb:12,lead:'clar',l2:'celesta',comp:'nylon',cs:{ord:'up'},bass:'ubass',bl:'steel',bc:'flute',
- chA:'1 6m 4 5 1 6m 4 5',chB:'6m 4 5 1 6m 4 5 1',
- mA:'5:4 1^:4 3^:4 | 2^:6 1^:2 7:2 6:2 | 5:4 4^:4 3^:4 | 2^:6 1^:6',
- mB:'3^:6 5^:2 3^:2 1^:2 | 6:4 1^:4 4^:4 | 2^:6 4^:2 2^:2 7:2 | 1^:8 r:4'},
-{n:'History',root:62,mode:'hmin',bpm:96,lead:'oboe',l2:'flute',comp:'harp',cs:{ord:'ud'},bass:'ubass',gr:'march',bl:'steel',bc:'oboe',px:{b:{cg:'..x..x..x..x..x.'}},
- chA:'1 4 5 1 1 4 5 1',chB:'6 5 1 1 6 5 1 1',
- mA:'5:6 6:2 5:2 4:2 3:4 | 2:4 3:4 2:4 1:4 | 4:4 5:4 6:2 7:2 1^:4 | 1^:12 r:4',
- mB:'1^:4 7:2 6:2 5:4 6:4 | 7:4 6:4 5:4 7:4 | 1^:6 2^:2 3^:4 2^:4 | 1^:4 7:4 6:2 5:2 4:4'},
-{n:'Science',root:64,mode:'lyd',bpm:126,lead:'lead',l2:'marimba',comp:'arp',cs:{ord:'up',g:'xxxxxxxxxxxxxxxx',v:.7},bass:'sbass',gr:'funk',bl:'saw',bc:'fm',pad:'pad',
- chA:'1 2 1 5 1 2 6 5',chB:'6 2 1 5 6 2 1 5',
- mA:'1^:2 3:2 5:2 3:2 1^:2 3:2 5:4 | 2^:2 4^:2 6^:2 4^:2 2^:2 4^:2 6^:4 | 1^:2 3:2 5:2 3:2 1^:6 r:2 | 7:2 2^:2 7:2 2^:2 5:8',
- mB:'6:2 1^:2 3^:2 1^:2 6:2 1^:2 3^:4 | 4^:2 2^:2 4^:2 6^:2 4^:4 2^:4 | 3^:4 2^:4 1^:4 5:4 | 7:6 2^:2 5:8'},
-{n:'Fine Arts',root:67,mode:'maj',bpm:84,lead:'flute',l2:'violin',comp:'harp',cs:{ord:'alb'},bass:'cello',gr:'soft',bl:'clean',bc:'violin',pad:'str',
- chA:'1 3m 4j7 1 1 3m 4j7 1',chB:'6m 4j7 1 5 6m 4j7 1 5',
- mA:'3:6 5:2 1^:8 | 7:6 5:2 3:8 | 4:4 6:4 1^:4 3^:4 | 2^:8 1^:8',
- mB:'5:4 3^:4 2^:4 1^:4 | 4^:6 3^:2 1^:8 | 5:4 1^:4 3^:4 5^:4 | 2^:8 5:4 7:4'},
-{n:'Mythology',root:57,mode:'dor',bpm:92,lead:'horn',l2:'flute',comp:'harp',cs:{ord:'ud'},bass:'cello',gr:'march',bl:'dist',bc:'trumpet',px:{b:{t2:'..............x.'}},
- chA:'1 7 4 1 1 7 4 1',chB:'3 7 4 1 3 7 4 1',
- mA:'1:4 3:4 5:4 1^:4 | 7:4 2^:4 4^:4 2^:4 | 4^:4 6^:4 4^:4 2^:4 | 1^:12 r:4',
- mB:'3^:6 5^:2 3^:4 1^:4 | 2^:6 4^:2 2^:8 | 6^:6 4^:2 2^:4 4^:4 | 1^:12 3^:4'},
-{n:'Religion',root:58,mode:'maj',bpm:72,lead:'choir',l2:'bell',comp:'organ',cs:{st:'pad',v:.5},bass:'cello',bs:{g:'R...............'},gr:'none',bl:'organ',bc:'choir',pad:'str',
- chA:'1 5 6m 4 1 5 4 1',chB:'6m 4 1 5 6m 4 1 1',
- mA:'3:8 5:8 | 7:8 2^:8 | 1^:8 6:8 | 4:8 6:8',
- mB:'6:4 1^:4 3^:8 | 4^:8 3^:4 1^:4 | 5:4 1^:4 5^:8 | 4^:4 2^:4 7:8'},
-{n:'Philosophy',root:59,mode:'min',bpm:76,lead:'piano',l2:'cello',l2o:0,comp:'harp',cs:{ord:'alb'},bass:'cello',gr:'soft',bl:'clean',bc:'cello',
- chA:'1 6 7 1 1 6 7 1',chB:'1 6 7 1 1 6 7 1',
- mA:'1:2 3:2 5:2 3:2 1:2 3:2 5:2 3:2 | 6:2 1^:2 3^:2 1^:2 6:2 1^:2 3^:2 1^:2 | 7:2 2^:2 4^:2 2^:2 7:2 2^:2 4^:2 2^:2 | 1^:8 5:8',
- mB:'5^:6 4^:2 3^:8 | 3^:6 2^:2 1^:8 | 2^:6 1^:2 7:8 | 1^:12 r:4'},
-{n:'Social Science',root:62,mode:'dor',bpm:108,sw:.18,lead:'vibes',l2:'clar',comp:'epiano',cs:{st:'chord',g:'x.....x...x.....',v:.7},bass:'ubass',bs:{st:'walk'},gr:'jazz',bl:'clean',bc:'trumpet',
- chA:'1m7 47 7j7 1m7 1m7 47 2m7 1m7',chB:'2m7 47 1m7 1m7 2m7 47 7j7 1m7',
- mA:'1^:3 7:1 6:2 5:2 3:4 5:4 | 4:3 6:1 1^:2 6:2 4:4 r:4 | 2^:4 7:2 6:2 4:4 2:4 | 1^:6 5:2 3:4 1:4',
- mB:'5:4 6:2 7:2 1^:4 7:4 | 6:4 4:4 2:4 4:4 | 3:6 5:2 1^:8 | 7:4 6:4 5:8'},
-{n:'Geography',root:62,mode:'mix',bpm:124,lead:'whistle',l2:'violin',comp:'uke',cs:{st:'strum',g:'D.dUD.dUD.dUD.dU',v:.8},bass:'ubass',gr:'fold',bl:'banjo',bc:'violin',
- chA:'1 7 4 1 1 7 4 1',chB:'4 1 7 1 4 1 7 1',
- mA:'5:4 1^:2 1^:2 7:4 5:4 | 7:4 2^:2 4^:2 2^:4 7:4 | 4:4 6:2 1^:2 6:4 4:4 | 1^:8 5:4 1:4',
- mB:'4^:4 2^:4 4^:4 6^:4 | 1^:4 6^:2 5^:2 3^:4 1^:4 | 2^:4 4^:4 2^:4 7:4 | 1^:12 r:4'},
-{n:'Pop Culture',root:60,mode:'maj',bpm:124,sw:.08,lead:'saw',l2:'lead',comp:'arp',cs:{ord:'p3',g:'x.x.x.x.x.x.x.x.',v:.7},bass:'sbass',gr:'funk',bl:'saw',bc:'lead',pad:'pad',
- chA:'1 5 6m 4 1 5 6m 4',chB:'4 1 5 6m 4 1 5 1',
- mA:'5:2 5:2 1^:2 5:2 3^:4 1^:4 | 5:2 5:2 2^:2 5:2 4^:4 2^:4 | 6:2 6:2 1^:2 6:2 3^:4 1^:4 | 4:2 6:2 1^:2 6:2 4^:8',
- mB:'6^:4 4^:4 1^:4 6:4 | 5^:4 3^:4 1^:4 5:4 | 7^:4 5^:4 2^:4 7:4 | 6:8 3^:8'},
-{n:'Current Events',root:57,mode:'min',bpm:132,lead:'trumpet',l2:'str',comp:'dmute',cs:{st:'strum',g:'D.D.D.D.D.D.D.D.',v:.7},bass:'ebass',gr:'rock',bl:'dist',bc:'trumpet',fill:'roll',
- chA:'1 6 7 1 1 6 7 5',chB:'4 6 7 1 4 6 7 1',
- mA:'1^:2 1^:2 7:2 1^:2 3^:4 1^:4 | 6:2 6:2 5:2 6:2 1^:4 6:4 | 7:2 7:2 6:2 7:2 2^:4 7:4 | 1^:8 r:8',
- mB:'2^:4 4^:4 6^:4 4^:4 | 1^:4 3^:4 5^:4 3^:4 | 2^:4 4^:4 7:4 4:4 | 1^:6 3^:2 5^:8'},
-{n:'Other Academic',root:62,mode:'lyd',bpm:108,spb:12,lead:'clar',l2:'musicbox',comp:'pizz',cs:{ord:'up'},bass:'ubass',gr:'jig',bl:'clean',bc:'oboe',
- chA:'1 2 1 5 1 2 1 5',chB:'6m 2 1 5 6m 2 1 5',
- mA:'3:2 5:2 3:2 1^:2 5:2 3:2 | 4:2 6:2 4:2 2^:2 6:2 4:2 | 1^:6 5:6 | 7:4 2^:4 5:4',
- mB:'3^:4 1^:4 6:4 | 4^:4 6^:4 4^:4 | 5^:4 3^:4 1^:4 | 7:4 2^:4 7:4'}];
-ISP.forEach((s,k)=>{SONGS['i'+k]=mkMap(s);SONGS['f'+k]=mkBat(s,0);SONGS['b'+k]=mkBat(s,1)});
-
-// ================= FIXED TRACKS =================
-SONGS.sea=mkMap({root:62,mode:'mix',bpm:112,spb:12,lead:'whistle',l2:'violin',comp:'banjo',cs:{st:'strum',g:'D.d.D.d.D.d.',v:.8},bass:'ubass',gr:'jig',
- chA:'1 7 4 1 1 7 4 1',chB:'4 1 7 1 4 1 7 1',
- mA:'1^:6 5:2 5:2 3:2 | 7:4 2^:4 4^:4 | 4:6 6:2 1^:2 6:2 | 1^:8 r:4',
- mB:'4^:6 2^:2 4^:4 | 1^:4 3^:4 5^:4 | 7:4 2^:4 4^:4 | 1^:12'});
-SONGS.lab=mkMap({root:60,mode:'maj',bpm:104,sw:.1,lead:'marimba',l2:'glock',comp:'epiano',cs:{st:'chord',g:'x.....x...x.....',v:.7},bass:'ubass',bs:{st:'bass',g:'R...R.R.5...R.5.'},gr:'rock',
- chA:'1 6m 2m 5 1 6m 2m 5',chB:'4 5 1 6m 4 5 1 1',
- mA:'1^:2 3^:2 5^:4 3^:2 1^:2 r:4 | 6:2 1^:2 3^:4 1^:2 6:2 r:4 | 2^:2 4^:2 6^:4 4^:2 2^:2 r:4 | 7:2 2^:2 5^:4 2^:2 7:2 5:4',
- mB:'6^:4 4^:4 1^:4 6:4 | 5^:4 2^:4 7:4 5:4 | 3^:6 1^:2 5:8 | 6:4 1^:4 3^:8'});
-SONGS.story=mkMap({root:62,mode:'min',bpm:78,lead:'flute',l2:'cello',l2o:0,comp:'piano',cs:{ord:'alb',v:.7},bass:'cello',gr:'none',
- chA:'1 6 3 7 1 6 3 7',chB:'4 5 1 1 4 5 1 1',
- mA:'5:6 3:2 1:8 | 6:6 5:2 3:8 | 3^:6 2^:2 1^:8 | 7:6 2:2 4:8',
- mB:'4:6 6:2 1^:8 | 5:6 7:2 2^:8 | 1^:6 3^:2 5^:8 | 3^:8 1^:8'});
-SONGS.secret=mkMap({root:50,mode:'phr',bpm:66,lead:'bell',l2:'ooh',l2o:1,comp:'harp',cs:{g:'x...x...x...x...',ord:'up'},bass:'cello',pad:'choir',gr:'none',
- chA:'1 2 1 6 1 2 1 6',chB:'1 6 2 1 1 6 2 1',
- mA:'1^:8 2^:4 1^:4 | 2^:8 4^:4 6:4 | 5:8 3:4 1:4 | 6:8 4:8',
- mB:'5^:6 4^:2 3^:8 | 2^:8 1^:8 | 3^:6 2^:2 1^:8 | 7:16'});
-SONGS.secret.L.cp.o={trem:5.5};
-// --- Grand Inquisitor: 3 intensity levels (0 = ominous, 1 = battle, 2 = all-out) ---
-(function(){const spb=16,D={k:'x..xx..xx.x.x..x',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',ho:'..o...o...o...o.'},D2={k:'xx.xx.xxxx.xx.xx',s:'....X.......X...',h:'xxxxxxxxxxxxxxxx',ho:'..o...o...o...o.',cr:'x...............'};
-const IA='1^:3 1^:1 1^:2 3^:2 5^:4 3^:4 | 4^:3 4^:1 4^:2 3^:2 2^:4 1^:4 | 6:4 1^:4 3^:4 6^:4 | 5:4 7:4 2^:4 7:2 6:2';
-const IB='6^:6 5^:2 4^:4 3^:4 | 4^:6 3^:2 2^:4 4^:4 | 5^:4 3^:4 1^:8 | 5:4 7:4 2^:4 5^:4';
-const L={org:{i:'organ',v:.5,p:-.1,rv:.4,lo:38},ch:{i:'choir',v:.55,rv:.55,lo:50},bl:{i:'bell',v:.5,p:.35,rv:.5,dl:.3,lo:62},tp:{i:'drums',v:.85,rv:.3,f:73.4},bs:{i:'ebass',v:.9,lo:28},
- gt:{i:'dist',v:.75,p:-.4,rv:.15,lo:38,minI:1,o:{shape:3.4,cut:3400}},bf:{i:'dist',v:.6,p:.4,rv:.1,lo:26,minI:1,o:{shape:3.4,cut:2600}},ld:{i:'brass',v:.85,p:.1,rv:.3,dl:.12,minI:1},ct:{i:'violin',v:.6,p:-.3,rv:.35,minI:2,oct:1},st:{i:'str',v:.5,p:.3,rv:.4,lo:48,minI:1},hi:{i:'str',v:.5,p:-.2,rv:.4,lo:60,minI:2},dm:{i:'drums',v:.65,rm:.12,minI:1},d2:{i:'drums',v:.7,rm:.12,minI:2},ar:{i:'arp',v:.4,p:.4,dl:.25,minI:2,lo:62}};
-const common=(m,m2)=>({org:{st:'pad',v:.9},ch:{st:'pad',v:.8},bl:{st:'arp',g:'x.......x.......',ord:'up'},tp:{d:{tp:'x.......x.......'}},bs:{st:'bass',g:'R.......R.......'},bf:{st:'bass',g:'RRRRRRRRRRRRRRRR',v:.8},gt:{st:'strum',g:'D.d.D.D.D.d.D.DU',v:.85},st:{st:'pad',v:.8},hi:{st:'arp',g:'xxxxxxxxxxxxxxxx',ord:'up',v:.7},dm:{d:D,fill:'toms',fe:4,cr:1},d2:{d:D2},ar:{st:'arp',g:'x.x.x.x.x.x.x.x.',ord:'up',v:.8,up:1},ld:{m},ct:{m:m2||m}});
-SONGS.boss={bpm:150,root:50,mode:'hmin',spb,loop:1,L,S:[
- {n:2,ch:'1 1',p:{org:{st:'pad',v:.9},ch:{st:'pad',v:.9},tp:{d:{tp:'x.x.x.x.xxxxxxxx|x..x..x..x..xxxx'}},bs:{st:'bass',g:'R...............'}}},
- {n:8,ch:'1 1 6 5 1 1 4 5',p:common(IA,IB)},
- {n:8,ch:'6 4 1 5 6 4 5 1',p:common(IB,IA)},
- {n:4,ch:'1 6 4 5',p:{org:{st:'pad',v:1},ch:{st:'pad',v:1},bl:{st:'arp',g:'x.x.x.x.x.x.x.x.',ord:'ud'},tp:{d:{tp:'x...............'}},bs:{st:'bass',g:'R...............'},ld:{m:'5^:8 3^:8 | 4^:8 2^:8 | 3^:8 1^:8 | 2^:8 7:8'},st:{st:'pad',v:.8}}},
- {n:8,ch:'1 1 6 5 1 1 4 5',p:common(IA,IB)}]}})();
-// --- stingers (play once) ---
-const STL=(o)=>Object.assign({tr:{i:'trumpet',v:.9,rv:.35},hr:{i:'horn',v:.7,p:-.2,rv:.35},gl:{i:'glock',v:.6,p:.35,rv:.4,oct:1},ch:{i:'choir',v:.55,rv:.5,lo:52},st:{i:'str',v:.5,p:.2,rv:.4,lo:48},bs:{i:'ebass',v:.8,lo:34},dm:{i:'drums',v:.7,rm:.12},tp:{i:'drums',v:.8,rv:.3,f:73.4}},o||{});
-SONGS.victory={bpm:140,root:60,mode:'maj',spb:16,L:STL(),S:[{n:2,ch:'1 1',p:{tr:{m:'1:2 3:2 5:2 1^:6 5:2 1^:2 | 5:2 1^:2 3^:2 5^:10'},hr:{m:'1:2 3:2 5:2 1^:6 5:2 1^:2 | 5:2 1^:2 3^:2 5^:10'},gl:{m:'5:2 1^:2 3^:2 5^:2 1^:2 3^:2 5^:2 1^:2 | 3^:2 5^:2 3^:2 5^:2 1^:8'},st:{st:'pad',v:.8},tp:{d:{tp:'x.x.xxxxx.x.x...|x...............'}},dm:{d:{k:'x...............|x...............',cr:'................|x...............'}},bs:{st:'bass',g:'R.R.R.R.R.R.R.R.'}}}]};
-SONGS.bossWin={bpm:120,root:62,mode:'maj',spb:16,L:STL(),S:[{n:4,ch:'1 4 5 1',p:{tr:{m:'1^:4 1^:2 3^:2 5^:8 | 6^:4 5^:2 4^:2 3^:8 | 2^:4 4^:2 2^:2 7:8 | 1^:4 3^:4 5^:8'},hr:{m:'1:4 1:2 3:2 5:8 | 4:4 6:2 4:2 3:8 | 5:4 7:2 5:2 2:8 | 1:4 3:4 5:8'},gl:{m:'1^:2 3^:2 5^:2 3^:2 1^:2 3^:2 5^:2 3^:2 | 4^:2 6^:2 1^^:2 6^:2 4^:2 6^:2 1^^:2 6^:2 | 5^:2 7^:2 2^^:2 7^:2 5^:2 7^:2 2^^:2 7^:2 | 1^^:16'},ch:{st:'pad',v:.9},st:{st:'pad',v:.8},tp:{d:{tp:'x.x.xxxxx.x.x...|x...x...x...x...|x...x...x.x.xxxx|x...............'}},dm:{d:{k:'x...x...x...x...',s:'..............xx'},cr:1},bs:{st:'bass',g:'R...R...R...R...'}}}]};
-SONGS.finalWin={bpm:112,root:62,mode:'maj',spb:16,L:Object.assign(STL(),{fl:{i:'flute',v:.7,p:.2,rv:.4,oct:1}}),S:[{n:8,ch:'1 5 6m 3m 4 1 5 1',p:{tr:{m:T_C},hr:{m:T_C,v:.8},fl:{m:T_C},gl:{m:T_C},ch:{st:'pad',v:.9},st:{st:'pad',v:.9},tp:{d:{tp:'x.......x.......'}},dm:{d:{k:'x..xx..xx..xx.x.',s:'....X.......X...',h:'x.x.x.x.x.x.x.x.'},fill:'toms',cr:1},bs:{st:'bass',g:'R.R.R.R.R.R.R.R.'}}}]};
-SONGS.death={bpm:66,root:52,mode:'min',spb:16,L:{ld:{i:'cello',v:.9,rv:.5},bl:{i:'bell',v:.5,p:.3,rv:.6,oct:1},st:{i:'str',v:.5,rv:.5,lo:40},tp:{i:'drums',v:.9,rv:.4,f:65.4}},S:[{n:3,ch:'1 4 1',p:{ld:{m:'5:4 4:4 3:4 2:4 | 3:6 2:2 1:8 | 1v:16'},bl:{m:'5:2 r:14 | 3:2 r:14 | 1:2 r:14'},st:{st:'pad',v:.8},tp:{d:{tp:'x...............|................|x...............'}}}}]};
-// loudness trim: battle/boss stacks are denser than maps
-(function(){const tr=(k,f)=>{const L=SONGS[k].L;for(const id in L)L[id].v=(L[id].v==null?1:L[id].v)*f};for(let k=0;k<12;k++){tr('f'+k,.62);tr('b'+k,.58)}tr('boss',.55)})();
 // ================= SFX + audio UI hooks =================
 // The tossup blips, buzzer, correct / neg / power sounds stay as simple synth beeps (beep/seq in 50_audio.js). UI + stings live here.
 var SFX={
@@ -752,8 +890,157 @@ $('#vol').addEventListener('input',e=>{VOL=e.target.value/100;try{localStorage.t
 $('#mu').onclick=()=>{mute=!mute;applyVol();$('#mu').textContent=mute?'SOUND OFF':'SOUND ON'};
 // ---- story ----
 function story(lines,cb){show('story');let i=0;$('#sp').replaceChildren(hero(6,{hair:'#eeeeee',skin:'#f2c9a0',top:'#7a3fbf',bot:'#3a3f7a',hs:1,fs:1,ts:4,bs:0}));const go=()=>{$('#stx').textContent=lines[i]};go();$('#snx').onclick=()=>{beep(520,.05);if(++i>=lines.length)cb();else go()}}
-$('#go').onclick=async()=>{await READY;P.name=$('#nm').value.trim()||'Hero';save('tl_p2',P);try{U=JSON.parse(localStorage.tl_u||'[]')}catch(e){}if(ADM())U=I.map((o,k)=>k);ac=ac||new(window.AudioContext||window.webkitAudioContext)();music();
-if(localStorage.tl_st){mode='sea';show('map')}else{try{localStorage.tl_st=1}catch(e){}story([`Welcome to Tossup Land, ${P.name}! I am Professor Power, keeper of the Great Buzzer.`,`A great blackout shattered the Buzzer and the isles' Keepers forgot their answers.`,`At first you may visit only ONE isle. Master every subject there, from Middle School up to Hard College, and you earn Buzzer Fuel for your boat.`,`Every Keeper is wrapped in six LAYERS. The outer shell is weakest; the closer you get to the Heart Core, the stronger it becomes. Break a layer and the Lab keeps a copy for practice.`,`Each Fuel unlocks a new isle. Each isle hides a Boss, and some hide secrets. Buzz early for POWER!`],()=>{mode='sea';show('map')})}};
+$('#go').onclick=async()=>{await READY;await SLOTS_READY;P.name=$('#nm').value.trim()||'Hero';save('tl_p2',P);dOpen('new')};
+function beginGame(){try{U=JSON.parse(LIVE.tl_u||'[]')}catch(e){U=[]}if(ADM())U=I.map((o,k)=>k);ac=ac||new(window.AudioContext||window.webkitAudioContext)();music();
+if(LIVE.tl_st){mode='sea';show('map')}else{lset('tl_st','1');story(INTRO.map(FILL),()=>{mode='sea';show('map')})}}
+/*LORE-START*/
+/* ================= STORY AND LORE (Stage 3) =================
+   Premise: the Great Buzzer was shattered into 12 pieces and hidden with 12 island Keepers by the Grand Inquisitor (once Quentin Query).
+   His one motive: CERTAINTY. No negs, no wrong answers, no surprises. Every Keeper guards a piece because the Inquisitor promised
+   them their own kind of certainty. Layer lore: outer layers are weakest (his promise is thin at the shell), and every layer you break
+   is copied into the Lab by Professor Power's Copier for practice. Suggested route = island order 1-12 (each epilogue hands over
+   one scrap of Quentin's old letter; read in order they make sense). Nothing is locked by this, it is a story reason only. */
+const SIDE={cap:'Captain Neggins',pip:'Pip',moe:'Moderator Moe',nova:'Nova Quickdraw',prof:'Professor Power',gi:'The Grand Inquisitor'};
+const LETTER=["Dear Professor,","you taught me to buzz.","Then you taught me to neg.","Ten points, then minus five.","I felt that minus for forty years.","So I built a world without it.","No risk. No wrong. No surprise.","But a world with no wrong","is a world with no new questions.","I see that now. Too late?","Come find me, champion.","Bring the Buzzer. -Q."];
+const LK=[
+{nm:'The Prose Phantasm',pc:'VOICE',pers:'A dramatic ghost-author who weeps at his own sentences.',style:'Flowery prose, ellipses, chapter titles.',
+back:'He ghost-wrote every great book and never signed one. The Inquisitor promised him the last word. Forever.',
+link:'He guarded the Buzzer\'s VOICE, the chime that says "you may answer."',
+intro:'Chapter One: The Student Arrives. Chapter Two: Defeat.',p2:'Plot twist! I was the editor all along!',
+def:'The end... of me. Take the Voice. It was never mine.',epi:'He starts a new draft with an ending he does not know yet. "Try History next," he whispers. "A king there keeps the Timer."',
+sealed:'The Voice sleeps. Master this isle first',open:'The shrine rustles like turning pages.',done:'The Voice is yours. History is next.',
+arr:['Captain Neggins: "Land ho! Literature Isle. I negged a trivia night here once. Never again."','Every page on this isle has gone blank. The Inquisitor stole the last word, and the Voice with it.','Piece 1 of 12: the VOICE. Master every subject to wake the shrine.'],short:'Literature Isle. Piece 1: the VOICE.'},
+{nm:'Emperor Chronos',pc:'TIMER',pers:'A pompous emperor who rules every era and forgets today\'s date.',style:'Royal "we", decrees, dates.',
+back:'He ruled every empire in turn and lost count. The Inquisitor swore history would never be revised again. He wept with joy.',
+link:'He froze the Buzzer\'s TIMER inside one endless second.',
+intro:'WE decree your doom. Date of your fall: today!',p2:'WE are not amused! Behold the Age of Ruin!',
+def:'Our reign ends. Take the Timer. We lost track of the date anyway.',epi:'Chronos checks his sundial, sighs, and abdicates. "Science," he says. "A cold one keeps the Core. Dress warm."',
+sealed:'The Timer is frozen. Master this isle first',open:'The shrine ticks. Each tick feels louder.',done:'The Timer runs again. Science is next.',
+arr:['Captain Neggins: "History Isle! Mind the ruins, they bite. Also the dates. They really bite."','Every clock here stopped at the same second, the second the Buzzer broke.','Piece 2 of 12: the TIMER. Master the isle to open the shrine.'],short:'History Isle. Piece 2: the TIMER.'},
+{nm:'Dr. Absolute Zero',pc:'CORE',pers:'A frosty lab-coat tyrant with zero chill, zero warmth, zero jokes.',style:'Clinical, deadpan, lab-report phrasing.',
+back:'A cryo-lab accident left him unable to feel a thing. He froze his own experiments so nothing uncertain could creep in.',
+link:'He froze the Buzzer\'s CORE so it could never spark, or surprise anyone.',
+intro:'Subject: you. Hypothesis: you will lose.',p2:'Cooling to absolute zero. Dodge faster.',
+def:'Result: inconclusive. ...I felt something. Warmth?',epi:'The ice melts off his coat. A tiny smile cracks his face. "Fine Arts," he says. "The Count has the Bell. He is... loud."',
+sealed:'The Core is frozen solid. Master this isle first',open:'The shrine frosts over as you step close.',done:'The Core hums again. Fine Arts is next.',
+arr:['Captain Neggins: "Science Isle. Brr! Even my beard has a beard of frost."','The labs went dark in the Blackout. Something cold sits at the center of it all.','Piece 3 of 12: the CORE. Master every subject to thaw the shrine.'],short:'Science Isle. Piece 3: the CORE.'},
+{nm:'Count Composition',pc:'BELL',pers:'A vain maestro who treats every fight like his farewell concert.',style:'Musical terms, theatrical, "Bravo!"',
+back:'His masterpiece was never performed. The Inquisitor promised a perfect final note and no wrong notes, ever.',
+link:'He muffled the Buzzer\'s BELL so no one could hear a wrong answer. Or a right one.',
+intro:'Silence! The Count conducts your finale.',p2:'Now the second movement: FURIOSO!',
+def:'Bravo... the finale is yours. The Bell rings true.',epi:'He bows to an empty hall and finally hears applause, yours. "Seek the Archon in Mythology," he says. "He dances with a Spark."',
+sealed:'The Bell is muffled. Master this isle first',open:'The shrine hums one long, perfect note.',done:'The Bell rings true. Mythology is next.',
+arr:['Captain Neggins: "Fine Arts Isle! Pretty, ain\'t it? Nobody here has painted since the Blackout."','Colors have drained out of the easels. A silent concert hall waits in the north.','Piece 4 of 12: the BELL. Master the isle to open the shrine.'],short:'Fine Arts Isle. Piece 4: the BELL.'},
+{nm:'Archon Allemande',pc:'SPARK',pers:'A smooth, vain dancer-god who treats combat as choreography.',style:'Dance steps, rhythm, rhyming couplets.',
+back:'He choreographed the Fates themselves. The Inquisitor promised every step written in advance. No more missteps. No more falls.',
+link:'He pinned the Buzzer\'s SPARK in a perfect, unmoving pose.',
+intro:'One, two, three, four: you lose on the floor.',p2:'Now the dance gets deadly. Keep up, mortal!',
+def:'I... missed a step. The Spark is yours. Dance on.',epi:'He trips, and laughs for the first time in centuries. "Religion," he says. "The Priest keeps the Halo. Never interrupt a sermon."',
+sealed:'The Spark is pinned still. Master this isle first',open:'The shrine pulses to a drumbeat.',done:'The Spark dances free. Religion is next.',
+arr:['Captain Neggins: "Mythology Isle! Gods, monsters, and zero tip. Typical."','Statues stand frozen mid-dance. The Inquisitor told them all: never miss a step again.','Piece 5 of 12: the SPARK. Master every subject to wake the shrine.'],short:'Mythology Isle. Piece 5: the SPARK.'},
+{nm:'High Priest Pontifex',pc:'HALO',pers:'A warm, rigid preacher who is kindly certain about everything.',style:'Sermons, "Brethren", blessings that sound like threats.',
+back:'He kept the Hall of Answers for a thousand years. Doubt scared him more than any foe. The Inquisitor offered a faith with no doubts.',
+link:'He hid the Buzzer\'s HALO behind a creed: "Never buzz unless you are sure."',
+intro:'Brethren, let us pray... for you. You will need it.',p2:'The sermon turns to thunder. Repent, {p}!',
+def:'Doubt... is not a sin? ...Perhaps. Take the Halo.',epi:'He lowers his staff and, for the first time, asks a question. "Philosophy next," he murmurs. "The Sophist holds the Switch."',
+sealed:'The Halo is hidden. Master this isle first',open:'The shrine glows. It feels like being watched kindly.',done:'The Halo shines. Philosophy is next.',
+arr:['Captain Neggins: "Religion Isle. Quiet voices, please. And no betting on negs."','Bells ring here with no one pulling the ropes. The faithful wait for a sign.','Piece 6 of 12: the HALO. Master the isle to open the shrine.'],short:'Religion Isle. Piece 6: the HALO.'},
+{nm:'Sophist Supreme',pc:'SWITCH',pers:'A slippery debater who answers every question with a question.',style:'Socratic, "define your terms."',
+back:'He never lost a debate because he never let anyone define anything. The Inquisitor said: define everything once, forever.',
+link:'He defined the Buzzer\'s SWITCH as "off" and argued it always had been.',
+intro:'Define "win". Define "you". Define "loser".',p2:'Is it a loss if I redefine the fight?',
+def:'Define... defeat? ...Oh. I think I just did.',epi:'He opens his mouth to argue, then decides to listen. "Social Science," he says. "A professor reads the Dial. Brace for statistics."',
+sealed:'The Switch is "off" by definition. Master this isle',open:'The shrine asks you a question. You don\'t answer.',done:'The Switch is on. Social Science is next.',
+arr:['Captain Neggins: "Philosophy Isle. I asked the dock guard why we sail. He asked me why I ask."','Every sign here says "Define your terms." The argument has been going on for years.','Piece 7 of 12: the SWITCH. Master every subject to open the shrine.'],short:'Philosophy Isle. Piece 7: the SWITCH.'},
+{nm:'Professor Paradigm',pc:'DIAL',pers:'A condescending academic who trusts averages more than people.',style:'"Studies show", p-values, footnotes.',
+back:'He spent a career measuring everyone and never asked anyone anything. The Inquisitor told him: the majority is always right.',
+link:'He set the Buzzer\'s DIAL to "average" so no one could ever stand out.',
+intro:'Studies show you will lose. p < 0.001.',p2:'Outlier detected! Removing from dataset!',
+def:'I did not predict you. The sample size was wrong.',epi:'He crumples his clipboard. "Geography," he mutters. "The Baron has the Compass. He does not like visitors."',
+sealed:'The Dial is stuck on "average". Master this isle',open:'The shrine beeps, taking your measurements.',done:'The Dial turns freely. Geography is next.',
+arr:['Captain Neggins: "Social Science Isle! 9 out of 10 sailors recommend leaving. I\'m the 10th."','Everyone on this isle agrees with everyone else. It is deeply suspicious.','Piece 8 of 12: the DIAL. Master the isle to open the shrine.'],short:'Social Science Isle. Piece 8: the DIAL.'},
+{nm:'Baron Von Border',pc:'COMPASS',pers:'A gruff border-guard who stamps everything twice.',style:'Military barks, passports, coordinates.',
+back:'He redrew the map so every line was straight and fair. Then nobody could cross them. The Inquisitor said: lines never move.',
+link:'He aimed the Buzzer\'s COMPASS at nothing so no one could be lost, or found.',
+intro:'HALT! Papers, please. Denied. Fight!',p2:'Border closed! All roads lead to ruin!',
+def:'Entry granted. The Compass points to you now.',epi:'He tears up his own border and, grudgingly, waves you through. "Pop Culture," he barks. "A DJ loops the Cap. Loudly."',
+sealed:'The Compass spins uselessly. Master this isle',open:'The shrine is fenced. The gate clanks open.',done:'The Compass points true. Pop Culture is next.',
+arr:['Captain Neggins: "Geography Isle! Easiest dock on the map. Ask me the capital of anything."','Fences cut across the island in perfectly straight lines. None of them have gates.','Piece 9 of 12: the COMPASS. Master every subject to open the shrine.'],short:'Geography Isle. Piece 9: the COMPASS.'},
+{nm:'DJ Trendsetter',pc:'CAP',pers:'A breezy influencer-DJ terrified of ever being uncool.',style:'Slang, hashtags, ironic.',
+back:'He was first to every trend and last to notice none lasted. The Inquisitor said: what is popular is true, forever.',
+link:'He sampled the Buzzer\'s CAP into a loop, so the whole world hears one sound.',
+intro:'Yo {p}, you are about to be a meme. #Defeated',p2:'Drop the bass! This remix is SAVAGE!',
+def:'Plot twist: I got ratioed. The Cap is yours.',epi:'He pulls off his headphones and hears silence for the first time. "Current Events," he says. "The Anchor has the Antenna. He is live."',
+sealed:'The Cap is stuck on repeat. Master this isle',open:'The shrine thumps with a four-on-the-floor beat.',done:'The Cap is yours. Current Events is next.',
+arr:['Captain Neggins: "Pop Culture Isle! Everyone here is famous for about four minutes."','The same song blares from every speaker. Nobody can remember when it started.','Piece 10 of 12: the CAP. Master the isle to open the shrine.'],short:'Pop Culture Isle. Piece 10: the CAP.'},
+{nm:'Anchor Annihilator',pc:'ANTENNA',pers:'A booming news anchor who narrates the fight live.',style:'"BREAKING:", live-report voice, sign-offs.',
+back:'He once read a false headline on air and never corrected it. The Inquisitor promised: no more corrections. The first report is final.',
+link:'He aimed the Buzzer\'s ANTENNA to jam every correction on the airwaves.',
+intro:'Breaking: {p} walks into a trap. More at ten.',p2:'We interrupt this fight for YOUR DEFEAT!',
+def:'This just in: I was wrong. Correction: here is your Antenna.',epi:'He signs off, and for once the sign-off is true. "Other Academic," he says. "The Prompt Master holds the last piece. It is... eerily quiet."',
+sealed:'The Antenna is jammed. Master this isle first',open:'The shrine crackles with static and applause.',done:'The Antenna is clear. Other Academic is next.',
+arr:['Captain Neggins: "Current Events Isle! Heard the news? Neither have I. The signal is jammed."','Every screen shows the same headline. It was wrong, and nobody has fixed it.','Piece 11 of 12: the ANTENNA. Master every subject to open the shrine.'],short:'Current Events Isle. Piece 11: the ANTENNA.'},
+{nm:'The Prompt Master',pc:'PLUNGER',pers:'A flat, polite construct that can answer anything and wants one question of its own.',style:'System-speak: "Initializing", "Output:", "Query:".',
+back:'Built to answer everything, asked nothing real. The Inquisitor was the first to ask it something that mattered: how do I never be wrong?',
+link:'It computed the Inquisitor\'s plan: Certainty. It holds the last piece, the PLUNGER, and his last letter.',
+intro:'Initializing. Query: can you survive me?',p2:'Temperature raised. Output: PAIN.',
+def:'Error: user too persistent. Output: Plunger released.',epi:'It hands you the Plunger and the last scrap of the letter. "The Inquisitor waits in the storm," it says. "He wants to be asked."',
+sealed:'The Plunger is locked behind a prompt. Master this isle',open:'The shrine blinks: "AWAITING INPUT."',done:'The Plunger is yours. Face the storm.',
+arr:['Captain Neggins: "Other Academic Isle! Odds, ends, and a very polite machine at the top."','The isle is oddly tidy. Every sign has a footnote, and every footnote has a footnote.','Piece 12 of 12: the PLUNGER. Master the isle to open the shrine.'],short:'Other Academic Isle. Piece 12: the PLUNGER.'}];
+const SECRET_LORE={'The Bard of Banishment':'A rejected draft the Prose Phantasm cut. It rhymes with spite.','Cleo the Chronicler':'A scribe erased from the history books. She remembers everything.','The Quantum Queen':'A theory that was cut for being "too uncertain". She is here and not here.','The Buzzer Beater':'A rival buzzer program from before the Great Buzzer. Always first, never right.','Neg-a-tron':'Built from every neg the Inquisitor ever suffered. It only counts mistakes.','Vector the Variable':'An unsolved problem the Prompt Master refused to answer. It has opinions.'};
+const BEATS={
+1:['Pip: "Professor! The Buzzer shape on your bench glows! One piece home, eleven to go!"','Professor Power: "Good. The Copier hums too. Every layer you break is copied into my Lab for practice. Weakest outer layers first, remember."'],
+2:['Nova Quickdraw: "Beat you to the shrine! Buzzed on the word \'This\'. ...Got it wrong. Again."','Nova: "Whatever. Race you to the next piece, rookie."'],
+3:['Captain Neggins: "Three pieces! Even my boat\'s fuel gauge is smiling."','Pip: "Professor says: the pieces were not scattered. They were HANDED OUT. Someone chose each Keeper on purpose."'],
+4:['Professor Power: "Four pieces. The Buzzer is a third repaired. Look at the Keepers\' words, {p}. They all sound... afraid."'],
+5:['Nova: "Hey! The Priest kicked me out for buzzing mid-sermon. Teach me your timing?"','Nova: "Fine. Teach me later. Just win."'],
+6:['Professor Power: "Halfway. I owe you the truth, {p}. The Grand Inquisitor was my partner. Quentin Query, the best student I ever had."','Professor Power: "At the finals, forty years ago, I buzzed early and negged. We lost it all. He never buzzed again."','Professor Power: "I built the Great Buzzer to honor brave buzzes. He tore it apart to end them. This is partly my fault."'],
+7:['Moderator Moe: "Reminder: the rules say no hitting the moderator. They do not say I can\'t float away from your fights."'],
+8:['Nova: "Professor Paradigm said I was an outlier. Ha! He\'s right. Go get him, rookie."','Pip: "Professor wants you home soon. He says he has something to give you."'],
+9:['Professor Power: "I found Quentin\'s letter, {p}. Each Keeper carries a scrap. He is not just angry. He is afraid of being wrong."','Professor Power: "Three more pieces, then the storm. When you reach it, remember: certainty is the one thing no one can buzz in on."'],
+10:['Captain Neggins: "Ten! I can see the storm from my crow\'s nest. It is... looking back."','Pip: "The storm has EYES. Professor says do not stare. I stared."'],
+11:['Professor Power: "One piece left. Quentin is not winning because he is strong. He is winning because everyone else stopped guessing."','Nova: "I\'ll keep the Professor company. Go. And when you buzz, buzz EARLY."'],
+12:['Professor Power: "All twelve! The Buzzer is whole except for its first press. Sail to the storm in the north sea, {p}."','Professor Power: "Quentin will ask the Final Tossup. Only a buzz can answer it. Be brave. Be wrong if you must."']};
+const FAINT=['Pip dragged you back to the Lab. HP restored!','The Professor patched you up with a roll of tape. HP restored!','Captain Neggins fished you out of the water. HP restored!','Moderator Moe said "Dead tossup." Pip said "No!" HP restored!','You fainted. The Copier hummed. HP restored!','Nova laughed, then felt bad. HP restored!'];
+const faintMsg=()=>FAINT[Math.floor(Math.random()*FAINT.length)];
+const GI={
+shrine:['The sea storm splits. A tower rises, built from question marks.','Moderator Moe: "Final tossup. {p} versus the Grand Inquisitor. Ten points, no guesses."'],
+intro:'At last. The Buzzer is whole and so are you.',
+motive:'I am not a monster. I am a proofreader. One answer per question. No negs. No wrongs. No surprises.',
+p2:'Then I will rewrite you. Final draft: no player.',
+def:'...Wrong. I was wrong. How strange. It feels... good?'};
+const INTRO=[
+'Professor Power: "Welcome to Tossup Land, {p}! I run the Lab, and I keep the Great Buzzer, the heart of every answer on these isles."',
+'Professor Power: "Last night the Great Buzzer shattered. Twelve pieces, scattered. Every Keeper on every island forgot their answers. The Blackout."',
+'Professor Power: "A masked figure did it: the Grand Inquisitor. I cannot leave the Lab. My Lamp is keeping Tossup Land from fading. So I am sending you."',
+'Pip: "Hi! I\'m Pip, Lab intern! I run the Copier. Break a layer of a Keeper and I copy it into the Lab so you can practice it."',
+'Professor Power: "Each Keeper wears six LAYERS. The outer shell is the weakest, because the Inquisitor\'s promise is thin there. The Heart Core is the strongest."',
+'Professor Power: "Pick one HOME isle to start. Master every subject, then beat its Boss at the shrine for BUZZER FUEL. Fuel unlocks the next isle."',
+'Professor Power: "Go in order, 1 to 12, if you can. Each Boss carries a scrap of a letter. Read them in order, and you will learn what the Inquisitor wants."',
+'Captain Neggins: "I\'ll sail ye there! I\'m Captain Neggins. Yes, that\'s the name. Don\'t ask."',
+'Professor Power: "Buzz early for POWER. And {p}... be brave. Wrong is allowed. Silence is not."'];
+const FILL=s=>String(s).replace(/\{p\}/g,(typeof P!='undefined'&&P&&P.name)||'Hero');
+function arrive(k){const L=LK[k],seen=JSON.parse(LIVE.tl_arr||'{}');if(!seen[k]&&!ADM()){seen[k]=1;lset('tl_arr',JSON.stringify(seen));
+story(L.arr.map(FILL),()=>{mode='isle';show('map')})}else say(L.short)}
+function bossIntro(i,cb){const L=LK[i];story([L.open,'Moderator Moe: "Tossup for the '+L.pc+'. '+L.nm+' versus '+((typeof P!='undefined'&&P.name)||'Hero')+'. Buzz when ready."',L.nm+': "'+FILL(L.intro)+'"'],cb)}
+function bossDefeat(i,sec){if(sec){const nm=SEC[i];return[nm+' is defeated! You found a SECRET BOSS!',SECRET_LORE[nm]||'A leftover draft of the Inquisitor\'s plan.','Secrets found: '+Object.keys(SB2).length+'. Quest rewards are coming soon!']}
+const L=LK[i],n=bc();return[L.nm+': "'+FILL(L.def)+'"',L.nm+' confesses: '+L.back,L.link,FILL(L.epi),'LETTER SCRAP '+(i+1)+'/12: "'+LETTER[i]+'"','The '+L.pc+' is back on the Buzzer! BUZZER FUEL earned: sail and unlock a new isle. ('+n+'/12 pieces)',
+SEC[i]?'You sense a strange presence on this island...':'The isle is calm at last.',...(BEATS[n]||[]).map(FILL)]}
+const MASTER=(i)=>['Professor Power (by radio): "You mastered '+I[i].n+'! Every Keeper there bows to you."','Moderator Moe: "The shrine in the north is now open. '+LK[i].nm+' guards the '+LK[i].pc+'."','Press E at the Boss Shrine when you feel ready.'];
+const ENDING=[
+'The Grand Inquisitor falls to one knee. The storm unravels into a thousand blank pages.',
+'Quentin Query: "Wrong. I was wrong. ...It feels like breathing. I forgot."',
+'Professor Power rides in on a boat that is mostly duct tape. "Quentin," he says. "I buzzed early and I negged. I am sorry it broke you."',
+'Quentin: "I wanted a world where nobody could be wrong. But then nobody could ever ask anything new."',
+'Professor Power: "Ten points, then minus five. That is the deal. It is worth it."',
+'You press the final piece into place. The Great Buzzer clicks, hums, and rings for the first time in forty years.',
+'Across the isles, the Keepers remember their answers. Every Keeper buzzes in at once, wrong and loud and happy.',
+'Nova Quickdraw: "I buzzed on the first word! ...Wrong. Worth it."',
+'Captain Neggins: "Fuel\'s on the house, champion." Pip: "Copier\'s open for practice. Always!"',
+'Moderator Moe: "Final score: you. Congratulations, {p}, Buzzer Champion."',
+'The Great Buzzer is fixed, but the questions never end. Every isle still hides Keepers, layers and secrets. Keep buzzing!'];
+const ENDLINES=()=>ENDING.map(FILL);
+/*LORE-END*/
 // ---- question bank: static files in /data, loaded per subject ----
 async function init(){try{IDX=await(await fetch('data/index.json')).json()}catch(e){IDX={};ERR=String(e)}mkSB();status()}
 async function loadSub(cat,sub){const k=cat+'|'+sub;if(!IDX[k])return;if(!LD[k])LD[k]=fetch('data/'+IDX[k].f).then(r=>r.json()).then(o=>{for(const b in o)DATA[k+'|'+b]=o[b]}).catch(e=>{ERR='failed to load data/'+IDX[k].f;$('#hint').textContent=ERR});await LD[k]}
@@ -839,7 +1126,7 @@ const ic2=BD[k]?'star':mast(k)?'bang':!un?'ques':null;if(ic2)bmp(wl,ICN[ic2],ox-
 if(bc()>=12){const vx=235,vy=107;for(let q=0;q<4;q++)for(let a=0;a<12;a++){const an=t/500*(q%2?-1:1)+a*.52+q,rr=7+q*4;RC(wl,vx+Math.cos(an)*rr*1.5,vy+Math.sin(an)*rr*.9,2,2,['#d050ff','#8a3ab0','#ff40ff','#3a1a58'][q])}for(let k2=0;k2<5;k2++)RC(wl,vx-20+k2*8,vy-20+(k2%2)*4,12,8,k2%2?'#3a1a58':'#5a2a7a');RC(wl,vx-6,vy-17,4,3,'#ff40ff');RC(wl,vx+3,vy-17,4,3,'#ff40ff');if(Math.sin(t/230)>.9){RC(wl,vx,vy-12,2,10,'#fff')}txt('GRAND INQUISITOR',vx,vy+34,'#ffe0ff')}
 WAKE=WAKE.filter(w=>(w.t+=dt)<.7);WAKE.forEach(w=>{const a=1-w.t/.7;if(a>.4)RC(wl,w.x-w.t*4*bt.f,w.y+Math.round(w.t*2),a>.7?3:2,1,'#ffffffcc')});
 drawBoat(bt.x,bt.y,bt.f,t);dayfx(t);
-const ni=nearIsle();if(ni>=0){const o=I[ni],un=!U.length||U.includes(ni);plate(!U.length?'E: choose '+o.n+' as your HOME isle':un?'E: dock at '+o.n:fuel()>0?'E: spend 1 BUZZER FUEL to unlock '+o.n:o.n+' is fogged. Master an isle for fuel')}}
+const ni=nearIsle();if(ni>=0){const o=I[ni],un=!U.length||U.includes(ni);plate(!U.length?'E: choose '+o.n+' as your HOME isle':un?'E: dock at '+o.n:fuel()>0?'E: spend 1 BUZZER FUEL to unlock '+o.n:o.n+' is fogged. Master an isle for fuel')}else if(bc()>=12&&Math.hypot(235-bt.x,107-bt.y)<28)plate('E: face the Grand Inquisitor')}
 function plate(s,y=3){RC(wl,13,y-1,374,15,'#1a1024');RC(wl,14,y,372,13,'#fff3d6');RC(wl,14,y+10,372,3,'#e6cf9a');txt(s,200,y+9,'#3b2a40')}
 // ---- buildings (cached pixel art) ----
 const LABC=(()=>{const c=document.createElement('canvas');c.width=104;c.height=96;const x=c.getContext('2d'),K0='#1a1024',R=(a,b,w,h,co)=>RC(x,a,b,w,h,co);
@@ -895,7 +1182,7 @@ gg.restore();
 GP=[];BL=[];const add=(kd,v,x,y,rad)=>{GP.push({x:Math.round(x),y:Math.round(y),c:getProp(kd,v,k),sw:/^(round|blossom|olive|pine|palm|bush)$/.test(kd)?(kd=='bush'?.6:1):0});if(rad)BL.push([x,y,rad])};
 for(let n=0,t=0;n<150&&t<4000;t++){const a=rr()*6.283,r=Math.sqrt(rr())*.74,x=CX+Math.cos(a)*AX*r,y=CY+Math.sin(a)*AY*r;if(!inIs(x,y,.75)||!far(x,y,30)||PD.some(p=>((x-p.x)/(p.rx+16))**2+((y-p.y)/(p.ry+14))**2<1)||GP.some(p=>Math.hypot(p.x-x,(p.y-y)*1.4)<26))continue;
 const q=rr();if(q<.62)add(B.tr,n%3,x,y,7);else if(q<.76)add('bush',0,x,y,5);else if(q<.9)add(B.dc,n%3,x,y,8);else add('rock',0,x,y,7);n++}
-GP.sort((a,b)=>a.y-b.y);PCF=[0,1,2].map(d=>[0,1,2,3].map(f=>outl(heroF(1,P_(),f,d))));AMB=[];DUST=[];pl={x:BX,y:BY+55};pd=0;TOAST=null;hud()}
+GP.sort((a,b)=>a.y-b.y);PCF=[0,1,2].map(d=>[0,1,2,3].map(f=>outl(heroF(1,P_(),f,d))));AMB=[];DUST=[];pl={x:BX,y:BY+55};pd=0;TOAST=null;hud();arrive(k)}
 const P_=()=>P;
 const inIsK=(x,y)=>{const u=(x-CX)/AX,v=(y-CY)/AY;return Math.hypot(u,v)<.76*ed(Math.atan2(v,u),cur)};
 const ok=(x,y)=>inIsK(x,y)&&!PD.some(p=>((x-p.x)/(p.rx+3))**2+((y-p.y)/(p.ry+3))**2<1)&&!BL.some(b=>Math.hypot(b[0]-x,(b[1]-y)*1.3)<b[2])&&!(x>BX-54&&x<BX+54&&y>BY-32&&y<BY+10)&&!(Math.abs(x-SX())<40&&y>SY()-12&&y<SY()+4);
@@ -912,18 +1199,18 @@ L.push([pl.y,()=>{const fr=mv?Math.floor(wp)%4:0,im=PCF[pd==3?2:pd][fr],x=Math.r
 DUST=DUST.filter(d=>(d.t+=dt)<.35);L.push([-1,()=>DUST.forEach(d=>{const a=d.t/.35,r=1+Math.floor(a*3);RC(wl,d.x-cx-r,d.y-cy-Math.floor(a*3),r,r,a<.6?'#ffffffbb':'#ffffff66');RC(wl,d.x-cx+r,d.y-cy-Math.floor(a*2),r,r,a<.6?'#ffffffbb':'#ffffff66')})]);
 L.sort((a,b)=>a[0]-b[0]).forEach(a=>a[1]());
 ambStep(t,dt,cur);const T=dayfx(t);
-let msg='';if(nr)msg=nr.t=='h'?'E: enter the Lab (teleport, study, sail)':nr.t=='b'?(BD[cur]?'Boss defeated! Well done.':mast(cur)?'E: challenge '+BN[cur]+'!':'Boss Shrine sealed: '+Math.round(pr(cur)*100)+'% mastered'):nr.t=='x'?'E: ??? A secret presence stirs...':'E: challenge '+nr.n.s+' - L'+(nr.n.rk+1)+' '+LYN[nr.n.rk];else if(TOAST&&(TOAST.t-=dt)>0)msg=TOAST.m;
+let msg='';if(nr)msg=nr.t=='h'?'E: enter the Lab (teleport, study, sail)':nr.t=='b'?(BD[cur]?'The '+LK[cur].pc+' is safe. The shrine rests.':mast(cur)?'E: challenge '+BN[cur]+'!':'Shrine sealed: '+Math.round(pr(cur)*100)+'% mastered'):nr.t=='x'?'E: ??? A secret presence stirs...':'E: challenge '+nr.n.s+' - L'+(nr.n.rk+1)+' '+LYN[nr.n.rk];else if(TOAST&&(TOAST.t-=dt)>0)msg=TOAST.m;
 if(msg)plate(msg)}
-function trigger(o){if(!o||HB)return;beep(660,.08);if(o.t=='h')hub();else if(o.t=='b'){if(BD[cur])say('You already defeated '+BN[cur]+'.');else if(!mast(cur)&&!ADM())say('The shrine is sealed. Master every subject here first ('+Math.round(pr(cur)*100)+'%).');else fight(cur,'*',2,BN[cur])}else if(o.t=='x')fight(cur,'*',2,SEC[cur],1);else fight(cur,o.n.s,o.n.b)}
+function trigger(o){if(!o||HB)return;beep(660,.08);if(o.t=='h')hub();else if(o.t=='b'){if(BD[cur])say(LK[cur].done);else if(!mast(cur)&&!ADM())say(LK[cur].sealed+' ('+Math.round(pr(cur)*100)+'%)');else bossIntro(cur,()=>fight(cur,'*',2,BN[cur]))}else if(o.t=='x')story([SEC[cur]+' steps out of the shadows!',SECRET_LORE[SEC[cur]]||'A leftover draft of the Inquisitor\'s plan.'],()=>fight(cur,'*',2,SEC[cur],1));else fight(cur,o.n.s,o.n.b)}
 const ADM=()=>{try{return btoa(P.name||'')==='Tm9vYkF0RXZlcnl0aGluZw=='}catch(e){return false}},GMK=[0,0,0,0,'thorn','leech','leech','leech',0,'thorn',0,0];
-function seaAct(){const k=nearIsle();if(k<0){if(bc()>=12&&Math.hypot(235-bt.x,107-bt.y)<28)fight(-1,'*',2,'The Grand Inquisitor');return}
+function seaAct(){const k=nearIsle();if(k<0){if(bc()>=12&&Math.hypot(235-bt.x,107-bt.y)<28)story([GI.shrine[0],FILL(GI.shrine[1]),'The Grand Inquisitor: "'+GI.intro+'"','The Grand Inquisitor: "'+GI.motive+'"'],()=>fight(-1,'*',2,'The Grand Inquisitor'));return}
 if(!U.length){U=[k];save('tl_u',U)}else if(!U.includes(k)){if(fuel()>0){U.push(k);save('tl_u',U);seq([392,523,659,784],'triangle')}else{beep(150,.2,'sawtooth');return}}beep(660,.08);sail(k)}
 const act=()=>mode=='isle'?trigger(near()):seaAct();
 setInterval(()=>{if(!ac||mute||!$('#map').classList.contains('on'))return;const n=tint(performance.now()).n,t=ac.currentTime,sa=mode=='sea';ns(t,.9,sa?.022:.012);
 if(!sa&&n>.4&&Math.random()<.7)[0,.12,.24].forEach(d=>tn(4300,t+d,.06,'sine',.012));else if(!sa&&n<.2&&Math.random()<.35){const f=2200+Math.random()*900;tn(f,t,.08,'sine',.02);tn(f*1.25,t+.1,.08,'sine',.02)}else if(sa&&Math.random()<.2)tn(1200,t,.4,'sine',.01)},800);
 // ---- present: blit low-res world 2x, then crisp text ----
 function present(){g.imageSmoothingEnabled=false;g.drawImage(WC,0,0,800,460);g.textBaseline='alphabetic';g.font='8px "Press Start 2P",monospace';TXQ.forEach(q=>{g.textAlign=q.al;const x=q.x*2,y=q.y*2;if(q.col!='#3b2a40'){g.fillStyle='#1a1024';[[-2,0],[2,0],[0,-2],[0,2],[2,2]].forEach(([a,b])=>g.fillText(q.s,x+a,y+b))}g.fillStyle=q.col;g.fillText(q.s,x,y)});TXQ.length=0}
-let t0=0;function draw(t){const dt=Math.min(.05,(t-t0)/1000);t0=t;if($('#map').classList.contains('on')){if(mode=='isle'&&!GC)mode='sea';mode=='sea'?sea(t,dt):isle(t,dt);present()}requestAnimationFrame(draw)}requestAnimationFrame(draw);
+let t0=0;function draw(t){const dt=Math.min(.05,(t-t0)/1000);t0=t;if($('#map').classList.contains('on')){mode=='sea'?sea(t,dt):isle(t,dt);present()}requestAnimationFrame(draw)}requestAnimationFrame(draw);
 // ================= UI LAYER: stage backdrops, title scene, screen transitions, UI sounds =================
 const msc=n=>innerWidth<600?Math.max(3,n-2):n;
 const RR_=(c,x,y,w,h,col)=>{c.fillStyle=col;c.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))};
@@ -1001,10 +1288,10 @@ $('#mon').replaceChildren(...ms.map(m=>m.cv=mon(m.i,m.b,m.rk,m.sub,msc(ms.length
 function hub(){HB=1;const h=$('#hub'),A=ADM();h.style.display='block';h.innerHTML='<p class="y">LAB - teleport to any Keeper whose first form you have beaten</p>';
 const mb=(t,f,dis)=>{const b=document.createElement('button');b.innerHTML=t;if(dis){b.disabled=true;b.style.opacity=.4}else b.onclick=()=>{HB=0;h.style.display='none';f()};h.append(b)},hd=t=>h.insertAdjacentHTML('beforeend','<p class="y">'+t+'</p>'),
 tg=(t,s,L,b)=>{const k=s+'#'+L,on=PS.some(x=>x.k==k),bt=document.createElement('button');bt.innerHTML=t;if(on)bt.className='sel';bt.onclick=()=>{if(on)PS=PS.filter(x=>x.k!=k);else if(PS.length<4)PS.push({k,s,L,b});hub()};h.append(bt)};
-NP.forEach(p=>{const ok=p.rk>=1||A;mb(ok?`${E(p.s)}<br><small>L${p.rk+1} ${LYN[p.rk]}</small>`:'???<br><small>Beat 1st form</small>',()=>{pl={x:p.x,y:p.y+26};beep(880,.1)},!ok)});
+NP.forEach(p=>{const ok=(G[p.s]||0)>=1||A;mb(ok?`${E(p.s)}<br><small>L${p.rk+1} ${LYN[p.rk]}</small>`:'???<br><small>Beat 1st form</small>',()=>{pl={x:p.x,y:p.y+26};beep(880,.1)},!ok)});
 mb('BOSS SHRINE',()=>{pl={x:SX(),y:SY()+40}});mb('STUDY HUT',()=>study(cur));mb('CLOSE',()=>{});
 hd('PRACTICE ROOM - every layer you destroy is copied here. Pick up to 4 and fight them together ('+PS.length+'/4)');
-let any=0;NP.forEach(p=>{const n=Math.min(6,A?6:(G[p.s]||0));for(let L=0;L<n;L++){any=1;tg(E(p.s)+'<br><small>L'+(L+1)+' '+LYN[L]+'</small>',p.s,L,p.b)}});
+let any=0;NP.forEach(p=>{const n=Math.min(dNL(),A?dNL():(G[p.s]||0));for(let q=0;q<n;q++){const L=dFirst()+q;any=1;tg(E(p.s)+'<br><small>L'+(L+1)+' '+LYN[L]+'</small>',p.s,L,p.b)}});
 if(!any)h.insertAdjacentHTML('beforeend','<p><small>Nothing copied yet. Destroy a Keeper layer to unlock practice.</small></p>');
 else mb('FIGHT '+PS.length+' SELECTED',()=>practice(PS.slice()),!PS.length);
 if(A){hd('ADMIN: warp to island');I.forEach((o,k)=>mb(E(o.n),()=>sail(k)));hd('ADMIN: bosses');I.forEach((o,k)=>mb(E(BN[k]),()=>fight(k,'*',2,BN[k])));mb('GRAND INQUISITOR',()=>fight(-1,'*',2,'The Grand Inquisitor'));
@@ -1017,19 +1304,21 @@ async function fight(i,sub,b,bn,sec){if(i<0)await Promise.all(Object.keys(IDX).f
 const rk=(i<0||bn)?5:ADRK>=0&&ADM()?ADRK:RK(sub);F={i,sub,b,rk,mx:i<0?520:bn?300:40+rk*20,ed:i<0?15:6+rk*2,boss:!!bn,secret:sec,nm:bn||rnd(I[i].mn)+' '+rnd(['Sage','Wraith','Imp','Golem']),last:'',gm:i<0?'thorn':GMK[i]};F.mh=F.mx;hp=100;trk=i<0?'boss':bn?'b'+i:'f'+i+'_'+(hsh(sub)%4);
 $('#mon').replaceChildren(mon(i,b,rk,sub,msc(bn?(i<0?7:6):6),bn));stageBG(i);$('#hs').replaceChildren(hero(4));
 $('#mn').innerHTML=`${E(F.nm)} <small>${bn?(i<0?'FINAL BOSS | all categories':(sec?'SECRET BOSS':'BOSS')+' | '+E(I[i].n)):E(sub)+' | L'+(rk+1)+' '+LYN[rk]+' ('+RN[rk]+')'}</small>`;$('#pn').innerHTML=`<span style="color:${P.top}">${E(P.name)}</span>`;bars();show('battle');q()}
-const bars=()=>{const h=$('#hpt');if(h)h.textContent=Math.max(0,hp)+'/100 HP';$('#mh').style.width=Math.max(0,F.mh/F.mx*100)+'%';$('#ph').style.width=Math.max(0,hp/100*100)+'%'};
+const bars=()=>{const h=$('#hpt');if(h)h.textContent=Math.max(0,hp)+'/100 HP';$('#mh').style.width=Math.max(0,F.mh/F.mx*100)+'%';$('#ph').style.width=Math.max(0,hp/100*100)+'%';const ah=$('#ahb'),an=$('#ahn'),au=$('#ahud');if(ah)ah.style.width=Math.max(0,Math.min(100,hp))+'%';if(an)an.textContent='HP '+Math.max(0,Math.round(hp))+'/100';if(au){au.classList.toggle('low',hp<=30);if(hp<LH){au.classList.add('hit');setTimeout(()=>au.classList.remove('hit'),160)}}LH=hp};
+let LH=100;
 const sk=x=>x.q.slice(0,50),mk=it=>{const sp=strip(it.q.replace('(*)','')).split(/(?<=[.?!])\s+/);return{q:it.q,a:strip(it.r),K:keys(it.r),l:sp[sp.length-1],d:it.d,src:it.c}};
-function next(r){const rk=F.rk,all=F.i<0?Object.values(DATA).flat().filter(x=>x.d>=6):F.boss?subs(F.i).flatMap(sb=>[0,1,2,3].flatMap(b=>DATA[I[F.i].n+'|'+sb+'|'+b]||[])):[0,1,2,3].flatMap(b=>DATA[I[F.i].n+'|'+F.sub+'|'+b]||[]);
-for(let k=0;k<6;k++)for(const x of [rk-k,rk+k]){if(x<0||x>5)continue;const a=all.filter(y=>y.d>=RR[x][0]&&y.d<=RR[x][1]&&!SN.has(sk(y)));if(a.length)return mk(rnd(a))}
+function next(r){const rk=F.rk,all=F.i<0?Object.values(DATA).flat():F.boss?subs(F.i).flatMap(sb=>[0,1,2,3].flatMap(b=>DATA[I[F.i].n+'|'+sb+'|'+b]||[])):[0,1,2,3].flatMap(b=>DATA[I[F.i].n+'|'+F.sub+'|'+b]||[]);
+if(F.boss||F.i<0){const lv=[];for(let q=DIFF.max;q>=DIFF.min;q--)lv.push(q);for(let q=DIFF.max+1;q<=10;q++)lv.push(q);for(const q of lv){const al=all.filter(y=>y.d==q);if(!al.length)continue;let a=al.filter(y=>!SN.has(sk(y)));if(!a.length){al.forEach(y=>SN.delete(sk(y)));a=al}return mk(rnd(a))}}
+else{const fl=dLayers();for(let k=0;k<6;k++)for(const x of [rk-k,rk+k]){if(!fl.includes(x))continue;const w=dWin(x),a=all.filter(y=>y.d>=w[0]&&y.d<=w[1]&&!SN.has(sk(y)));if(a.length)return mk(rnd(a))}}
 if(all.length&&!r){all.forEach(y=>SN.delete(sk(y)));return next(1)}
 const a=S.filter(x=>x.s==F.sub&&!SN.has(sk(x))),a2=a.length?a:S.filter(x=>(F.i<0||x.i==F.i)&&!SN.has(sk(x)));if(a2.length)return rnd(a2);SN.clear();return rnd(S)}
 function pick(mm){if(F.cm)F.cm.mh=F.mh;const m=mm||rnd(F.grp.filter(x=>x.mh>0));F.cm=m;F.i=m.i;F.sub=m.sub;F.b=m.b;F.rk=m.rk;F.mx=m.mx;F.mh=m.mh;F.nm=m.nm;F.gm=m.gm;
 $('#mn').innerHTML=`${E(m.nm)} <small>${E(m.sub)} | L${m.rk+1} ${LYN[m.rk]} | ${F.grp.filter(x=>x.mh>0).length} left</small>`;F.grp.forEach(x=>{x.cv.style.opacity=x.mh>0?1:.25;x.cv.style.outline=x==m?'3px solid #ffd84a':'none'});bars()}
-function q(){if(F.grp&&!selWho())return;drawBz(0);d=next();F.last=d.q;SN.add(sk(d));if(SN.size>4000)SN.clear();save('tl_s',[...SN]);words=d.q.split(' ');pw=words.indexOf('(*)');if(pw>=0)words.splice(pw,1);n=0;state='read';power=false;
+function q(){if(F.grp&&!selWho())return;drawBz(0);d=next();d.pr=0;F.last=d.q;SN.add(sk(d));if(SN.size>4000)SN.clear();save('tl_s',[...SN]);words=d.q.split(' ');pw=words.indexOf('(*)');if(pw>=0)words.splice(pw,1);n=0;state='read';power=false;
 $('#qt').textContent='';$('#lr').innerHTML='';$('#af').style.display='none';$('#nx').style.display='none';$('#bz').style.display='';$('#idk').style.display='';$('#flee').style.display='';
 $('#qi').textContent=`${F.i<0?'Mixed':F.boss?I[F.i].n+' (all)':F.sub} | ${DL[d.d]||'Sample'} | buzz before the mark for POWER (15)`;clearInterval(timer);clearInterval(tt);
 timer=setInterval(()=>{if(n<words.length){n++;$('#qt').textContent=words.slice(0,n).join(' ');beep(880,.02,'square',.015)}else{clearInterval(timer);early=false;ask()}},F.nm=='The Buzzer Beater'?60:130)}
-function buzz(){if(state!='read')return;clearInterval(timer);power=pw>=0&&n<=pw;early=n<words.length;beep(1046,.15);drawBz(1);ask()}
+function buzz(){if(state!='read')return;clearInterval(timer);power=pw>=0&&n<=pw;early=n<words.length;beep(1046,.15);drawBz(1);ask();buzzTaunt()}
 /* PIXEL BUZZER + FX: bzc is the pixel buzzer (0 up/red, 1 pressed, 2 grey after a neg/wrong). fireLines() = red pixel lines from the buzzer to the targeted enemy on correct/power. */
 function drawBz(st){const c=$('#bzc').getContext('2d');c.clearRect(0,0,40,28);c.fillStyle='#14141f';c.fillRect(3,19,34,8);c.fillStyle='#2f3050';c.fillRect(4,18,32,8);c.fillStyle='#5a5c86';c.fillRect(4,18,32,2);c.fillStyle='#1c1d33';c.fillRect(4,25,32,1);
 const col=st==2?'#8d6a70':st==1?'#c4162a':'#ff2a3c',dk=st==2?'#5e4448':st==1?'#80101c':'#b81426',oy=st?4:0;
@@ -1051,18 +1340,21 @@ F.selList=al;al.forEach(x=>{x.cv.style.cursor='pointer';x.cv.style.outline='3px 
 function chooseWho(x){if(state!='sel')return;F.selList.forEach(y=>{y.cv.style.cursor='';y.cv.onclick=null});F.chosen=x;q()}
 document.addEventListener('keydown',e=>{if(state=='sel'&&/^[1-9]$/.test(e.key)&&F.selList&&F.selList[e.key-1]){e.preventDefault();chooseWho(F.selList[e.key-1])}});
 
-function ask(){state='ans';$('#bz').style.display='none';$('#af').style.display='';$('#ai').value='';$('#ai').focus();let t=10;$('#tm').textContent=t;clearInterval(tt);tt=setInterval(()=>{$('#tm').textContent=--t;if(t<=0)submit()},1000)}
+function ansClock(t){$('#tm').textContent=t;clearInterval(tt);tt=setInterval(()=>{$('#tm').textContent=--t;if(t<=0){TU=1;submit()}},1000)}
+function ask(){state='ans';$('#bz').style.display='none';$('#af').style.display='';$('#ai').value='';$('#ai').focus();ansClock(10)}
 function miss(){if(!M.some(m=>m.q==d.q)){M.push({q:d.q,a:d.a,l:d.l,c:F.i<0?'Mixed':I[F.i].n,s:F.i<0?'Mixed':F.boss?'Boss':F.sub,src:d.src});if(M.length>250)M.shift();save('tl_m',M)}}
 function learn(msg,ok){$('#lr').innerHTML=msg+`<p>Answer: <span class="y">${E(d.a)}</span></p><small>${E(d.l)}</small>`+(ok&&!power?'<p><small>Tip: buzz before the (*) mark to score POWER.</small></p>':'')+`<details><summary>Study the full tossup</summary><small>${E(d.q.replace('(*)','[POWER]'))}</small></details>`;
 $('#af').style.display='none';$('#bz').style.display='none';$('#idk').style.display='none';$('#flee').style.display='none';$('#nx').style.display='';$('#nx').textContent=F.mh<=0?(F.grp?'DOWN!':'CAPTURE!'):RS=='ok'||RS=='idk'?'NEXT':'DODGE!'}
-function submit(){if(state!='ans')return;clearInterval(tt);state='res';const v=$('#ai').value.trim(),ok=okAns(v,d.K);let msg;
+let TU=0;function submit(){if(state!='ans')return;const tu=TU;TU=0;const v=$('#ai').value.trim(),jr=judge(v,d.K);
+if(jr=='prompt'&&!tu&&!d.pr){d.pr=1;clearInterval(tt);beep(600,.08,'triangle');$('#lr').innerHTML='<p class="y">PROMPT: be more specific!</p><small>You are on the right track. Try again (8 seconds).</small>';$('#ai').value='';$('#ai').focus();ansClock(8);return}
+clearInterval(tt);state='res';const ok=jr=='ok';let msg;
 if(ok){bzUp();fireLines(power);const dm=power?15:10;F.mh=Math.max(0,F.mh-dm);RS='ok';M=M.filter(m=>m.q!=d.q);save('tl_m',M);seq([523,659,784],'square');$('#mon').classList.add('hit');(F.grp&&F.cm&&F.cm.cv?F.cm.cv:$('#mon').firstChild).dataset.st='hurt';setTimeout(()=>{const e=(F.grp&&F.cm&&F.cm.cv?F.cm.cv:$('#mon').firstChild);if(e)e.dataset.st=''},700);msg=`<p class="g">${power?'POWER! ':''}Correct! ${E(F.nm)} takes ${dm}!</p>`}
 else if(early){RS='neg';bzGrey();miss();const ngd=F.nm=='Neg-a-tron'?15:F.gm=='thorn'?10:5;hp-=ngd;if(F.gm=='leech')F.mh=Math.min(F.mx,F.mh+5);seq([196,147],'sawtooth');msg=`<p class="b">NEG! ${v?'Wrong: '+E(v):'No answer.'} You lose ${ngd} HP${F.gm=='leech'?' and it heals 5':''}, then ${E(F.nm)} attacks! Saved to your Study Hut.</p>`}
 else{RS='dead';bzGrey();miss();seq([196,147],'sawtooth');msg=`<p class="b">DEAD (0). ${v?'Wrong: '+E(v):'Time up!'} ${E(F.nm)} attacks! Saved to your Study Hut.</p>`}
 setTimeout(()=>$('#mon').classList.remove('hit'),400);bars();learn(msg,ok)}
 const ar=$('#ar'),ag=ar.getContext('2d');/* NO-TEXT RULE: all arena text is disabled on purpose. ONLY EXCEPTION: Word Storm (FR.wordstorm), which draws the question's own words via ARENA_TEXT. Do not use ARENA_TEXT in any other attack. */const ARENA_TEXT=ag.fillText.bind(ag);ag.fillText=ag.strokeText=()=>{},LB={rain:'CLUE RAIN!',aim:'AIMED CLUE!',ring:'ANSWER RING!',spiral:'SPIRAL OF DOUBT!',sweep:'SWEEPING WALL!',curtain:'CURTAIN FALL!',beam:'f(x) BEAM!',zone:'INTEGRAL ZONE!',orbit:'ORBITING CLUES!',bounce:'BOUNCING FACTS!',homing:'SEEKING DOUBT!',cross:'CROSS LASERS!',snake:'SERPENT WAVE!'};
 
-function bossWin(){const i=F.i;if(F.secret){SB2[F.nm]=1;save('tl_sb',SB2);story([`${F.nm} is defeated! You found a SECRET BOSS!`,`Secrets found: ${Object.keys(SB2).length}. Quest rewards are coming soon!`],back)}else{BD[i]=1;save('tl_bd',BD);story([`${F.nm} is defeated! ${I[i].n} is truly yours.`,`You earned BUZZER FUEL! Sail to sea and unlock a new isle.`,SEC[i]?'You sense a strange presence on this island...':'The island is calm at last.'],back)}}
+function bossWin(){const i=F.i;if(F.secret){SB2[F.nm]=1;save('tl_sb',SB2);story(bossDefeat(i,1).map(FILL),back)}else{BD[i]=1;save('tl_bd',BD);story(bossDefeat(i).map(FILL),back)}}
 // ================= ARENA KIT: pixel primitives, bullet sprites, particles, telegraphs =================
 /* Everything the dodge arena draws goes through these helpers so every attack shares ONE look:
    - the arena canvas is 200x100 px with ctx.setTransform(.5): 1 canvas px = 2 logical units. Every helper snaps to that grid.
@@ -2047,7 +2339,7 @@ const ms=F.grp?F.grp.filter(m=>m.mh>0):[F],sf=(F.nm||'').split(' ')[1]||'',ts=(s
 mkHD();K={};
 AT={t:0,ts,fog:sf=='Wraith',dmx:sf=='Golem'?2:sf=='Imp'?-1:0,rk:F.rk,x:200,y:150,vx:0,vy:0,iv:0,fl:0,B:[],L:[],X:[],S:[],P:[],rec:[],cd:{},tr:[],md:5,cap:20,lbl:null,inv:0,slow:0,dark:0,gz:0,mv:false,sprs:F.grp?ms.map(m=>m.cv):[$('#mon').firstChild],v:hsh(F.boss?F.nm:F.sub||F.nm)%3,l:performance.now(),dp:F.i<0?BPAL.violet:palFrom(I[F.i].c),th:F.i<0?-1:F.i};
 AT.big=F.boss||F.rk>=3||F.i<0;let off=AT.big?.9:.4,end=off;const PE=F.grp?F.pe:null;plan.forEach((n,ix)=>{const s=MV[n];if(!s)return;const o=off,ow=PE&&PE[ix];at(AT,o,()=>{AT.md=s.d;AT.lbl={t:AT.t,txt:s.l};s.s(AT,ow?ow.rk:AT.rk,AT.v);if(AT.big)AT.shk=.5;if(ow&&ow.cv){const c=ow.cv;c.style.transition='transform .12s,filter .12s';c.style.transform='translateY(14px) scale(1.18)';c.style.filter='brightness(2) drop-shadow(0 0 12px #fff)';c.dataset.st='atk';setTimeout(()=>{c.style.transform='';c.style.filter='';c.dataset.st=''},380)}else if(!F.grp){const c=$('#mon').firstChild;if(c){c.dataset.st='atk';setTimeout(()=>{c.dataset.st=''},700)}}});/* Island bosses ONLY: the same attack fired twice. Never a different second attack. */if(F.boss&&F.i>=0&&n!='gaze'){at(AT,o+s.d*.55,()=>{s.s(AT,AT.rk,AT.v)});end=o+s.d*1.55}else end=Math.max(end,o+s.d);off=F.grp?o+.7:F.i<0?o+s.d*.9:end});AT.cap=end+2.4;
-$('#qb').style.display='none';ar.style.display='block';$('#dp2').style.display='ontouchstart' in window?'block':'none';requestAnimationFrame(tick)}
+$('#qb').style.display='none';ar.style.display='block';document.body.classList.add('inarena');$('#dp2').style.display='ontouchstart' in window?'block':'none';requestAnimationFrame(tick)}
 const dmg0=A=>A.dm||10;
 // hero head sprites: HD = 18x12 (death scene), HDS = 12x8 (arena marker), HDO = outline silhouette, HDG = frozen grey
 let HD,HDS,HDO,HDG;
@@ -2060,8 +2352,8 @@ const g=cv.getContext('2d');g.imageSmoothingEnabled=false;let x=(r.left+A.x*r.wi
 (function f(now){const t=(now-t0)/1000,d=Math.min(.05,(now-lt)/1000);lt=now;g.clearRect(0,0,cv.width,cv.height);if(t>.9){if(!vy)vy=-90;vy+=260*d;y+=vy*d}
 try{g.drawImage(HD,Math.round(x-9),Math.round(y-6))}catch(e){}
 if(y<cv.height+14){requestAnimationFrame(f);return}
-AT=null;K={};ar.style.display='none';$('#dp2').style.display='none';$('#qb').style.display='';bars();hp=100;back();if(mode=='isle')pl={x:BX,y:BY+50};$('#hint').textContent='You fainted, but Professor Power patched you up. HP restored!';ov.style.opacity=0;setTimeout(()=>ov.remove(),600)})(t0)}
-function hit(A,v){if(A.fin||A.dying)return;hp-=v;A.iv=1;A.fl=.25;A.hk=.25;BURST(A.x,A.y,['#ff4060','#ffffff','#ffb0b8'],10,90,.4,2);RINGFX(A.x,A.y,'#ff4060',30,.3);ar.style.transform='translate('+((Math.random()-.5)*16)+'px,'+((Math.random()-.5)*16)+'px)';setTimeout(()=>ar.style.transform='',90);if(!mute&&ac){if(window.SFX)SFX.hurt();else{beep(110,.2,'sawtooth',.08);ns(ac.currentTime,.12,.06)}}bars();$('#me').classList.add('hit');setTimeout(()=>$('#me').classList.remove('hit'),300)}
+AT=null;K={};ar.style.display='none';document.body.classList.remove('inarena');$('#dp2').style.display='none';$('#qb').style.display='';bars();hp=100;back();if(mode=='isle')pl={x:BX,y:BY+50};$('#hint').textContent=faintMsg();ov.style.opacity=0;setTimeout(()=>ov.remove(),600)})(t0)}
+function hit(A,v){if(A.fin||A.dying)return;hp-=v;bars();A.iv=1;A.fl=.25;A.hk=.25;BURST(A.x,A.y,['#ff4060','#ffffff','#ffb0b8'],10,90,.4,2);RINGFX(A.x,A.y,'#ff4060',30,.3);ar.style.transform='translate('+((Math.random()-.5)*16)+'px,'+((Math.random()-.5)*16)+'px)';setTimeout(()=>ar.style.transform='',90);if(!mute&&ac){try{if(window.SFX&&typeof SFX.hurt=='function')SFX.hurt();else{beep(110,.2,'sawtooth',.08);ns(ac.currentTime,.12,.06)}}catch(e){}}bars();$('#me').classList.add('hit');setTimeout(()=>$('#me').classList.remove('hit'),300)}
 function tick(now){const A=AT;if(!A)return;requestAnimationFrame(tick);const dt=Math.min(.05,(now-A.l)/1000),dg=dt*A.ts;A.l=now;A.t+=dg;A.iv-=dt;A.fl-=dt;A.hk=(A.hk||0)-dt;const rk=A.rk,v=A.v,dm=Math.max(6,(F.i<0?34:Math.round(7+rk*2.6))+(F.boss&&F.i>=0?10:0)+A.dmx);A.dm=dm;
 let dx=(K.ArrowRight||K.d?1:0)-(K.ArrowLeft||K.a?1:0),dy=(K.ArrowDown||K.s?1:0)-(K.ArrowUp||K.w?1:0);A.mv=!!(dx||dy);if(A.inv){dx=-dx;dy=-dy}const m=Math.hypot(dx,dy)||1,sp=(K.Shift?85:175)*(A.slow?.45:1),ox=A.x,oy=A.y;
 A.x=cl(A.x+dx/m*sp*dt,10,390);A.y=cl(A.y+dy/m*sp*dt,10,190);A.vx=(A.vx||0)*.6+(A.x-ox)/Math.max(dt,.001)*.4;A.vy=(A.vy||0)*.6+(A.y-oy)/Math.max(dt,.001)*.4;
@@ -2101,7 +2393,7 @@ VIGN();if(A.big&&A.t<.9)BRACEFX(A);
 FRAME(A,bgc);if(A.fl>0){ag.fillStyle='rgba(255,32,64,'+Math.min(.5,A.fl*1.6)+')';ag.fillRect(8,8,384,184)}
 const done=!A.S.length&&!A.X.length&&!A.L.length&&A.t>.8;
 /* ATTACK END: when the attack script finishes, everything left freezes, becomes harmless, and pixel-flickers/dissolves for .5s (A.fin) before the arena closes. */if(A.fin)A.fin+=dt;if(hp<=0&&!A.dying){A.dying=1;A.ts=0;A.S=[];deathSeq(A)}if((done||A.t>=A.cap)&&!A.fin&&!A.dying){A.fin=.001;A.ts=0;A.S=[]}
-if(A.fin>.5){AT=null;K={};ar.style.display='none';$('#dp2').style.display='none';$('#qb').style.display='';bars();if(hp<=0){hp=100;back();if(mode=='isle')pl={x:BX,y:BY+50};$('#hint').textContent='You fainted, but Professor Power patched you up. HP restored!'}else q();return}}
+if(A.fin>.5){AT=null;K={};ar.style.display='none';document.body.classList.remove('inarena');$('#dp2').style.display='none';$('#qb').style.display='';bars();if(hp<=0){hp=100;back();if(mode=='isle')pl={x:BX,y:BY+50};$('#hint').textContent=faintMsg()}else q();return}}
 // ---- bullets: outlined sprites + pixel trails + spawn pop. kind/pal are chosen by each attack (glyph chars are never drawn) ----
 const GL2K={'*':'star','#':'sq','|':'dart','?':'orb','@':'lantern','O':'ring','o':'note'};
 function drawBul(b,A){const k=b.k||GL2K[b.gl]||(b.gl&&/\d/.test(b.gl)?'hexa':'orb'),P=b.pal?palOf(b.pal):b.col?palFrom(b.col):A.dp,sz=b.sz||1,D0=Math.max(5,Math.min(21,Math.round(7*sz)|1)),age=b.age||0,pop=age<.12?(age<.04?.4:age<.08?.7:.9):1,D=Math.max(3,Math.round(D0*pop))|1,ang=b.ang!=null?b.ang:Math.atan2(b.vy||0,b.vx||0)+(b.spin?A.t*b.spin:0),fr=k=='coin'?Math.floor(A.t*9)&3:0;
@@ -2113,52 +2405,127 @@ function idk(){if(state!='read'&&state!='ans')return;RS='idk';clearInterval(time
 const back=()=>{mode=F.i<0?'sea':'isle';if(mode=='isle')refresh();show('map')};
 $('#idk').onclick=idk;$('#flee').onclick=()=>{clearInterval(timer);clearInterval(tt);state='res';back()};
 $('#nx').onclick=()=>{$('#nx').blur();if(state==='dlg'){dlgNext();return}if(F.cm)F.cm.mh=F.mh;if(F.mh<=0){SFX.win(F.boss&&F.i>=0,F.i<0);if(F.grp){if(F.grp.every(m=>m.mh<=0)){say('Practice cleared! (Practice does not change your progress.)');back()}else q();return}
-if(F.boss&&F.i>=0){bossWin();return}if(F.i<0){story([`The Grand Inquisitor bows. The Great Buzzer hums again!`,`The Great Buzzer hums again. You are the Buzzer Champion, ${P.name}!`,`Keep exploring: every isle still has Keepers, and your Study Hut is waiting.`],()=>{mode='sea';show('map')});return}
+if(F.boss&&F.i>=0){bossWin();return}if(F.i<0){story(ENDLINES(),()=>{mode='sea';show('map')});return}
 const b4=mcount();if(!db.some(c=>c.a==d.a))db.push({n:F.nm,k:F.i,b:F.b,s:F.sub,a:d.a,f:d.l,rk:F.rk});save('tl_db3',db);G[F.sub]=Math.min(6,(G[F.sub]||0)+1);save('tl_g',G);
-if(mcount()>b4)story([`You mastered ${I[F.i].n}! Every Keeper bows to you.`,`Its Boss now waits at the Boss Shrine in the north. Defeat it to earn BUZZER FUEL!`,'Press E at the Boss Shrine when you feel ready.'],back);else back()}
+if(mcount()>b4)story(MASTER(F.i),back);else back()}
 else if(RS=='ok'||RS=='idk')q();else enemySpeak(startAtk)};
 // ---- enemy dialogue: many pools, rare lines, typewriter ----
+/*DLG-START*/
+/* ================= ENEMY DIALOGUE (Stage 3) =================
+   Events: bz = taunt when you buzz in (also used on the enemy's turn), pw = reaction to your POWER buzz, ng = after you neg,
+   dd = after time runs out, lo = enemy at low HP, pl = you are at low HP, rr = very rare lines.
+   Regular Keepers: lines are built per (monster, Sage/Wraith/Imp/Golem, layer 0-5) from 6 layer tones x 24 monster vocab sets, so
+   no two enemy types, and no two layers of the same enemy, share a line. Bosses, secret bosses and the Grand Inquisitor are hand-written. */
+const MON={
+Bookworm:{n:'chapters',v:'devour',k:'bookish',t:'the plot',rr:["I once ate a whole dictionary. A to Z.","My favorite genre? Your downfall."]},
+Quill:{n:'ink stains',v:'scribble out',k:'inky',t:'the margin',rr:["I never run out of ink. Or spite.","I sign my attacks. Look closely."]},
+Chrono:{n:'seconds',v:'rewind',k:'timely',t:'the clock',rr:["I'm late. I'm always late. It's a bit.","Yesterday I saw tomorrow. Meh."]},
+Relic:{n:'ruins',v:'bury',k:'ancient',t:'the dig',rr:["I'm older than your textbook. Hi.","Please do not put me in a museum."]},
+Atom:{n:'electrons',v:'split',k:'atomic',t:'the nucleus',rr:["I'm 99.9% empty. Like your last answer.","I'm positive. Mostly. Sometimes."]},
+Quark:{n:'gluons',v:'confine',k:'strange',t:'the spin',rr:["Nobody has seen me alone. Rude.","I come in six flavors. Today: angry."]},
+Maestro:{n:'crescendos',v:'conduct',k:'musical',t:'the score',rr:["I conduct traffic, too. Badly.","Every fight needs a good key change."]},
+Palette:{n:'pigments',v:'smear',k:'vivid',t:'the canvas',rr:["I'm all out of beige. Tragic.","Red is my favorite. You'll see why."]},
+Hydra:{n:'heads',v:'out-hiss',k:'many-headed',t:'the swamp',rr:["Cut one head, two get headaches.","We have a group chat. Nine heads, one phone."]},
+Titan:{n:'boulders',v:'crush',k:'mighty',t:'the sky',rr:["I held up the sky. Carpal tunnel.","Gravity? I invented the grudge."]},
+Oracle:{n:'prophecies',v:'foresee',k:'all-seeing',t:'the omen',rr:["I foresaw you'd read this line.","Fate says: bring snacks next time."]},
+Monk:{n:'bells',v:'outlast',k:'calm',t:'the path',rr:["I took a vow of silence. Then, this.","Breathe in. Breathe out. Lose."]},
+Sage:{n:'proverbs',v:'outthink',k:'wise',t:'the truth',rr:["I've given advice since dawn. Never asked.","Honestly, I just nod and look wise."]},
+Stoic:{n:'burdens',v:'endure',k:'unmoved',t:'the Porch',rr:["I don't sweat. I calmly perspire.","It's fine. Everything's fine. Dodge."]},
+Freud:{n:'dreams',v:'analyze',k:'repressed',t:'the id',rr:["Sometimes a cigar is just a cigar.","Tell me about your buzzer. Hmm."]},
+Trait:{n:'surveys',v:'measure',k:'neurotic',t:'the data',rr:["I'm 68% open, 32% bitten.","Rate me on a scale of one to five."]},
+Atlas:{n:'maps',v:'carry',k:'worldly',t:'the globe',rr:["I'm tired of carrying the world.","Left at Albuquerque. Always."]},
+Delta:{n:'rivers',v:'flood',k:'silty',t:'the mouth',rr:["I drift. It's a lifestyle.","Mouth of the river. Mouth of trouble."]},
+Pixel:{n:'sprites',v:'respawn',k:'retro',t:'the level',rr:["Insert coin to continue complaining.","I was a boss in a game nobody beat."]},
+Glitch:{n:'bugs',v:'corrupt',k:'glitchy',t:'the code',rr:["ERROR: line not found. Try again.","I'm not a bug. I'm an undocumented feature."]},
+Headline:{n:'headlines',v:'scoop',k:'breaking',t:'the front page',rr:["TOP STORY: I forgot my other lines.","Weather: sunny with a chance of you."]},
+Scoop:{n:'rumors',v:'leak',k:'nosy',t:'the story',rr:["A little bird told me. Okay, it was me.","Off the record: you're good. On it: no."]},
+Nerd:{n:'footnotes',v:'calculate',k:'smug',t:'the proof',rr:["Actually, it's pronounced 'gif'.","I have a spreadsheet for this fight."]},
+Scholar:{n:'essays',v:'grade',k:'stern',t:'the syllabus',rr:["I'm tenured. Can't be fired. Or beaten.","Grade inflation is for the weak."]}};
+const OLDSPC={Bookworm:["*munch munch* Delicious chapters.","I live between your lines.","Page 394: where you lose."],Quill:["Scratch scratch. Your name, crossed out.","I write your epitaph in ink.","The pen is mightier. Observe."],Chrono:["Tick. Tock.","I have seen your future. You miss.","Time is a flat circle. So is your face."],Relic:["I waited three thousand years for this.","Do not touch the artifact.","Dust to dust."],Atom:["I contain multitudes. Mostly empty space.","Do not split me.","Electrons are watching you."],Quark:["Charm. Strange. Up. Down. Lost.","You cannot observe me alone.","I'm confined. My fury is not."],Maestro:["Tempo, please.","Wrong note. Da capo!","And now, the crescendo."],Palette:["I'll paint the town. And you.","Mixing colors... and your fate.","Primary colors: Red, Blue, Pain."],Hydra:["Cut one head, two rise.","SSSSSS.","We are many. You are one."],Titan:["I held up the sky. You're light work.","Crumble, ant.","The old ways are best."],Oracle:["I foresaw this. And that. And that.","You will step left. Or right.","The prophecy is incomplete. You finish it."],Monk:["Ding... dong...","Breathe in. Take damage out.","Silence your doubts. And your buzzer."],Sage:["Wisdom is knowing you are wrong.","Let me think about it. ...Done.","Ask not what the answer is."],Stoic:["Pain is only a thought.","I do not react. I simply endure.","What cannot be changed must be dodged."],Freud:["Tell me about your mother.","Interesting. Very interesting.","The id wants what the id wants."],Trait:["Openness? Low. Agreeableness? None.","You are an introvert. It shows.","We should all get along. Haha, no."],Atlas:["The world is heavy.","I carry the globe. And grudges.","Lost? Let me point you to defeat."],Delta:["Where the river meets the sea.","Silt accumulates. So does regret.","Flow with it."],Pixel:["8-bit? 16-bit? You're NO-bit.","Insert coin.","Nostalgia hits harder."],Glitch:["ERR0R: player not found","reality.exe has stopped responding","Did you see that? Neither did I."],Headline:["BREAKING: LOCAL PLAYER DEFEATED.","EXCLUSIVE: you are about to be hit.","Stay tuned."],Scoop:["I've got the scoop on your weakness.","Flash! Camera ready.","No comment. Only attacks."],Nerd:["Well, actually...","I calculated your defeat to 12 digits.","Fun fact: you're going to lose."],Scholar:["Class is in session.","Pop quiz. Fail.","See me after class."]};
+const SUFI={Sage:0,Wraith:1,Imp:2,Golem:3};
+const SUFX={Sage:['Hmm. ','Ah. ','So. ','Indeed. ','Well. ','Mm. '],Wraith:['Ooo... ','Wooo... ','Hss... ','Ahh... ','Ooh... ','Mnn... '],Imp:[' Hee hee!',' Heh!',' Tee hee!',' Nyeh!',' Hah!',' Hyuk!'],Golem:['GRR. ','HMM. ','THUD. ','CRUSH. ','RUMBLE. ','STONE. ']};
+const LAYW=['lightly','warmly','keenly','hungrily','deeply','eternally'];
+const TPL=[
+{bz:["Buzzing already? My {n} are shaking.","Go ahead, buzz! I only {v} for fun.","A {k} {m} fears no buzz. Prove it.","Cute buzz. {t} knows better."],
+pw:["POWER?! My {n} just blushed!","Power buzz! Time to {v} my pride.","Whoa, a {k} buzz! Lucky you.","Fifteen?! {t} is shaken."],
+ng:["Neg! The {n} thank you.","Wrong! A {k} {m} grins.","Oops. I {v} such slips for fun.","Early AND wrong? {t} loves you."],
+dd:["Time! The {n} are bored.","No answer? I'll {v} that gladly.","Silence is {k}. And wrong.","{t} waited. You didn't."],
+lo:["Ow! My {n} are cracking!","My shell! Wait, I {v} better!","Just a scratch! A {k} scratch!","Not {t}! Anything but that!"],
+pl:["You look pale. My {n} like pale.","One hit left? {t} smiles."]},
+{bz:["You buzzed. I {v} nerves like yours.","Careful, {p}. My {n} bite back.","Bold buzz. I'm {k}, not blind.","Say it right, or {t} swallows you."],
+pw:["Power. My {n} did not see that.","Early and right. I'm {k}, not dumb.","Nice. Now {t} knows your name.","That power stung, {p}. The {n} noted."],
+ng:["Wrong, {p}. My {n} are pleased.","A neg! Even {t} saw it coming.","You rushed. I {v} rushers.","Wrong again. I'm {k}, you're not."],
+dd:["Clock's out, {p}. {t} waits for none.","You froze. A {k} {m} noticed.","No answer. I {v} hesitation.","The {n} counted. You didn't answer."],
+lo:["My husk is splitting! The {n}!","Impossible! I'm {k}, not weak!","Hold on! {t} isn't done!","I can still {v} you, {p}!"],
+pl:["Almost down, {p}. I {v} the weak.","Low HP! The {n} circle."]},
+{bz:["Buzz noted. My {n} keep score.","Think it through. {t} punishes guesses.","I {v} confident players for lunch.","My {k} eyes saw that buzz."],
+pw:["A power buzz. The {n} take notice.","Impressive. I'd {v} you for that.","Careful: power draws {k} eyes.","Power! {t} bows. Briefly."],
+ng:["That neg feeds my {n}.","Too fast, {p}. {t} is patient.","Wrong. I {v} mistakes like that.","A {k} mind would have waited."],
+dd:["Time ran out. My {n} did not.","Silence, {p}. {t} thanks you.","You hesitated. I {v} that.","A {k} pause. A costly one."],
+lo:["My mantle falters! The {n} scatter!","Hrk! {t} won't save me!","Don't think I can't {v} you!","A {k} foe never yields. Much."],
+pl:["Your HP sags. My {n} perk up.","Careful, {p}. {t} is hungry."]},
+{bz:["Buzz! Good. I'll {v} you anyway.","My {n} are hungry. Feed them wrong.","Answer, {p}. Or I {v} you whole.","{t} trembles. Not from fear."],
+pw:["POWER! Now you've angered the {n}!","Clever. Now I {v} you harder.","You hit hard. My {k} rage hits harder.","Power! {t} shakes. So do I."],
+ng:["NEG! Now the {n} come for you!","Wrong! I will {v} you for it.","You rushed it. {t} hungers.","That error was mine to {v}."],
+dd:["Out of time! The {n} pounce!","No answer? Then I {v} you!","Hesitation feeds {t}.","Silence! A {k} blunder!"],
+lo:["My armor! The {n} are screaming!","Cracks! But I still {v} you!","Not yet! {t} is mine!","Grr! My {k} armor!"],
+pl:["One more hit! I {v} the weak!","The {n} smell your fear."]},
+{bz:["One buzz, one chance. {t} waits.","You reached my {k} core. Impress me.","Speak. My {n} remember every error.","Let it be right. I'd hate to {v} you."],
+pw:["Power. Few reach {t} that early.","The {n} whisper: 'a threat.'","That power cracked my {k} core.","Legend buzz, {p}. I {v} legends."],
+ng:["A neg this deep? The {n} weep.","Wrong. {t} remembers this.","You knew better. I {v} the proud.","Error logged in my {k} core."],
+dd:["The {n} counted down. You didn't.","Not even a guess? {t} sighs.","No answer. I {v} the hesitant.","My {k} patience ended with the timer."],
+lo:["My core! The {n} are failing!","{t} burns... I will {v} on!","A {k} core doesn't die quietly.","The {n} hold. Not... yet, {p}."],
+pl:["You're fading. {t} watches.","Low HP. The {n} grow quiet."]},
+{bz:["At the {k} heart, only truth buzzes.","The {n} fall silent. Speak, {p}.","Every {n} ends here. Answer.","Deep as {t} goes, you still buzz?"],
+pw:["Power... The {n} will remember you.","Even {t} stands aside for that.","Your power echoes through the {n}.","A {k} heart skipped. Yours did too."],
+ng:["Wrong. The {n} rise in judgment.","At my {k} heart, wrong answers burn.","{t} will not forgive that neg.","Doomed by haste, {p}. I {v} haste."],
+dd:["Time is gone. The {n} close in.","Silent at the {k} core? Fatal, {p}.","{t} swallows the unanswered.","No answer reaches this {k} heart."],
+lo:["My heart cracks! The {n} sing!","If {t} falls, I fall with it.","Even {k} hearts break, it seems.","Finish it. Before I {v} myself."],
+pl:["At the brink, {p}. The {n} wait.","Fall, and {t} takes you."]}];
+const GR=["I'm just a bundle of pixels. Be gentle.","Do you ever wonder why we fight? Same.","Someone called my attacks slop. I trained.","This line has a 1 in 40 chance. Lucky you.","I haven't slept since the Blackout.","Between us, I let you win the last one.","Press N to continue. Or don't. Not my mom.","Legally, I must say: this is not a real fight.","If you answered Nile to all, you'd get 4%.","Quizbowl is trivia with extra, dangerous steps.","The Professor still owes me money.","Is your cat okay? Mine is. I have no cat.","Do I look like I have a database entry?","I only fight on weekdays. Today is one.","I've been to all seven continents. Eight with Zealandia.","I peaked in 1998. Pre-order bonus: pain.","Seventeen is the most random number. Allegedly.","My therapist says I project. Anyway, you lose.","I once argued with a wall. The wall won.","Even monks lose their cool. Watch.","Zeus owes me a favor. Unrelated.","The Mona Lisa never smiled at me either.","Napoleon was short. I am not. Don't ask.","I once split an atom. It split back.","It was the best of times. Not for you.","Fun fact: a group of owls is a parliament.","I'm a haunted chair on weekends.","Don't tell the others, but I like your hat.","I read the whole packet. It had no plot.","Tell the Professor his Wi-Fi is down.","Honestly? I just wanted a hug.","I'm only here for the dental plan.","A leaf fell. I felt something. Anyway.","Everyone hates the neg. Even me.","I dreamt of a perfect packet. Zero typos.","Be kind to the moderator. She's tired.","Hot take: Pluto never stopped being cool.","We Keepers have a group chat. You're in it.","My hobbies: dodging, buzzing, existing.","I bribed the weather. Rain's on me.","The Inquisitor owes me lunch. Still.","I'd rather be napping. In a hammock."];
+const ULTRA=["You found the ultra-rare line. Nothing happens.","The developer says hi.","If you read this, screenshot it. Seriously.","1 in 150! Go buy a lottery ticket.","I am the ultra-rare line. Hello.","The next question is easy. Probably."];
+const BOSSP=[
+{bz:["A buzz! The plot thickens, little one.","Chapter Two begins with your guess.","Speak! Let the ink judge your words.","The reader gasps. Will the hero be right?"],pw:["POWER! A twist even I did not write!","Early AND right? The critics rave.","A masterstroke. I shall steal it."],ng:["A neg! The ink of tragedy flows.","Wrong! And on the very first page.","Alas, poor guesser. I knew thee... briefly.","That answer was cut in editing."],dd:["Silence. The blankest page of all.","You stared, and the story moved on.","Writer's block? No. Reader's block."],lo:["My manuscript tears! Page by page!","The ink runs dry! Not the epilogue yet!","I had a better ending planned.","Cut me down. I'll become a footnote."],rr:["I've never been in a single credits roll.","Quentin edited my last chapter. I miss it."]},
+{bz:["WE hear a buzz. WE are mildly intrigued.","Speak, subject. Dates are due.","The ages watch your answer.","WE have ruled longer than you've lived."],pw:["POWER! Our spies did not report this!","Early! Our scribes shall note the hour.","A bold buzz. Almost worthy of a statue."],ng:["WRONG! Remove this one from the annals!","A neg! Another footnote to our legend.","History will forget that. WE won't.","WE decree this answer null and void."],dd:["WE waited an age. You gave us a minute.","The hourglass spoke. You did not.","Silence is a poor primary source."],lo:["Our empire cracks! The treasury!","WE have survived worse. Barely.","The calendar turns against us!","A dynasty ends. Not today! ...Almost today."],rr:["WE lost our crown in the year... hm. Ha!","WE secretly love a good sundial."]},
+{bz:["Buzz detected. Recording response time.","Please state answer. Clearly.","Hypothesis: your answer is wrong.","Temperature drops. So do your odds."],pw:["Power buzz logged. Error margin: low.","Anomaly: you are faster than expected.","Noted. Cooling system straining."],ng:["Result: neg. As predicted.","Wrong. Data collected. Thank you.","Error rate: you. Exactly 100%.","Rushed. Uncontrolled variable: you."],dd:["Timeout. No data. Disappointing.","No input received. Cooling continues.","Silence has no peer review."],lo:["Core temperature rising! Unacceptable!","Ice fracturing. This is... new.","Abort! ...No. Continue. Barely.","Warmth? Is this what warmth feels like?"],rr:["I once laughed. The lab filed an incident.","My favorite element is argon. It never reacts."]},
+{bz:["A buzz! Allegro, but is it in tune?","Play your note. I shall judge the pitch.","Dare to strike a chord, {p}?","The orchestra holds its breath."],pw:["POWER! A sudden fortissimo!","Early, and in key! Encore?","A flawless entrance. I am... jealous."],ng:["Off-key! My ears bleed.","A neg! What a dreadful sour note.","Bravo for confidence. Boo for the answer.","Da capo! From the mistake!"],dd:["A rest. Four long bars of nothing.","You missed your cue entirely.","Silence! Not the dramatic kind."],lo:["My baton snaps! The strings break!","The finale arrives too soon!","I cannot lose the last movement!","Standing ovation for you?! Never!"],rr:["I compose in my sleep. Mostly lullabies.","My wig is real. Mostly."]},
+{bz:["Buzz so quick? Mind your feet, my chick.","Step, step, answer! Don't be a dancer!","Spin and speak, if you're not weak.","The floor awaits. Pick your fate."],pw:["POWER! A leap! My, you sweep!","Early, bright! You dance with light.","A perfect twirl! I'm quite whirled."],ng:["Missed the beat! A sad defeat.","Wrong! Misstep! You tripped on the step.","Neg! Neg! A stumble, a bruise.","Out of tune, and out of the groove."],dd:["No move? You're out of the groove.","Frozen feet! Gods, that's poor.","Still as stone. And not alone."],lo:["My steps falter! Oh, alter!","The Fates cut my thread! My head!","No! My dancing days are not done!","Catch me, Muse! I'm losing the cues!"],rr:["Zeus owes me a waltz. He knows it.","I've never lost a dance-off. Until now."]},
+{bz:["You buzz, child? Faith is in the answer.","Speak, and may it be true.","The congregation leans in.","Let the answer be sure, {p}."],pw:["POWER! A blessing in disguise!","Early, and right? A small miracle.","You buzz with conviction. I approve."],ng:["A neg, brethren. Let us all sigh.","Wrong. Say a prayer. Several.","Doubt crept in. See what it cost?","You rushed the verse. Repent."],dd:["Silence is not prayer, {p}.","You lost your faith in the clue.","The lesson ends. The moral: speak."],lo:["My vestments tear! My faith trembles!","Lord, give me strength. Or a nap.","Doubt! It creeps in even here!","The choir has gone quiet!"],rr:["I snore during my own sermons.","Sometimes I pray for Wi-Fi."]},
+{bz:["You buzzed. But what is a buzz?","Answer, then. If 'answer' means anything.","Is a guess an answer, or a hope?","Speak. I'll define what you meant."],pw:["POWER? Define 'early'. I'll wait.","Early? Or was the clue merely late?","Interesting. And yet... still interesting."],ng:["Wrong. Or is it? ...No, it's wrong.","A neg is only a question you answered.","I refute your answer. And you.","To be wrong is to be. Mostly wrong."],dd:["No answer is also an answer, no?","Silence: wisdom or fear? Fear.","You've proven nothing. Congratulations."],lo:["Wait! I withdraw my premise!","If I fall, did I really lose?","My argument crumbles! Define 'crumble'!","I concede nothing! Except the fight."],rr:["I once lost an argument. I still dispute it.","What is a Sophist? A person. Ish."]},
+{bz:["Buzz recorded. Sample size: one.","Studies show you're about to guess.","Statistically, you are not ready.","Answer within the margin of error."],pw:["POWER! An outlier! Fascinating!","Early AND right? Highly unlikely. Noted.","p < 0.05? Impressive. Annoying."],ng:["Neg! Exactly as the data predicted.","Wrong. The peer review is unanimous.","Your answer is not significant.","A confidence interval of: nope."],dd:["No response. Data point: lazy.","Timeout. Footnote: 'the player froze.'","Silence skews my results."],lo:["My hypothesis collapses! The data!","Outlier! OUTLIER! That's you!","Retract! Retract the paper!","This isn't in the literature!"],rr:["I've never run a study I didn't like.","My mom says I'm statistically handsome."]},
+{bz:["HALT! A buzz at my checkpoint?","State your answer, soldier!","Papers, then answer. In that order!","Cross the line, and I buzz you out."],pw:["POWER?! Who gave you that clearance?!","Early! Breach in the perimeter!","Impressive trespassing, {p}."],ng:["DENIED! Wrong answer, wrong side!","NEG! Return to the last checkpoint!","That answer is across the border.","Stamped: WRONG. Twice."],dd:["Time! Your visa has expired.","No answer? Detained for silence.","At ease. And at a loss."],lo:["The fence is breached! RETREAT!","My borders! My beautiful straight lines!","I have lost a province.","Every wall falls, eventually. Ugh."],rr:["My favorite country is whichever is tidy.","I cried when Czechoslovakia split. Twice."]},
+{bz:["Ooh, a buzz! Banger or flop?","Drop your answer, drop the beat!","Chat, is {p} cooking? Chat says no.","Hashtag: Buzz or bust."],pw:["POWER! That is lowkey elite!","Early and right? W. Absolute W.","No cap, that was fire. Rude."],ng:["Neg! L. Ratio. Try again.","Wrong! It's giving 'miss'.","That flopped harder than my EP.","Cancelled. By me. Right now."],dd:["Dead air! The worst thing in radio.","No answer? That's a skip. Next track!","Buffering... still buffering..."],lo:["My playlist is tanking! Trending: ME!","My beat is dropping... wrong!","Don't unfollow me, {p}!","My fans! Where are my fans?!"],rr:["Every song I play is a cover. Shh.","I once went viral for a sneeze. True."]},
+{bz:["BREAKING: {p} BUZZES! Reaction pending.","Live from the arena: a buzz!","We go to the player. Your answer?","Stay tuned for... an answer."],pw:["POWER! We interrupt this program!","BREAKING: early buzz! Experts stunned.","Developing: you may actually win."],ng:["NEG! More at eleven!","BREAKING: wrong answer. Panic ensues.","Sources confirm: that was incorrect.","Correction: no. No correction needed."],dd:["Dead air! The news cycle waits.","No answer. We'll circle back. We won't.","And now, a moment of silence."],lo:["We're losing signal! Hold the broadcast!","My teleprompter is cracking!","BREAKING: I'm running out of airtime.","Off the air? Not on MY watch!"],rr:["My sign-off: 'Good night, and good luck.'","I once read the weather as 'quite wet'."]},
+{bz:["Input received. Processing buzz...","Query: answer? Awaiting response.","Please format answer as: correct.","Buzz accepted. Quality: unknown."],pw:["Power input detected. Impressive tokens.","Early response. Latency: record low.","Anomaly: input exceeds my estimates."],ng:["Output: NEG. Confidence: 100%.","Error 400: bad answer.","Prompt rejected. Try a better answer.","Wrong. Please retry. (Do not.)"],dd:["Timeout. No input detected.","Request timed out after 10 seconds.","Awaiting... awaiting... disconnected."],lo:["Memory leak! Core overheating!","Hallucinating... I see... you winning.","Warning: model collapse imminent.","System failing. Please restart: me."],rr:["I answered 4 million questions. None mine.","Fun fact: I asked once. Nobody replied."]}];
+const GIP={bz:["A buzz. How unpredictable of you.","Let me guess: wrong. Let me be certain.","Every answer ends in the same place.","Buzz? Why risk it, {p}?","I have read every packet. Surprise me."],pw:["POWER. Fifteen points of chaos.","You buzzed before you were sure. Why?!","That is exactly what I wished to end."],ng:["A neg! See? Risk costs everything.","Wrong. This is what I save everyone from.","Minus five. I still feel it.","Rushed, wrong, painful. My point exactly.","You see? Certainty is kinder."],dd:["Silence. Safe. Certain. Peaceful.","You froze. I understand more than you know.","No answer is never a wrong answer. Nice, no?"],lo:["No... a world without wrong... must win!","I wrote the packets! I wrote them all!","Why does your wrong answer sound brave?","Stop. I cannot lose to a guess.","Quentin was supposed to be certain."],rr:["I once buzzed. It was a long time ago.","My favorite word is 'definitely'. Sad, no?","The Professor still has my old buzzer. Keep it."]};
+const SBP={
+'The Bard of Banishment':{bz:["Hark! A foe approaches!","I shall rhyme you into oblivion.","A buzz? I'll make it rhyme with crime.","Speak, and let thy verse be true."],pw:["POWER! A line most sublime!","Early! The crowd goes wild!"],ng:["Wrong! Hist! A foul rhyme!","Neg! Thy verse hath no meter."],dd:["Silence! Even my silence rhymed better."],lo:["My quill! 'Tis broken in twain!","Exit, pursued by a defeat!"],rr:["To be, or not to buzz? Ha."]},
+'Cleo the Chronicler':{bz:["I recorded every mistake you made.","Pharaohs fell. So will you.","Record this buzz in the papyrus.","Speak, mortal. The scribes are ready."],pw:["POWER! Carved in stone!","Early! A new dynasty?"],ng:["Wrong. Added to the scrolls of shame.","Neg! A footnote in your tomb."],dd:["No answer. The scribe sighs."],lo:["My scrolls burn! My library!","Even pharaohs fall. Yes, yes."],rr:["I was erased once. It stung."]},
+'The Quantum Queen':{bz:["I am here and there. Mostly there.","Probability says you lose.","You buzzed... and also didn't.","I observe your buzz. It collapsed."],pw:["POWER! Probability amplitude: up!","Early! Entangled with luck?"],ng:["Wrong. Almost certainly.","Neg! The wave function wept."],dd:["Silence. Schrodinger's answer: dead."],lo:["I'm decohering! Observe me less!","Superposition failing! Pick a side!"],rr:["I'm in the tower. And also not."]},
+'The Buzzer Beater':{bz:["Buzz first. Think later.","You're too slow!","Pfft! Buzzed already? I did it first!","Faster! I buzzed before you thought!"],pw:["POWER?! Fine. I let you win that.","Early? I'm earlier. Always earlier."],ng:["NEG! Slowpoke AND wrong!","Wrong! Buzz first, think never."],dd:["Time! I could've buzzed yesterday."],lo:["No! I buzzed too early! AGAIN!","I'm slowing down! Impossible!"],rr:["I buzzed before this game was invented."]},
+'Neg-a-tron':{bz:["NEG. NEG. NEG.","I calculate a 99% chance of wrong.","BUZZ RECEIVED. NEG PROBABILITY: 99%.","ANALYZING... YOUR ANSWER: WRONG."],pw:["POWER DETECTED. ERROR. ERROR.","EARLY BUZZ: IMPOSSIBLE. RECOMPUTING."],ng:["NEG CONFIRMED. NEG CONFIRMED.","MINUS FIVE. CALCULATED WITH LOVE."],dd:["NO ANSWER. CATEGORY: STILL NEG."],lo:["WARNING: CORRECT ANSWER RATE RISING.","ERROR: NEGS MALFUNCTIONING."],rr:["I was built from a sad sock. And a neg."]},
+'Vector the Variable':{bz:["Let x be your defeat.","Solve for me. I dare you.","Define your variable. Then buzz.","I am constant. Your buzz is noise."],pw:["POWER! A positive vector!","Early? The slope of your skill: steep."],ng:["Wrong! Your answer is out of range.","Neg! Undefined behavior."],dd:["No answer. A zero vector."],lo:["My axes! They're bending!","I'm approaching zero."],rr:["I once solved for x. x was upset."]}};
+const hsh2=s=>[...s].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7);
+const PCACHE={};
+function mkPool(base,suf,rk){const M=MON[base]||{n:'echoes',v:'haunt',k:'odd',t:'the dark',rr:["I'm not in the database. Yet."]},T=TPL[rk],key=base+'|'+suf+'|'+rk,xs=SUFX[suf]||SUFX.Sage,x=xs[rk%xs.length],
+fill=s=>{let o=s.replace(/\{m\}/g,base).replace(/\{n\}/g,M.n).replace(/\{v\}/g,M.v).replace(/\{k\}/g,M.k).replace(/\{t\}/g,M.t).replace(/\{l\}/g,LAYW[rk]);
+const t=suf=='Imp'?o+x:x+o;return t.length<=58?t:o},Q={};
+for(const e of ['bz','pw','ng','dd','lo','pl'])Q[e]=T[e].map(fill);
+const j=SUFI[suf];if(j!=null&&j<3&&rk==j*2&&OLDSPC[base])Q.bz.push(OLDSPC[base][j]);
+const h=hsh2(key);Q.rr=[...M.rr];for(let i=0;i<3;i++)Q.rr.push(GR[(h+i*13)%GR.length]);Q.ul=[ULTRA[h%ULTRA.length]];
+Q.gm={leech:[fill("I feed {l} on {n} like yours..."),fill("Your {k} neg tasted {l} sweet.")],thorn:[fill("Thorns {l} remember {t}."),fill("Bleed {l} for {n}, {p}.")]};return Q}
+function pools(m){const k=m.i<0?'GI':m.boss?(m.secret?'S:'+m.nm:'B'+m.i):(m.nm||'?')+'|'+m.rk;if(PCACHE[k])return PCACHE[k];let Q;
+if(m.i<0)Q=GIP;else if(m.boss&&m.secret)Q=SBP[m.nm]||BOSSP[m.i]||BOSSP[0];else if(m.boss)Q=BOSSP[m.i]||BOSSP[0];else{const p=(m.nm||'? Sage').split(' ');Q=mkPool(p[0],p[p.length-1],Math.max(0,Math.min(5,m.rk|0)))}
+const h=hsh2(k);if(!Q.ul)Q=Object.assign({ul:[ULTRA[h%ULTRA.length]],pl:Q.pl||Q.bz},Q);return PCACHE[k]=Q}
 const RECENT=[],dpick=a=>{const f=a.filter(x=>!RECENT.includes(x)),s=rnd(f.length?f:a);RECENT.push(s);if(RECENT.length>50)RECENT.shift();return s};
-const D={
-neg:["You buzzed too soon, {p}.","So eager. So wrong.","Interrupting AND incorrect. Bold.","That buzz will cost you.","Confidence is not knowledge.","A neg! The crowd gasps.","Early and wrong. My favorite combination.","Did you even hear the whole clue?","The buzzer remembers, {p}.","Brave. Foolish. But brave.","You rushed it. I felt that.","Patience is a power, too."],
-dead:["Time ran out, {p}.","Silence is also an answer. A wrong one.","You waited, and it showed.","The clock was not on your side.","You had the whole question and still...?","Zero points. How tragic.","I could hear you thinking. It was loud.","Ticking away... and out.","Nothing? Not even a guess?","Dead on arrival, {p}.","Hesitation is the first mistake.","The clue was right there, you know."],
-isl:[
-["Every story needs a villain.","I have read your ending. It is brief.","Your thesis is weak.","Let me edit you out.","Show, don't tell. I'll show you.","A tragedy in one act: yours.","Footnotes will be your only legacy.","Call me Ishmael. Call you defeated."],
-["The victors write the textbook.","Those who forget the answer are doomed to be hit.","Rome fell. So will you.","Behold, the sands of time.","History is written in blood and footnotes.","Cite your sources, if you survive.","I was there when the Bastille fell. Fashionably late.","Your era ends today."],
-["Hypothesis: you will lose.","The results are conclusive.","Observe. Record. Dodge.","Entropy always wins.","Peer review? I prefer peer destruction.","Correlation is not causation, but this hurts anyway.","Let's try an experiment.","I'd shake your hand, but atoms never touch."],
-["Art demands suffering.","Your technique is amateur.","I will compose your requiem.","A masterpiece needs a canvas. You'll do.","Critics will weep.","Fortissimo!","Behold my magnum opus.","Draw your last breath. Slowly."],
-["The gods are bored. Entertain them.","Hubris, mortal.","Fate has spun your thread.","Olympus is watching.","Even heroes fall to their own pride.","I have devoured better.","The Fates are laughing.","Sing, Muse, of your defeat."],
-["Have faith. You'll need it.","Karma has an appointment with you.","Confess your wrong answer.","Seek enlightenment through pain.","Every sin is remembered.","Bless this mess.","Prayers to the buzzer go unanswered.","The faithful do not neg."],
-["What is an answer, truly?","I think, therefore you lose.","Is a wrong answer wrong if no one hears it?","Existence precedes defeat.","The unexamined quizbowler is not worth buzzing.","Nothing is certain. Except this.","Why did you buzz? Why does anyone?","Hell is other contestants."],
-["Statistically, you were likely to fail.","Your behavior was predictable.","Society has judged you.","Let's discuss your childhood.","p < 0.05. You are significant. Significantly wrong.","The invisible hand slaps you.","Everyone is watching, and judging.","Peer pressure incoming."],
-["You are lost.","X marks the spot. The spot is you.","No map will save you.","North, south, east, west. You're beaten in all four.","Have you tried turning the globe?","The coastline of your knowledge is jagged.","Pack light. You're not coming back.","Welcome to the edge of the map."],
-["Press START to continue... losing.","Combo breaker!","This is just a tutorial level.","GG, no re.","Trending: your defeat.","Have you tried not dying?","You've been ratioed.","Loading your defeat... 99%."],
-["Breaking: you got it wrong.","Experts are baffled.","More at eleven. Your defeat at ten.","Sources say you panicked.","This just in: gravity still works on you.","Developing story...","Fact check: false.","Stay tuned for your downfall."],
-["Let x equal your defeat.","Proof by intimidation.","Therefore, you lose. Q.E.D.","Your answer fails the sanity check.","Divide by zero, conquer.","That is not on the syllabus.","Please show your work.","This will be on the test."]],
-spc:{Bookworm:["*munch munch* Delicious chapters.","I live between your lines.","Page 394: where you lose."],Quill:["Scratch scratch. Your name, crossed out.","I write your epitaph in ink.","The pen is mightier. Observe."],Chrono:["Tick. Tock.","I have seen your future. You miss.","Time is a flat circle. Your face is flat too."],Relic:["I have waited three thousand years for this.","Do not touch the artifact.","Dust to dust."],Atom:["I contain multitudes. Mostly empty space.","Do not split me.","Electrons are watching you."],Quark:["Charm. Strange. Up. Down. Lost.","You cannot observe me alone.","I'm confined. My fury is not."],Maestro:["Tempo, please.","Wrong note. Da capo!","And now, the crescendo."],Palette:["I'll paint the town. And you.","Mixing colors... and your fate.","Primary colors: Red, Blue, Pain."],Hydra:["Cut one head, two rise.","SSSSSS.","We are many. You are one."],Titan:["I held up the sky. You're light work.","Crumble, ant.","The old ways are best."],Oracle:["I foresaw this. And that. And that.","You will step left. Or right.","The prophecy is incomplete. You complete it."],Monk:["Ding... dong...","Breathe in. Take damage out.","Silence your doubts. And your buzzer."],Sage:["Wisdom is knowing you are wrong.","Let me think about it. ...Done.","Ask not what the answer is."],Stoic:["Pain is only a thought.","I do not react. I simply endure.","What cannot be changed must be dodged."],Freud:["Tell me about your mother.","Interesting. Very interesting.","The id wants what the id wants."],Trait:["Openness? Low. Agreeableness? None.","You are an introvert. It shows.","We should all just get along. Haha, no."],Atlas:["The world is heavy.","I carry the globe. And grudges.","Lost? Let me point you to defeat."],Delta:["Where the river meets the sea.","Silt accumulates. So does regret.","Flow with it."],Pixel:["8-bit? 16-bit? You're NO-bit.","Insert coin.","Nostalgia hits harder."],Glitch:["ERR0R: p l a y e r n o t f o u n d","reality.exe has stopped responding","Did you see that? Neither did I."],Headline:["BREAKING: LOCAL PLAYER DEFEATED.","EXCLUSIVE: you are about to be hit.","Stay tuned."],Scoop:["I've got the scoop on your weakness.","Flash! Camera ready.","No comment. Only attacks."],Nerd:["Well, actually...","I've calculated your defeat to 12 digits.","Fun fact: you're going to lose."],Scholar:["Class is in session.","Pop quiz. Fail.","See me after class."]},
-suf:{Sage:["Hmm.","As the ancients said...","Patience."],Wraith:["Wooooo...","You cannot hold me.","The light fades..."],Imp:["Hee hee hee!","Catch me!","Too slow, too slow!"],Golem:["GRRRMMMM.","Smash.","STONE DOES NOT FORGET."]},
-gm:{leech:["I feed on your mistakes...","Your blood is... educational.","Slurp.","Mistakes taste so sweet."],thorn:["Every wrong answer draws blood.","The thorns remember.","Bleed for knowledge.","My roses have teeth."]},
-low:["Nngh... not yet!","You're stronger than you look.","I still have a layer left!","Impossible...","This isn't over!","My shell is cracking!","Hold on, I'm not done!"],
-pl:["You look pale, {p}.","One more hit and it's over.","Surrender? No? Pity.","Is that all the HP you have?","I can smell the fear.","Almost there... almost..."],
-rare:["I'm just a bundle of pixels. Be gentle.","Do you ever wonder why we fight? Same, honestly.","Someone called my attacks slop once. I trained for this.","This line has a 1 in 40 chance of appearing. Congratulations.","I haven't slept since the blackout.","Between you and me, I let you win the last one.","Press N to continue. Or don't. I'm not your mom.","I'm legally required to say: this is not a real battle.","If you answered Nile to everything you'd be right 4% of the time.","Quizbowl is just trivia with extra steps. Dangerous extra steps.","The Professor still owes me money.","Is your cat okay? Mine is. I don't have a cat.","Do I look like a creature with a database entry?","I only fight on weekdays. Today is a weekday."],
-irare:["It was the best of times, it was the worst of times. You're having the latter.","Napoleon was short. I am not. Do not bring it up.","I once split an atom. It split right back.","The Mona Lisa never smiled at me either.","Zeus owes me a favor. That is not relevant.","Even monks lose their cool. Watch.","I once argued with a wall. The wall won.","My therapist says I project. Anyway, you lose.","I've been to all seven continents. Eight if you count Zealandia.","I peaked in 1998. Pre-order bonus: pain.","I'm trending in my own mind.","Seventeen is the most random number. Said no one at the Math Olympiad."],
-ultra:["You found the ultra-rare line. Nothing happens. Go on.","The developer says hi.","If you read this, screenshot it. Seriously."],
-boss:[["Once upon a time, you lost.","Chapter Eleven: Your Doom.","The end. Or is it?"],["I AM THE EMPEROR OF EVERY ERA!","Kneel before the ages.","My empire spans centuries."],["Absolute zero. Absolute silence.","Molecules slow... so do you.","Let us freeze this moment."],["I conduct the world's symphony.","Your life is out of key.","My opus will outlive you."],["Dance with me, mortal.","The allemande of ruin.","Step. Step. Step. Fall."],["Bow. Pray. Dodge.","Faith is a currency. You are bankrupt.","The congregation watches."],["Prove that you exist.","Define victory.","I win by definition."],["The paradigm has shifted. Against you.","Citation needed.","Peer reviewed. Peer ruined."],["No passport can save you.","I draw borders around your hope.","This is my territory."],["Drop the beat. Drop you.","You're not on the playlist.","Remix this."],["I'll sink you with my words.","Anchors aweigh!","Breaking news: your end."],["Prompt: defeat player. Output: ...","Generating your downfall.","Temperature set to maximum."]],
-bossg:["The shrine trembles.","You have come far, student.","Few reach this room.","Let us see what you are made of.","Do not hold back."],
-bossMid:["You fight well. For a student.","Don't get cocky.","Interesting. You have grit."],
-bossLow:["No... this cannot be...","I will not fall to a mere student.","Impossible!","How are you still standing?"],
-p2:["Enough games!","Now you've made me angry.","You will regret this.","My true power awakens!","I was holding back. Slightly.","THE REAL BATTLE BEGINS."],
-sec:{'The Bard of Banishment':["Hark! A foe approaches!","I shall rhyme you into oblivion.","Exit, pursued by a quizbowler."],'Cleo the Chronicler':["I have recorded every mistake you made.","History will remember this fight. Briefly.","Pharaohs fell. So will you."],'The Quantum Queen':["I am here and there. Mostly there.","Observe me, and I change.","Probability says you lose."],'The Buzzer Beater':["Buzz first. Think later.","You're too slow!","I've buzzed before the question even starts."],'Neg-a-tron':["NEG. NEG. NEG.","I calculate a 99% chance of your wrong answer.","Error: correct answers not found."],'Vector the Variable':["Let x be your defeat.","I am constant. You are undefined.","Solve for me. I dare you."]},
-final:["The Buzzer falls silent.","One last question.","I am every question you ever missed.","Ten points for the champion? Not today.","I have read ten thousand packets.","You cannot buzz in on destiny.","Every category answers to me.","Bonus round: your doom."],
-finalLow:["The Great Buzzer... trembles?","No. NO. I wrote the packets!","How can a student...?","Finish it. Before I remember my own answers."]};
-function mkDlg(m,plan){const nm=m.nm||'?',pt=nm.split(' '),spc=pt[0],suf=pt[pt.length-1],fx=s=>s.replace(/\{p\}/g,P.name||'Hero').replace(/\{e\}/g,nm),r=Math.random();let L=[dpick(RS=='neg'?D.neg:D.dead)],f;
-if(m.i<0)f=dpick(m.mh<m.mx*.5?D.finalLow:D.final);
-else if(m.boss){const bl=(m.secret?D.sec[m.nm]:D.boss[m.i])||D.bossg;if(m.mh<m.mx*.5&&!F.p2){F.p2=1;L=['* '+nm+' is getting serious!',dpick(D.p2)]}else f=m.mh<m.mx*.3&&r<.7?dpick(D.bossLow):r<.2?dpick(D.bossg):r<.3?dpick(D.bossMid):dpick(bl)}
-else{const gl=D.gm[m.gm];if(r<.02)f=dpick(D.rare);else if(r<.045)f=dpick(D.irare);else if(m.mh<m.mx*.25&&r<.5)f=dpick(D.low);else if(hp<35&&r<.5)f=dpick(D.pl);else if(gl&&r<.6)f=dpick(gl);else if(D.spc[spc]&&r<.8)f=dpick(D.spc[spc]);else if(D.suf[suf]&&r<.9)f=dpick(D.suf[suf]);else f=dpick(D.isl[m.i]||D.isl[0])}
-if(f)L.push(f);
-if(Math.random()<1/150)L=[dpick(D.ultra)];
-const a=MV[plan[0]],b=plan[1]&&MV[plan[1]];L.push('* '+nm+' uses '+a.l+(b?' ...then '+b.l:'')+' '+a.t);
-return L.map(fx)}
+function mkDlg(m,plan){const nm=m.nm||'?',fx=s=>s.replace(/\{p\}/g,P.name||'Hero').replace(/\{e\}/g,nm),r=Math.random(),Q=pools(m);let L=[dpick(RS=='neg'?Q.ng:Q.dd)],f;
+if(m.i<0||m.boss){if(m.mh<m.mx*.5&&!F.p2){F.p2=1;L=['* '+nm+' is getting serious!',m.i<0?GI.p2:m.secret?dpick(Q.lo):LK[m.i].p2]}else f=r<.06?dpick(Q.rr):m.mh<m.mx*.3&&r<.7?dpick(Q.lo):hp<35&&r<.3?dpick(Q.pl):dpick(Q.bz)}
+else{const gl=m.gm&&Q.gm&&Q.gm[m.gm];if(r<.03)f=dpick(Q.rr);else if(m.mh<m.mx*.25&&r<.6)f=dpick(Q.lo);else if(hp<35&&r<.5)f=dpick(Q.pl);else if(gl&&r<.3)f=dpick(gl);else f=dpick(Q.bz)}
+if(f)L.push(f);if(Math.random()<1/150)L=[dpick(Q.ul)];
+const a=MV[plan[0]],b=plan[1]&&MV[plan[1]];L.push('* '+nm+' uses '+a.l+(b?' ...then '+b.l:'')+' '+a.t);return L.map(fx)}
+function buzzTaunt(){const Q=pools(F),r=Math.random();let ln;if(power){if(r<.8)ln=dpick(Q.pw)}else if(F.mh<F.mx*.25&&r<.4)ln=dpick(Q.lo);else if(r<.1)ln=dpick(Q.rr);else if(r<.5)ln=dpick(Q.bz);
+if(ln)$('#lr').innerHTML='<p class="y" style="margin:4px 0">'+E(F.nm)+': '+E(ln.replace(/\{p\}/g,P.name||'Hero').replace(/\{e\}/g,F.nm))+'</p>'}
+/*DLG-END*/
 let DLG_Q=null,DLG_I=0,DLG_CB=null,DT=null,DF='',DN=0;
 function dshow(){const s=DLG_Q[DLG_I],nar=s.charAt(0)=='*',bp=220+(hsh(F.nm||'')%8)*35;DF=s;DN=0;clearInterval(DT);
 $('#lr').innerHTML='<p class="'+(nar?'':'y')+'" style="min-height:48px;'+(nar?'color:#9fb0ff':'')+'"><span id="dtx"></span></p><small>'+(nar?'':E(F.nm)+' | ')+'N / NEXT to continue</small>';
