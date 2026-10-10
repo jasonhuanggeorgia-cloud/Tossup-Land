@@ -689,7 +689,7 @@ let trk='title',VOL=.7;try{const v=localStorage.tl_vol;if(v!=null)VOL=Math.max(0
 const fq=n=>440*2**((n-69)/12);
 var _o,MG,MCP;
 function AUD(){if(MG)return MG;MG=ac.createGain();MCP=ac.createDynamicsCompressor();MCP.threshold.value=-16;MCP.knee.value=18;MCP.ratio.value=3.2;MCP.attack.value=.006;MCP.release.value=.22;MG.connect(MCP);MCP.connect(ac.destination);applyVol();return MG}
-function applyVol(){if(!MG)return;MG.gain.cancelScheduledValues(ac.currentTime);MG.gain.setTargetAtTime(mute?0:VOL*VOL*1.15,ac.currentTime,.05);const s=$('#vol');if(s&&+s.value!=Math.round(VOL*100))s.value=Math.round(VOL*100);const b=$('#mu');if(b)b.textContent=mute?'SOUND OFF':'SOUND ON'}
+function applyVol(){if(!MG)return;MG.gain.cancelScheduledValues(ac.currentTime);MG.gain.setTargetAtTime(mute?0:VOL*VOL*.92,ac.currentTime,.05);const s=$('#vol');if(s&&+s.value!=Math.round(VOL*100))s.value=Math.round(VOL*100);const b=$('#mu');if(b)b.textContent=mute?'SOUND OFF':'SOUND ON'}
 function OUT(){if(_o)return _o;AUD();const lp=ac.createBiquadFilter(),m=ac.createGain(),dl=ac.createDelay(),fb=ac.createGain(),wt=ac.createGain();lp.type='lowpass';lp.frequency.value=6000;m.gain.value=.9;dl.delayTime.value=.2;fb.gain.value=.22;wt.gain.value=.14;m.connect(lp);m.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(wt);wt.connect(lp);lp.connect(MG);return _o=m}
 function beep(f,dur=.1,ty='square',v=.05){if(mute||!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(OUT());o.start();g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+dur);o.stop(ac.currentTime+dur)}
 const seq=(fs,ty)=>fs.forEach((f,i)=>setTimeout(()=>beep(f,.14,ty),i*110));
@@ -859,7 +859,7 @@ function mxStart(){if(!ac){ac=new(window.AudioContext||window.webkitAudioContext
 function music(){mxStart()}
 document.addEventListener('pointerdown',()=>mxStart(),{once:true,capture:true});document.addEventListener('keydown',()=>mxStart(),{once:true,capture:true});
 // offline render (testing / export): schedule a whole track into an OfflineAudioContext
-function mxOffline(key,secs,I,sr){const c=new OfflineAudioContext(2,Math.ceil((sr||32000)*secs),sr||32000),out=c.createGain();out.gain.value=.9;const cp=c.createDynamicsCompressor();cp.threshold.value=-16;cp.knee.value=18;cp.ratio.value=3.2;out.connect(cp);cp.connect(c.destination);MX.ok=0;mxInit(c,out);const T0=SONGS[key],T=T0.steps?T0:mx_compile(T0);MT.I=I==null?2:I;const TI=mx_mkInstance(key,T,0,out,0);TI.I=MT.I;mx_sched(TI,secs);const p=c.startRendering();p.then(()=>{MX.ok=0});return p}
+function mxOffline(key,secs,I,sr){const c=new OfflineAudioContext(2,Math.ceil((sr||32000)*secs),sr||32000),out=c.createGain();out.gain.value=.75;const cp=c.createDynamicsCompressor();cp.threshold.value=-16;cp.knee.value=18;cp.ratio.value=3.2;out.connect(cp);cp.connect(c.destination);MX.ok=0;mxInit(c,out);const T0=SONGS[key],T=T0.steps?T0:mx_compile(T0);MT.I=I==null?2:I;const TI=mx_mkInstance(key,T,0,out,0);TI.I=MT.I;mx_sched(TI,secs);const p=c.startRendering();p.then(()=>{MX.ok=0});return p}
 // dev-only validator: bar lengths, chord-tone ratio on strong beats, leaps
 function mxCheck(key){const T=SONGS[key],spb=T.spb||16,md=MODES[T.mode||'maj'],rep=[];T.S.forEach((sec,si)=>{const chs=sec.ch.trim().split(/\s+/).map(c=>mx_chord(c,md));for(const id in sec.p){const P=sec.p[id];if(P.m==null)continue;const bars=String(P.m).split('|').map(b=>mx_parseM(b).total||0);bars.forEach((n,bi)=>{if(n!=spb&&String(P.m).includes('|'))rep.push(`${key} sec${si} ${id} bar${bi+1}: ${n} steps (want ${spb})`)});const tot=bars.reduce((a,b)=>a+b,0);if(tot!=sec.n*spb&&tot&&(sec.n*spb)%tot)rep.push(`${key} sec${si} ${id}: total ${tot} vs ${sec.n*spb}`);
 const mel=mx_parseM(P.m);let bad=0,strong=0,prev=null;mel.forEach(n=>{const midi=md[(n.d-1)%7]+n.a+12*(Math.floor((n.d-1)/7)+n.o);if(prev!=null&&Math.abs(midi-prev)>12)rep.push(`${key} sec${si} ${id}: leap ${midi-prev} at step ${n.s}`);prev=midi;const bar=Math.floor(n.s/spb),ch=chs[bar%chs.length],bs=n.s%spb;if(bs%(spb==12?6:4)==0&&n.l>=2){strong++;const pc=((midi-ch.r)%12+12)%12;if(!ch.t.some(t=>t%12==pc)&&!(ch.t.length==3&&[2,9,11].includes(pc)&&0)){bad++;if(bad<=4)rep.push(`${key} sec${si} ${id} bar${bar+1}: scale deg ${n.d}${n.a?'*':''} not in chord ${ch.sym} (step ${bs})`)}}});if(strong&&bad/strong>.35)rep.push(`${key} sec${si} ${id}: ${bad}/${strong} strong-beat non-chord tones`)}});return rep}
@@ -876,6 +876,122 @@ S:[{n:4,ch:'1 5 6m 4',p:{pno:{st:'arp',g:'x.x.x.x.x.x.x.x.',ord:'up',v:.7},pad:{
 {n:8,ch:'1 5 6m 3m 4 1 4 5',p:{lead:{m:T_A},pno:{st:'arp',g:'x.x.x.x.x.x.x.x.',ord:'ud',v:.7},gtr:{st:'strum',g:'D.d.DuD.D.d.DuD.',v:.8},pad:{st:'pad',v:.6},bas:{st:'bass',g:'R.......5.......'},drm:{d:{k:'x.......x.x.....',sr:'....x.......x...',h:'x.x.x.x.x.x.x.x.',sh:'..x...x...x...x.'},fill:'snare'}}},
 {n:8,ch:'6m 3m 4 1 6m 2m 4 5',p:{lead:{m:T_B},pno:{st:'arp',g:'x.xxx.xxx.xxx.xx',ord:'ud',v:.8},gtr:{st:'strum',g:'D.d.DuD.D.d.DuD.',v:.9},stl:{m:'r:128'},pad:{st:'pad',v:.8},bas:{st:'bass',g:'R...R.R.5...R.5.'},drm:{d:{k:'x...x...x...x...',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',ho:'..............o.'},fill:'toms',cr:1}}},
 {n:8,ch:'1 5 6m 3m 4 1 5 1',p:{lead:{m:T_C,v:.9},horn:{m:T_C},stl:{m:T_C,v:.7},pno:{st:'arp',g:'xxxxxxxxxxxxxxxx',ord:'ud',v:.75},gtr:{st:'strum',g:'D.dUDuD.D.dUDuDu',v:1},pad:{st:'pad',v:.9},bas:{st:'bass',g:'R.R.R.R.R.R.R.R.'},drm:{d:{k:'x..xx..xx..xx.x.',s:'....X.......X...',h:'x.x.x.x.x.x.x.x.',ho:'..............o.'},fill:'toms',cr:1},tim:{d:{tp:'x.......x.......'}}}}]};
+// ================= ISLAND SONG GENERATOR =================
+// Each island has a leitmotif (mA, mB). Map = calm arrangement; Keeper battle = same motif in the parallel minor, faster, driven;
+// Boss = the motif again, heavier (brass + choir + timpani), with more intensity layers.
+const DGR={16:{m:{rock:{k:'x.......x.x.....',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.'},fold:{k:'x.......x.......',tb:'..x...x...x...x.',sh:'x.x.x.x.x.x.x.x.'},funk:{k:'x...x...x...x...',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',cl:'....x.......x...'},jazz:{rd:'x..xx..xx..xx..x',k:'x...............',sr:'....x.......x...'},march:{k:'x...x...x...x...',s:'..x...x...x...x.',tb:'x...............'},soft:{sh:'x...x...x...x...',k:'x...............'},none:{sh:'x...............'}},
+ b:{k:'x..xx..xx..xx.x.',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',ho:'..............o.'},c:{k:'xx.xx.xxxx.xx.xx',s:'....x.......x...',h:'xxxxxxxxxxxxxxxx',ho:'..o...o...o...o.'}},
+ 12:{m:{waltz:{k:'x...........',s:'....x...x...',h:'x.x.x.x.x.x.'},soft:{sh:'x...x...x...',k:'x...........'},jig:{k:'x.....x.....',s:'....x...x...',h:'x.x.x.x.x.x.'}},
+ b:{k:'x..x..x..x..',s:'..x..x..x..x',h:'x.x.x.x.x.x.',ho:'..........o.'},c:{k:'xx.xx.xx.xx.',s:'..x..x..x..x',h:'xxxxxxxxxxxx',ho:'..o...o...o.'}}};
+const ARPG={16:'x.x.x.x.x.x.x.x.',12:'x.x.x.x.x.x.'},BSG={16:'R.......5.......',12:'R.......5...'},BSB={16:'R.R.R.R.R.R.R.R.',12:'R.R.R.R.R.R.'},GTG={16:'D.d.D.D.D.d.D.DU',12:'D.d.D.D.d.D.'},PADL={16:'x...............',12:'x...........'};
+const PAR={maj:'min',lyd:'min',mix:'min',dor:'dor',min:'min',hmin:'hmin',phr:'phr',pmin:'pmin'};
+const mxDbl=(m)=>m.replace(/:(\d+)/g,(a,n)=>':'+Math.max(1,Math.round(n/2)));
+function mkMap(s){const spb=s.spb||16,D=DGR[spb].m[s.gr||(spb==12?'waltz':'rock')],cp=Object.assign({st:'arp',g:ARPG[spb],ord:'ud',v:.8},s.cs||{});
+const bs=Object.assign({st:'bass',g:BSG[spb]},s.bs||{});const px=s.px||{};
+const L={ld:{i:s.lead,v:.95,p:.12,rv:.35,dl:.14,oct:s.lo||0},l2:{i:s.l2,v:.7,p:-.2,rv:.3,oct:s.l2o==null?1:s.l2o,dl:.1},cp:Object.assign({i:s.comp,v:.62,p:-.32,rv:.25,lo:s.clo||48},s.cL||{}),pd:{i:s.pad||'str',v:.4,p:.3,rv:.45,lo:48},bs:{i:s.bass,v:.85,lo:s.blo||34},dm:{i:'drums',v:.55,rm:.15},pc:{i:'drums',v:.55}};
+const base=(m,ch)=>({n:8,ch,p:{cp,pd:{st:'pad',v:.7},bs,dm:{d:D,fill:s.fill||'snare',fe:4},ld:{m}}});
+const A=base(s.mA,s.chA),B=base(s.mB,s.chB),A2=base(s.mA,s.chA);B.p.l2={m:s.mB,v:.7};B.p.pc={d:px.d||{}};A2.p.l2={m:s.mA};A2.p.ld={m:s.mA,v:1};
+if(!px.d)delete B.p.pc;
+return{bpm:s.bpm,root:s.root,mode:s.mode,spb,sw:s.sw||0,loop:0,L,S:[A,B,A2]}}
+function mkBat(s,boss){const spb=s.spb||16,md=PAR[s.mode]||'min',bs=boss&&md=='min'&&s.mode!='dor'&&s.mode!='min'?'phr':md,DB=DGR[spb][boss?'c':'b'],bp=Math.min(176,Math.round(s.bpm*(boss?1.5:1.38))),px=s.px||{};
+const L={ld:{i:boss?(s.bb||'brass'):(s.bl||'dist'),v:.9,p:.05,rv:.25,dl:.12,o:boss?undefined:{shape:3.2,cut:3600}},ct:{i:s.bc||'trumpet',v:.65,p:-.25,rv:.3,minI:1,oct:s.bco==null?1:s.bco},hi:{i:'str',v:.6,p:.3,rv:.4,minI:2,oct:1},
+ gt:{i:'dist',v:.7,p:-.4,rv:.15,lo:40,o:{shape:3,cut:3200}},bs:{i:'ebass',v:.9,lo:s.blo||34},st:{i:'str',v:.4,p:.2,rv:.4,lo:48},dm:{i:'drums',v:.62,rm:.12},pc:{i:'drums',v:.6,minI:1},ch:{i:'choir',v:.5,p:0,rv:.5,lo:52,minI:boss?1:2},tp:{i:'drums',v:.8,rv:.3,f:73.4,minI:boss?0:1},ar:{i:'arp',v:.4,p:.4,dl:.25,minI:2,lo:60}};
+const gt={st:'strum',g:GTG[spb],v:.85},bsl={st:'bass',g:BSB[spb]};
+const sec=(m,ch,m2)=>{const p={ld:{m},gt,bs:bsl,st:{st:'pad',v:.8},dm:{d:DB,fill:'toms',fe:4,cr:1},pc:{d:Object.assign({tb:'..x...x...x...x.'.slice(0,spb)},px.b||{})},ch:{st:'pad',v:.8},ar:{st:'arp',g:ARPG[spb],ord:'up',v:.8,up:1}};p.ct={m:m};p.tp={d:{tp:spb==12?'x.....x.....':'x.......x.......'}};return{n:8,ch,p}};
+const S=[];if(boss)S.push({n:2,ch:s.chA.split(/\s+/).slice(0,2).join(' '),p:{tp:{d:{tp:spb==12?'x..x..x..x..':'x.x.x.x.xxxxxxxx'}},ch:{st:'pad',v:.9},bs:{st:'bass',g:BSG[spb]},dm:{d:{k:'x...............'.slice(0,spb)}}}});
+S.push(sec(s.mA,s.chA,s.mB),sec(boss?s.mB:s.mB,s.chB,s.mA),sec(s.mA,s.chA,boss?s.mB:s.mA));
+return{bpm:bp,root:s.root-(boss?0:0),mode:boss?bs:md,spb,loop:boss?1:0,L,S}}
+const ISP=[
+{n:'Literature',root:65,mode:'maj',bpm:100,spb:12,lead:'clar',l2:'celesta',comp:'nylon',cs:{ord:'up'},bass:'ubass',bl:'steel',bc:'flute',
+ chA:'1 6m 4 5 1 6m 4 5',chB:'6m 4 5 1 6m 4 5 1',
+ mA:'5:4 1^:4 3^:4 | 2^:6 1^:2 7:2 6:2 | 5:4 4^:4 3^:4 | 2^:6 1^:6',
+ mB:'3^:6 5^:2 3^:2 1^:2 | 6:4 1^:4 4^:4 | 2^:6 4^:2 2^:2 7:2 | 1^:8 r:4'},
+{n:'History',root:62,mode:'hmin',bpm:96,lead:'oboe',l2:'flute',comp:'harp',cs:{ord:'ud'},bass:'ubass',gr:'march',bl:'steel',bc:'oboe',px:{b:{cg:'..x..x..x..x..x.'}},
+ chA:'1 4 5 1 1 4 5 1',chB:'6 5 1 1 6 5 1 1',
+ mA:'5:6 6:2 5:2 4:2 3:4 | 2:4 3:4 2:4 1:4 | 4:4 5:4 6:2 7:2 1^:4 | 1^:12 r:4',
+ mB:'1^:4 7:2 6:2 5:4 6:4 | 7:4 6:4 5:4 7:4 | 1^:6 2^:2 3^:4 2^:4 | 1^:4 7:4 6:2 5:2 4:4'},
+{n:'Science',root:64,mode:'lyd',bpm:126,lead:'lead',l2:'marimba',comp:'arp',cs:{ord:'up',g:'xxxxxxxxxxxxxxxx',v:.7},bass:'sbass',gr:'funk',bl:'saw',bc:'fm',pad:'pad',
+ chA:'1 2 1 5 1 2 6 5',chB:'6 2 1 5 6 2 1 5',
+ mA:'1^:2 3:2 5:2 3:2 1^:2 3:2 5:4 | 2^:2 4^:2 6^:2 4^:2 2^:2 4^:2 6^:4 | 1^:2 3:2 5:2 3:2 1^:6 r:2 | 7:2 2^:2 7:2 2^:2 5:8',
+ mB:'6:2 1^:2 3^:2 1^:2 6:2 1^:2 3^:4 | 4^:2 2^:2 4^:2 6^:2 4^:4 2^:4 | 3^:4 2^:4 1^:4 5:4 | 7:6 2^:2 5:8'},
+{n:'Fine Arts',root:67,mode:'maj',bpm:84,lead:'flute',l2:'violin',comp:'harp',cs:{ord:'alb'},bass:'cello',gr:'soft',bl:'clean',bc:'violin',pad:'str',
+ chA:'1 3m 4j7 1 1 3m 4j7 1',chB:'6m 4j7 1 5 6m 4j7 1 5',
+ mA:'3:6 5:2 1^:8 | 7:6 5:2 3:8 | 4:4 6:4 1^:4 3^:4 | 2^:8 1^:8',
+ mB:'5:4 3^:4 2^:4 1^:4 | 4^:6 3^:2 1^:8 | 5:4 1^:4 3^:4 5^:4 | 2^:8 5:4 7:4'},
+{n:'Mythology',root:57,mode:'dor',bpm:92,lead:'horn',l2:'flute',comp:'harp',cs:{ord:'ud'},bass:'cello',gr:'march',bl:'dist',bc:'trumpet',px:{b:{t2:'..............x.'}},
+ chA:'1 7 4 1 1 7 4 1',chB:'3 7 4 1 3 7 4 1',
+ mA:'1:4 3:4 5:4 1^:4 | 7:4 2^:4 4^:4 2^:4 | 4^:4 6^:4 4^:4 2^:4 | 1^:12 r:4',
+ mB:'3^:6 5^:2 3^:4 1^:4 | 2^:6 4^:2 2^:8 | 6^:6 4^:2 2^:4 4^:4 | 1^:12 3^:4'},
+{n:'Religion',root:58,mode:'maj',bpm:72,lead:'choir',l2:'bell',comp:'organ',cs:{st:'pad',v:.5},bass:'cello',bs:{g:'R...............'},gr:'none',bl:'organ',bc:'choir',pad:'str',
+ chA:'1 5 6m 4 1 5 4 1',chB:'6m 4 1 5 6m 4 1 1',
+ mA:'3:8 5:8 | 7:8 2^:8 | 1^:8 6:8 | 4:8 6:8',
+ mB:'6:4 1^:4 3^:8 | 4^:8 3^:4 1^:4 | 5:4 1^:4 5^:8 | 4^:4 2^:4 7:8'},
+{n:'Philosophy',root:59,mode:'min',bpm:76,lead:'piano',l2:'cello',l2o:0,comp:'harp',cs:{ord:'alb'},bass:'cello',gr:'soft',bl:'clean',bc:'cello',
+ chA:'1 6 7 1 1 6 7 1',chB:'1 6 7 1 1 6 7 1',
+ mA:'1:2 3:2 5:2 3:2 1:2 3:2 5:2 3:2 | 6:2 1^:2 3^:2 1^:2 6:2 1^:2 3^:2 1^:2 | 7:2 2^:2 4^:2 2^:2 7:2 2^:2 4^:2 2^:2 | 1^:8 5:8',
+ mB:'5^:6 4^:2 3^:8 | 3^:6 2^:2 1^:8 | 2^:6 1^:2 7:8 | 1^:12 r:4'},
+{n:'Social Science',root:62,mode:'dor',bpm:108,sw:.18,lead:'vibes',l2:'clar',comp:'epiano',cs:{st:'chord',g:'x.....x...x.....',v:.7},bass:'ubass',bs:{st:'walk'},gr:'jazz',bl:'clean',bc:'trumpet',
+ chA:'1m7 47 7j7 1m7 1m7 47 2m7 1m7',chB:'2m7 47 1m7 1m7 2m7 47 7j7 1m7',
+ mA:'1^:3 7:1 6:2 5:2 3:4 5:4 | 4:3 6:1 1^:2 6:2 4:4 r:4 | 2^:4 7:2 6:2 4:4 2:4 | 1^:6 5:2 3:4 1:4',
+ mB:'5:4 6:2 7:2 1^:4 7:4 | 6:4 4:4 2:4 4:4 | 3:6 5:2 1^:8 | 7:4 6:4 5:8'},
+{n:'Geography',root:62,mode:'mix',bpm:124,lead:'whistle',l2:'violin',comp:'uke',cs:{st:'strum',g:'D.dUD.dUD.dUD.dU',v:.8},bass:'ubass',gr:'fold',bl:'banjo',bc:'violin',
+ chA:'1 7 4 1 1 7 4 1',chB:'4 1 7 1 4 1 7 1',
+ mA:'5:4 1^:2 1^:2 7:4 5:4 | 7:4 2^:2 4^:2 2^:4 7:4 | 4:4 6:2 1^:2 6:4 4:4 | 1^:8 5:4 1:4',
+ mB:'4^:4 2^:4 4^:4 6^:4 | 1^:4 6^:2 5^:2 3^:4 1^:4 | 2^:4 4^:4 2^:4 7:4 | 1^:12 r:4'},
+{n:'Pop Culture',root:60,mode:'maj',bpm:124,sw:.08,lead:'saw',l2:'lead',comp:'arp',cs:{ord:'p3',g:'x.x.x.x.x.x.x.x.',v:.7},bass:'sbass',gr:'funk',bl:'saw',bc:'lead',pad:'pad',
+ chA:'1 5 6m 4 1 5 6m 4',chB:'4 1 5 6m 4 1 5 1',
+ mA:'5:2 5:2 1^:2 5:2 3^:4 1^:4 | 5:2 5:2 2^:2 5:2 4^:4 2^:4 | 6:2 6:2 1^:2 6:2 3^:4 1^:4 | 4:2 6:2 1^:2 6:2 4^:8',
+ mB:'6^:4 4^:4 1^:4 6:4 | 5^:4 3^:4 1^:4 5:4 | 7^:4 5^:4 2^:4 7:4 | 6:8 3^:8'},
+{n:'Current Events',root:57,mode:'min',bpm:132,lead:'trumpet',l2:'str',comp:'dmute',cs:{st:'strum',g:'D.D.D.D.D.D.D.D.',v:.7},bass:'ebass',gr:'rock',bl:'dist',bc:'trumpet',fill:'roll',
+ chA:'1 6 7 1 1 6 7 5',chB:'4 6 7 1 4 6 7 1',
+ mA:'1^:2 1^:2 7:2 1^:2 3^:4 1^:4 | 6:2 6:2 5:2 6:2 1^:4 6:4 | 7:2 7:2 6:2 7:2 2^:4 7:4 | 1^:8 r:8',
+ mB:'2^:4 4^:4 6^:4 4^:4 | 1^:4 3^:4 5^:4 3^:4 | 2^:4 4^:4 7:4 4:4 | 1^:6 3^:2 5^:8'},
+{n:'Other Academic',root:62,mode:'lyd',bpm:108,spb:12,lead:'clar',l2:'musicbox',comp:'pizz',cs:{ord:'up'},bass:'ubass',gr:'jig',bl:'clean',bc:'oboe',
+ chA:'1 2 1 5 1 2 1 5',chB:'6m 2 1 5 6m 2 1 5',
+ mA:'3:2 5:2 3:2 1^:2 5:2 3:2 | 4:2 6:2 4:2 2^:2 6:2 4:2 | 1^:6 5:6 | 7:4 2^:4 5:4',
+ mB:'3^:4 1^:4 6:4 | 4^:4 6^:4 4^:4 | 5^:4 3^:4 1^:4 | 7:4 2^:4 7:4'}];
+ISP.forEach((s,k)=>{SONGS['i'+k]=mkMap(s);SONGS['f'+k]=mkBat(s,0);SONGS['b'+k]=mkBat(s,1)});
+
+// ================= FIXED TRACKS =================
+SONGS.sea=mkMap({root:62,mode:'mix',bpm:112,spb:12,lead:'whistle',l2:'violin',comp:'banjo',cs:{st:'strum',g:'D.d.D.d.D.d.',v:.8},bass:'ubass',gr:'jig',
+ chA:'1 7 4 1 1 7 4 1',chB:'4 1 7 1 4 1 7 1',
+ mA:'1^:6 5:2 5:2 3:2 | 7:4 2^:4 4^:4 | 4:6 6:2 1^:2 6:2 | 1^:8 r:4',
+ mB:'4^:6 2^:2 4^:4 | 1^:4 3^:4 5^:4 | 7:4 2^:4 4^:4 | 1^:12'});
+SONGS.lab=mkMap({root:60,mode:'maj',bpm:104,sw:.1,lead:'marimba',l2:'glock',comp:'epiano',cs:{st:'chord',g:'x.....x...x.....',v:.7},bass:'ubass',bs:{st:'bass',g:'R...R.R.5...R.5.'},gr:'rock',
+ chA:'1 6m 2m 5 1 6m 2m 5',chB:'4 5 1 6m 4 5 1 1',
+ mA:'1^:2 3^:2 5^:4 3^:2 1^:2 r:4 | 6:2 1^:2 3^:4 1^:2 6:2 r:4 | 2^:2 4^:2 6^:4 4^:2 2^:2 r:4 | 7:2 2^:2 5^:4 2^:2 7:2 5:4',
+ mB:'6^:4 4^:4 1^:4 6:4 | 5^:4 2^:4 7:4 5:4 | 3^:6 1^:2 5:8 | 6:4 1^:4 3^:8'});
+SONGS.story=mkMap({root:62,mode:'min',bpm:78,lead:'flute',l2:'cello',l2o:0,comp:'piano',cs:{ord:'alb',v:.7},bass:'cello',gr:'none',
+ chA:'1 6 3 7 1 6 3 7',chB:'4 5 1 1 4 5 1 1',
+ mA:'5:6 3:2 1:8 | 6:6 5:2 3:8 | 3^:6 2^:2 1^:8 | 7:6 2:2 4:8',
+ mB:'4:6 6:2 1^:8 | 5:6 7:2 2^:8 | 1^:6 3^:2 5^:8 | 3^:8 1^:8'});
+SONGS.secret=mkMap({root:50,mode:'phr',bpm:66,lead:'bell',l2:'ooh',l2o:1,comp:'harp',cs:{g:'x...x...x...x...',ord:'up'},bass:'cello',pad:'choir',gr:'none',
+ chA:'1 2 1 6 1 2 1 6',chB:'1 6 2 1 1 6 2 1',
+ mA:'1^:8 2^:4 1^:4 | 2^:8 4^:4 6:4 | 5:8 3:4 1:4 | 6:8 4:8',
+ mB:'5^:6 4^:2 3^:8 | 2^:8 1^:8 | 3^:6 2^:2 1^:8 | 7:16'});
+SONGS.secret.L.cp.o={trem:5.5};
+// --- Grand Inquisitor: 3 intensity levels (0 = ominous, 1 = battle, 2 = all-out) ---
+(function(){const spb=16,D={k:'x..xx..xx.x.x..x',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',ho:'..o...o...o...o.'},D2={k:'xx.xx.xxxx.xx.xx',s:'....X.......X...',h:'xxxxxxxxxxxxxxxx',ho:'..o...o...o...o.',cr:'x...............'};
+const IA='1^:3 1^:1 1^:2 3^:2 5^:4 3^:4 | 4^:3 4^:1 4^:2 3^:2 2^:4 1^:4 | 6:4 1^:4 3^:4 6^:4 | 5:4 7:4 2^:4 7:2 6:2';
+const IB='6^:6 5^:2 4^:4 3^:4 | 4^:6 3^:2 2^:4 4^:4 | 5^:4 3^:4 1^:8 | 5:4 7:4 2^:4 5^:4';
+const L={org:{i:'organ',v:.5,p:-.1,rv:.4,lo:38},ch:{i:'choir',v:.55,rv:.55,lo:50},bl:{i:'bell',v:.5,p:.35,rv:.5,dl:.3,lo:62},tp:{i:'drums',v:.85,rv:.3,f:73.4},bs:{i:'ebass',v:.9,lo:28},
+ gt:{i:'dist',v:.75,p:-.4,rv:.15,lo:38,minI:1,o:{shape:3.4,cut:3400}},bf:{i:'dist',v:.6,p:.4,rv:.1,lo:26,minI:1,o:{shape:3.4,cut:2600}},ld:{i:'brass',v:.85,p:.1,rv:.3,dl:.12,minI:1},ct:{i:'violin',v:.6,p:-.3,rv:.35,minI:2,oct:1},st:{i:'str',v:.5,p:.3,rv:.4,lo:48,minI:1},hi:{i:'str',v:.5,p:-.2,rv:.4,lo:60,minI:2},dm:{i:'drums',v:.65,rm:.12,minI:1},d2:{i:'drums',v:.7,rm:.12,minI:2},ar:{i:'arp',v:.4,p:.4,dl:.25,minI:2,lo:62}};
+const common=(m,m2)=>({org:{st:'pad',v:.9},ch:{st:'pad',v:.8},bl:{st:'arp',g:'x.......x.......',ord:'up'},tp:{d:{tp:'x.......x.......'}},bs:{st:'bass',g:'R.......R.......'},bf:{st:'bass',g:'RRRRRRRRRRRRRRRR',v:.8},gt:{st:'strum',g:'D.d.D.D.D.d.D.DU',v:.85},st:{st:'pad',v:.8},hi:{st:'arp',g:'xxxxxxxxxxxxxxxx',ord:'up',v:.7},dm:{d:D,fill:'toms',fe:4,cr:1},d2:{d:D2},ar:{st:'arp',g:'x.x.x.x.x.x.x.x.',ord:'up',v:.8,up:1},ld:{m},ct:{m:m2||m}});
+SONGS.boss={bpm:150,root:50,mode:'hmin',spb,loop:1,L,S:[
+ {n:2,ch:'1 1',p:{org:{st:'pad',v:.9},ch:{st:'pad',v:.9},tp:{d:{tp:'x.x.x.x.xxxxxxxx|x..x..x..x..xxxx'}},bs:{st:'bass',g:'R...............'}}},
+ {n:8,ch:'1 1 6 5 1 1 4 5',p:common(IA,IB)},
+ {n:8,ch:'6 4 1 5 6 4 5 1',p:common(IB,IA)},
+ {n:4,ch:'1 6 4 5',p:{org:{st:'pad',v:1},ch:{st:'pad',v:1},bl:{st:'arp',g:'x.x.x.x.x.x.x.x.',ord:'ud'},tp:{d:{tp:'x...............'}},bs:{st:'bass',g:'R...............'},ld:{m:'5^:8 3^:8 | 4^:8 2^:8 | 3^:8 1^:8 | 2^:8 7:8'},st:{st:'pad',v:.8}}},
+ {n:8,ch:'1 1 6 5 1 1 4 5',p:common(IA,IB)}]}})();
+// --- stingers (play once) ---
+const STL=(o)=>Object.assign({tr:{i:'trumpet',v:.9,rv:.35},hr:{i:'horn',v:.7,p:-.2,rv:.35},gl:{i:'glock',v:.6,p:.35,rv:.4,oct:1},ch:{i:'choir',v:.55,rv:.5,lo:52},st:{i:'str',v:.5,p:.2,rv:.4,lo:48},bs:{i:'ebass',v:.8,lo:34},dm:{i:'drums',v:.7,rm:.12},tp:{i:'drums',v:.8,rv:.3,f:73.4}},o||{});
+SONGS.victory={bpm:140,root:60,mode:'maj',spb:16,L:STL(),S:[{n:2,ch:'1 1',p:{tr:{m:'1:2 3:2 5:2 1^:6 5:2 1^:2 | 5:2 1^:2 3^:2 5^:10'},hr:{m:'1:2 3:2 5:2 1^:6 5:2 1^:2 | 5:2 1^:2 3^:2 5^:10'},gl:{m:'5:2 1^:2 3^:2 5^:2 1^:2 3^:2 5^:2 1^:2 | 3^:2 5^:2 3^:2 5^:2 1^:8'},st:{st:'pad',v:.8},tp:{d:{tp:'x.x.xxxxx.x.x...|x...............'}},dm:{d:{k:'x...............|x...............',cr:'................|x...............'}},bs:{st:'bass',g:'R.R.R.R.R.R.R.R.'}}}]};
+SONGS.bossWin={bpm:120,root:62,mode:'maj',spb:16,L:STL(),S:[{n:4,ch:'1 4 5 1',p:{tr:{m:'1^:4 1^:2 3^:2 5^:8 | 6^:4 5^:2 4^:2 3^:8 | 2^:4 4^:2 2^:2 7:8 | 1^:4 3^:4 5^:8'},hr:{m:'1:4 1:2 3:2 5:8 | 4:4 6:2 4:2 3:8 | 5:4 7:2 5:2 2:8 | 1:4 3:4 5:8'},gl:{m:'1^:2 3^:2 5^:2 3^:2 1^:2 3^:2 5^:2 3^:2 | 4^:2 6^:2 1^^:2 6^:2 4^:2 6^:2 1^^:2 6^:2 | 5^:2 7^:2 2^^:2 7^:2 5^:2 7^:2 2^^:2 7^:2 | 1^^:16'},ch:{st:'pad',v:.9},st:{st:'pad',v:.8},tp:{d:{tp:'x.x.xxxxx.x.x...|x...x...x...x...|x...x...x.x.xxxx|x...............'}},dm:{d:{k:'x...x...x...x...',s:'..............xx'},cr:1},bs:{st:'bass',g:'R...R...R...R...'}}}]};
+SONGS.finalWin={bpm:112,root:62,mode:'maj',spb:16,L:Object.assign(STL(),{fl:{i:'flute',v:.7,p:.2,rv:.4,oct:1}}),S:[{n:8,ch:'1 5 6m 3m 4 1 5 1',p:{tr:{m:T_C},hr:{m:T_C,v:.8},fl:{m:T_C},gl:{m:T_C},ch:{st:'pad',v:.9},st:{st:'pad',v:.9},tp:{d:{tp:'x.......x.......'}},dm:{d:{k:'x..xx..xx..xx.x.',s:'....X.......X...',h:'x.x.x.x.x.x.x.x.'},fill:'toms',cr:1},bs:{st:'bass',g:'R.R.R.R.R.R.R.R.'}}}]};
+SONGS.death={bpm:66,root:52,mode:'min',spb:16,L:{ld:{i:'cello',v:.9,rv:.5},bl:{i:'bell',v:.5,p:.3,rv:.6,oct:1},st:{i:'str',v:.5,rv:.5,lo:40},tp:{i:'drums',v:.9,rv:.4,f:65.4}},S:[{n:3,ch:'1 4 1',p:{ld:{m:'5:4 4:4 3:4 2:4 | 3:6 2:2 1:8 | 1v:16'},bl:{m:'5:2 r:14 | 3:2 r:14 | 1:2 r:14'},st:{st:'pad',v:.8},tp:{d:{tp:'x...............|................|x...............'}}}}]};
+// loudness trim: battle/boss stacks are denser than maps
+(function(){const tr=(k,f)=>{const L=SONGS[k].L;for(const id in L)L[id].v=(L[id].v==null?1:L[id].v)*f};for(let k=0;k<12;k++){tr('f'+k,.62);tr('b'+k,.58)}tr('boss',.55)})();
+
 // ================= SFX + audio UI hooks =================
 // The tossup blips, buzzer, correct / neg / power sounds stay as simple synth beeps (beep/seq in 50_audio.js). UI + stings live here.
 var SFX={
@@ -1215,7 +1331,7 @@ setInterval(()=>{if(!ac||mute||!$('#map').classList.contains('on'))return;const 
 if(!sa&&n>.4&&Math.random()<.7)[0,.12,.24].forEach(d=>tn(4300,t+d,.06,'sine',.012));else if(!sa&&n<.2&&Math.random()<.35){const f=2200+Math.random()*900;tn(f,t,.08,'sine',.02);tn(f*1.25,t+.1,.08,'sine',.02)}else if(sa&&Math.random()<.2)tn(1200,t,.4,'sine',.01)},800);
 // ---- present: blit low-res world 2x, then crisp text ----
 function present(){g.imageSmoothingEnabled=false;g.drawImage(WC,0,0,800,460);g.textBaseline='alphabetic';g.font='8px "Press Start 2P",monospace';TXQ.forEach(q=>{g.textAlign=q.al;const x=q.x*2,y=q.y*2;if(q.col!='#3b2a40'){g.fillStyle='#1a1024';[[-2,0],[2,0],[0,-2],[0,2],[2,2]].forEach(([a,b])=>g.fillText(q.s,x+a,y+b))}g.fillStyle=q.col;g.fillText(q.s,x,y)});TXQ.length=0}
-let t0=0;function draw(t){const dt=Math.min(.05,(t-t0)/1000);t0=t;if($('#map').classList.contains('on')){mode=='sea'?sea(t,dt):isle(t,dt);present()}requestAnimationFrame(draw)}requestAnimationFrame(draw);
+let t0=0;function draw(t){const dt=Math.min(.05,(t-t0)/1000);t0=t;if($('#map').classList.contains('on')){if(mode=='isle'&&!GC)mode='sea';mode=='sea'?sea(t,dt):isle(t,dt);present()}requestAnimationFrame(draw)}requestAnimationFrame(draw);
 // ================= UI LAYER: stage backdrops, title scene, screen transitions, UI sounds =================
 const msc=n=>innerWidth<600?Math.max(3,n-2):n;
 const RR_=(c,x,y,w,h,col)=>{c.fillStyle=col;c.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))};
@@ -2566,13 +2682,34 @@ const VT={
 'Vector the Variable':{f:156,ty:'sawtooth',len:.045,sp:30,pat:'up',vol:.8}};
 const VALIAS={'Nova':'Nova Quickdraw','Quentin':'Quentin Query','Professor':'Professor Power','Moe':'Moderator Moe','Neggins':'Captain Neggins','Inquisitor':'The Grand Inquisitor','The Inquisitor':'The Grand Inquisitor'};
 const VSUF={Sage:{m:1,ty:'triangle',len:.04,sp:28,pat:'alt'},Wraith:{m:1.31,ty:'sine',len:.07,sp:38,pat:'warble'},Imp:{m:1.74,ty:'square',len:.022,sp:16,pat:'rnd',vol:.75},Golem:{m:.53,ty:'sawtooth',len:.08,sp:44,pat:'flat',vol:.85}};
-function voiceOf(n){n=VALIAS[n]||n||'';if(VT[n])return VT[n];const p=n.split(' '),sf=VSUF[p[p.length-1]],mn=Object.keys(MON),mi=mn.indexOf(p.slice(0,-1).join(' '));
+function voiceOf0(n){n=VALIAS[n]||n||'';if(VT[n])return VT[n];const p=n.split(' '),sf=VSUF[p[p.length-1]],mn=Object.keys(MON),mi=mn.indexOf(p.slice(0,-1).join(' '));
 if(sf&&mi>=0)return{f:Math.round(92*Math.pow(1.078,mi)*sf.m*10)/10,ty:sf.ty,len:sf.len,sp:sf.sp,pat:sf.pat,vol:sf.vol||1};
 const h=hsh2(n);return{f:90+h%420+(h>>9)%7/10,ty:['square','triangle','sawtooth','sine'][h%4],len:.03+(h>>3)%6*.012,sp:16+(h>>5)%30,pat:['rnd','alt','up','warble','flat'][(h>>7)%5],vol:1}}
+const VTM={'Professor Power':'tri','Pip':'p12','Captain Neggins':'gruff','Moderator Moe':'sin','Nova Quickdraw':'p25','Quentin Query':'tri','The Grand Inquisitor':'gruff','The Prose Phantasm':'fm','Emperor Chronos':'sq','Dr. Absolute Zero':'bell','Count Composition':'org','Archon Allemande':'sin','High Priest Pontifex':'org','Sophist Supreme':'saw','Professor Paradigm':'sq','Baron Von Border':'gruff','DJ Trendsetter':'p12','Anchor Annihilator':'gruff','The Prompt Master':'p25','The Bard of Banishment':'tri','Cleo the Chronicler':'sin','The Quantum Queen':'fm','The Buzzer Beater':'p12','Neg-a-tron':'sq','Vector the Variable':'saw'},VSTM={Sage:'tri',Wraith:'fm',Imp:'p12',Golem:'gruff'};
+function voiceOf(n){n=VALIAS[n]||n||'';const v=voiceOf0(n),p=n.split(' ');return Object.assign({},v,{tm:VTM[n]||VSTM[p[p.length-1]]||v.tm})}
 const enemyVoice=voiceOf;
 function storySpk(l){const m=/^([A-Z][A-Za-z.' -]{1,28}?):\s/.exec(l||'');return m&&(VT[VALIAS[m[1]]||m[1]]||/^(Professor|Captain|Moderator|Dr|The|DJ|Count|Emperor|Baron|High|Sophist|Archon|Anchor)/.test(m[1]))?m[1]:null}
 const VPAT={rnd:(i)=>1+(Math.random()-.5)*.2,alt:i=>i%2?1.14:.92,up:i=>1+(i%4)*.07,warble:i=>1+Math.sin(i*1.25)*.11,flat:i=>1};
-function blip(v,i,ch){if(mute||!ac)return;try{AUD();const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime,k=(VPAT[v.pat]||VPAT.flat)(i)*(ch=='?'?1.12:1);o.type=v.ty;o.frequency.value=v.f*k;g.gain.setValueAtTime(.05*(v.vol||1),t);g.gain.exponentialRampToValueAtTime(.0001,t+v.len);o.connect(g);g.connect(MG);o.start(t);o.stop(t+v.len+.01)}catch(e){}}
+const BW={};
+function bw(k){if(BW[k])return BW[k];const N=40,re=new Float32Array(N),im=new Float32Array(N);
+if(k=='p12'||k=='p25'){const d=k=='p12'?.125:.25;for(let n=1;n<N;n++)re[n]=2/(n*Math.PI)*Math.sin(n*Math.PI*d)}
+else{[1,.5,.3,.2,.12,.08].forEach((a,n)=>im[n+1]=a)}
+return BW[k]=ac.createPeriodicWave(re,im)}
+let BLL=null;
+/* One short blip per letter, like Undertale: fixed pitch per character, a tiny pitch dip, hard cut when the next letter arrives.
+   v.tm picks the timbre: sq tri saw sin p12 p25 (thin pulses) gruff (low, growly) org (organ-ish) bell (cold, glassy) fm (wobbly) */
+function blip(v,i,ch){if(mute||!ac)return;try{AUD();const t=ac.currentTime,tm=v.tm||({square:'sq',triangle:'tri',sawtooth:'saw',sine:'sin'}[v.ty]||'sq'),
+k=(VPAT[v.pat]||VPAT.flat)(i)*(ch=='?'?1.12:ch=='!'?1.06:1)*(/[aeiouAEIOU]/.test(ch)?1.03:1),f=v.f*k,len=Math.max(.03,v.len),vol=.06*(v.vol||1);
+if(BLL){const b=BLL;b.g.gain.cancelScheduledValues(t);b.g.gain.setTargetAtTime(0,t,.004);b.n.forEach(o=>{try{o.stop(t+.03)}catch(e){}})}
+const g=ac.createGain(),lp=ac.createBiquadFilter(),nodes=[];lp.type='lowpass';lp.frequency.value={sq:3600,tri:5000,saw:2600,sin:6000,p12:4200,p25:4200,gruff:1100,org:3000,bell:7000,fm:4000}[tm]||3600;lp.Q.value=.5;
+const mk=(type,fr,amp)=>{const o=ac.createOscillator(),a=ac.createGain();if(type[0]=='w')o.setPeriodicWave(bw(type.slice(1)));else o.type=type;o.frequency.setValueAtTime(fr*1.03,t);o.frequency.exponentialRampToValueAtTime(fr*.985,t+len);a.gain.value=amp;o.connect(a);a.connect(lp);o.start(t);o.stop(t+len+.03);nodes.push(o);return o};
+if(tm=='gruff'){mk('w'+'p25',f,1);mk('square',f*.5,.7)}
+else if(tm=='bell'){mk('sine',f,1);mk('sine',f*2.76,.35)}
+else if(tm=='org'){mk('worg',f,1)}
+else if(tm=='fm'){const o=mk('sine',f,1),m=ac.createOscillator(),mg=ac.createGain();m.frequency.value=f*2.01;mg.gain.setValueAtTime(f*1.1,t);mg.gain.exponentialRampToValueAtTime(f*.1,t+len);m.connect(mg);mg.connect(o.frequency);m.start(t);m.stop(t+len+.03);nodes.push(m)}
+else if(tm=='p12'||tm=='p25')mk('w'+tm,f,1);
+else mk({sq:'square',tri:'triangle',saw:'sawtooth',sin:'sine'}[tm]||'square',f,1);
+g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.004);g.gain.setValueAtTime(vol,t+len*.45);g.gain.exponentialRampToValueAtTime(.0001,t+len*1.1);lp.connect(g);g.connect(MG);BLL={g,n:nodes}}catch(e){}}
 /* vxType(el,text,voice): types text into el. Returns {done(),skip(),stop()}. Stops by itself if el leaves the page. */
 function vxType(el,text,v){let n=0,fin=false,tm=null;text=String(text);v=v||NARR;
 const api={done:()=>fin,skip:()=>{if(fin)return;clearTimeout(tm);fin=true;if(el)el.textContent=text},stop:()=>{clearTimeout(tm);fin=true}};
