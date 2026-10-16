@@ -404,25 +404,28 @@ function mon(i,b,r,sub,s,bn){return(bn||i<0)?bossCanvas(i,s,bn):monRegular(i,b,r
 function hero(s,o=P){return heroF(s,o,0,0)}
 const PROF_={hair:'#eeeeee',skin:'#f2c9a0',top:'#7a3fbf',bot:'#3a3f7a',hs:1,fs:1,ts:4,bs:0},MAGS={hair:'#b58cff',skin:'#d9a070',top:'#e8e0d0',bot:'#4a5a8a',hs:3,fs:4,ts:5,bs:4,bd:2,gl:4,mg:1};
 function heroF(s,o,fr=0,dir=0){const W=18,H=30,B=[],Q=(x,y,w,h,c)=>{for(let j=y+4;j<y+4+h;j++)for(let i=x+1;i<x+1+w;i++)if(i>=0&&i<W&&j>=0&&j<H)B[j*W+i]=c},
-Hc=o.hair,Sk=o.skin,T=o.top,Bt=o.bot,sd=mixc(Sk,'#000000',.13),Td=mixc(T,'#000000',.22),Tl=lt(T),Bd=mixc(Bt,'#000000',.25),Bl=lt(Bt),Hl=lt(Hc),Hd=mixc(Hc,'#000000',.3),ts0=o.ts|0,bs0=o.bs|0,hs0=o.hs|0,ts=ts0>=7?[0,4,1][ts0-7]:ts0,bs=bs0>=7?[1,5][bs0-7]:bs0,hs=hs0>=8?(hs0==8?5:0):hs0,fs=o.fs,F0=dir==0,bk=dir==1,sv=dir==2,dr=ts==3||ts==6,lf=fr==1,rf=fr==3,ED='#1a1a2a',
+Hc=o.hair,Sk=o.skin,T=(o.ts|0)==8?'#f0f0f6':o.top,AC=(o.ts|0)==12?'#f2f2f2':(o.ts|0)==8?'#f0f0f6':(o.ts|0)==14?'#f4f4f4':o.top,Bt=o.bot,sd=mixc(Sk,'#000000',.13),Td=mixc(T,'#000000',.22),Tl=lt(T),Bd=mixc(Bt,'#000000',.25),Bl=lt(Bt),Hl=lt(Hc),Hd=mixc(Hc,'#000000',.3),ts0=o.ts|0,bs0=o.bs|0,hs0=o.hs|0,ts=ts0>=7?[0,4,1,3,0,4,0,0][ts0-7]:ts0,bs=bs0>=7?[1,5,2,2,0,4][bs0-7]:bs0,hs=hs0>=8?(hs0==8?5:0):hs0,fs=o.fs,F0=dir==0,bk=dir==1,sv=dir==2,dr=ts==3||ts==6,lf=fr==1,rf=fr==3,ED='#1a1a2a',
 FSH=[[[5,10],[4,11],[4,11],[4,11],[4,11],[4,11],[5,10],[6,9]],[[5,10],[5,10],[5,10],[5,10],[5,10],[5,10],[6,9],[6,9]],[[4,11],[4,11],[4,11],[4,11],[4,11],[4,11],[4,11],[5,10]],[[5,10],[4,11],[4,11],[4,11],[4,11],[5,10],[5,10],[6,9]],[[4,11],[4,11],[4,11],[4,11],[5,10],[5,10],[6,9],[7,8]]][fs]||[[5,10],[4,11],[4,11],[4,11],[4,11],[4,11],[5,10],[6,9]];
 if(hs==1)Q(3,4,10,bk?11:10,bk?Hc:Hd);if(hs==4&&!bk){Q(2,5,2,7,Hd);Q(12,5,2,7,Hd)}if(hs==6&&!bk){Q(11,4,3,2,Hd);Q(12,6,2,7,Hd)}if(hs==7)Q(2,0,12,9,Hd);
-const cv=dr?0:[5,2,0,0,5,5,5][bs],shoe=dr||bs==1||bs==2||bs==3?'#7a3050':'#3a3a4a',
-leg=(x,lift,sh)=>{const n=5-lift,m=Math.min(cv,n);Q(x,19,3,m,sh?Bd:Bt);if(cv<n)Q(x,19+cv,3,n-cv,sh?sd:Sk);if(m>0){if(bs==4)Q(x,19+m-1,3,1,Bl);if(bs==5)Q(x,19,1,m,Bl);if(bs==6)Q(x,21,3,1,Bd);if(bs==0)Q(x+1,20,1,2,Bd)}if(ts!=6){Q(x-1,24-lift,4,1,shoe);Q(x-1,25-lift,4,1,'#f4f4f4')}};
+const cv=dr?0:(bs0==11?3:[5,2,0,0,5,5,5][bs]),shoe=dr||bs==1||bs==2||bs==3?'#7a3050':'#3a3a4a',
+leg=(x,lift,sh)=>{const n=5-lift,m=Math.min(cv,n);Q(x,19,3,m,sh?Bd:Bt);if(cv<n)Q(x,19+cv,3,n-cv,sh?sd:Sk);if(m>0){if(bs0==7){Q(x,19,3,1,Bl);Q(x+1,19,1,m,Bl)}if(bs0==8)for(let i=0;i<m;i++)Q(x,19+i,3,1,['#ff5a7a','#ffb02e','#ffd84a','#7dff9a','#4fd0ff'][i%5]);if(bs0==12)Q(x+(x<7?0:2),19,1,m,'#f4f4f4');if(bs==4)Q(x,19+m-1,3,1,Bl);if(bs==5)Q(x,19,1,m,Bl);if(bs==6)Q(x,21,3,1,Bd);if(bs==0)Q(x+1,20,1,2,Bd)}if(ts!=6){Q(x-1,24-lift,4,1,shoe);Q(x-1,25-lift,4,1,'#f4f4f4')}};
 if(sv){leg(6+(lf?-2:rf?2:0),0,1);leg(7+(lf?2:rf?-2:0),0,0)}else{leg(5,lf?1:0,0);leg(8,rf?1:0,0)}
-const bd=o.bd|0,tw=sv?4:(bd==1?4:bd==2?8:6),tx=sv?6:(bd==1?6:bd==2?4:5);Q(tx,12,tw,7,T);Q(tx+tw-1,12,1,7,Td);Q(tx,12,tw,1,Tl);
-if(!dr){if(bs!=2&&bs!=3){Q(tx,18,tw,1,bs==5?Bd:'#4a3220');if(F0)Q(7,18,2,1,'#ffd84a')}
-if(bs==2){Q(tx-1,18,tw+2,4,Bt);Q(tx-1,21,tw+2,1,Bl);if(F0){Q(6,19,1,2,Bd);Q(9,19,1,2,Bd)}}
-if(bs==3){Q(tx-1,18,tw+2,5,Bt);Q(tx-1,22,tw+2,1,Bl);if(F0){Q(6,19,1,3,Bd);Q(9,19,1,3,Bd)}}}
-if(ts==3){Q(tx-1,17,tw+2,5,T);Q(tx-1,21,tw+2,1,Tl);if(F0){Q(6,18,1,3,Td);Q(9,18,1,3,Td)}}
-if(ts==6)for(let k=0;k<8;k++){const e=k>>1;Q(tx-1-e,17+k,tw+2+e*2,1,k==7?Tl:(k%3?T:Td))}
-if(dr)Q(tx,16,tw,1,ts==6?'#ffd84a':Tl);
+const bd=o.bd|0,tw=sv?4:(bd==1?4:(bd==2||bd==4)?8:6),tx=sv?6:(bd==1?6:(bd==2||bd==4)?4:5);const WD=sv||bd==1?[4,4,4,4,4,4,4]:bd==3?[6,6,5,4,4,5,6]:bd==4?[8,8,7,6,6,6,6]:bd==2?[8,8,8,8,8,8,8]:[6,6,6,6,6,6,6];
+if(dr&&!sv&&bd!=1){WD[3]=Math.min(WD[3],4);WD[4]=Math.min(WD[4],4)}
+WD.forEach((w,r)=>{const x0=sv?tx:8-(w>>1);Q(x0,12+r,w,1,r==0?Tl:T);Q(x0+w-1,12+r,1,1,Td)});
+const skirt=(y0,ws,c,cd,cl,pl)=>{ws.forEach((w,k)=>{const ww=sv?Math.max(4,Math.round(w*.62)):w,x0=8-(ww>>1);Q(x0,y0+k,ww,1,c);Q(x0+ww-1,y0+k,1,1,cd);if(k==ws.length-1)Q(x0,y0+k,ww,1,cl)});
+if(!sv&&!bk)for(let k=1;k<ws.length-1;k++){Q(8-2-(pl>1?1:0),y0+k,1,1,cd);Q(8+1+(pl>1?1:0),y0+k,1,1,cd);if(pl>1&&k%2){Q(4,y0+k,1,1,cd);Q(11,y0+k,1,1,cd)}}};
+if(!dr){if(bs!=2&&bs!=3){Q(sv?tx:8-(WD[6]>>1),18,WD[6],1,bs==5?Bd:'#4a3220');if(F0)Q(7,18,2,1,'#ffd84a')}else{Q(sv?tx:8-(WD[6]>>1),18,WD[6],1,Bd);if(F0)Q(7,18,2,1,Bl)}
+if(bs==2)skirt(19,bs0==10?[8,10,11,11]:[8,9,9,10],Bt,Bd,Bl,bs0==9||bs0==10?2:1);if(bs==3)skirt(19,[8,8,9,9,10],Bt,Bd,Bl,1);
+if(bs0==9&&!sv)Q(8-5,22,10,1,'#f4f4f4');if(bs0==10&&F0)[[5,20],[10,21],[8,19],[6,22],[11,22]].forEach(p=>Q(p[0],p[1],1,1,'#fff'))}
+if(ts==3){skirt(17,[6,7,8,9,10,10],T,Td,Tl,1);Q(6,16,4,1,ts0==10?'#fff':Td);if(F0)Q(7,16,2,1,ts0==10?'#ffd84a':Tl);if(ts0==10&&F0)[[6,18],[10,19],[8,20],[5,21],[11,21],[7,22],[9,18]].forEach(p=>Q(p[0],p[1],1,1,Tl))}
+if(ts==6){skirt(17,[6,7,8,9,10,11,12,12],T,Td,Tl,2);Q(6,16,4,1,'#ffd84a');Q(2,24,12,1,'#ffd84a');if(F0){Q(6,12,4,1,Sk);Q(7,13,2,1,Sk);[[5,19],[10,21],[8,23],[4,22],[11,18],[7,20]].forEach(p=>Q(p[0],p[1],1,1,'#fff'))}}
 if(F0){if(ts==0){Q(7,12,2,1,Sk);Q(9,15,2,2,'#fff')}if(ts==1){Q(5,11,6,2,Td);Q(6,11,4,1,Tl);Q(7,13,1,3,'#eee');Q(8,13,1,3,'#eee');Q(6,16,4,2,Td);Q(5,18,6,1,Td)}
 if(ts==2){Q(tx,12,tw,2,Sk);Q(5,12,1,2,T);Q(10,12,1,2,T)}if(ts==4){Q(7,12,2,6,'#f0f0f0');Q(7,13,1,5,'#c0c0c0');Q(5,12,6,1,Tl);Q(5,12,1,2,Tl);Q(10,12,1,2,Tl);Q(5,16,2,1,Td);Q(9,16,2,1,Td);Q(5,18,6,1,Td)}
 if(ts==5){Q(6,11,4,2,Tl);Q(5,14,6,1,Tl);Q(5,16,6,1,Tl);Q(5,18,6,1,Tl)}if(dr)Q(7,12,2,1,Sk)}
 if(bk&&ts==1)Q(5,11,6,3,Td);
-const sl=[3,5,0,2,5,5,5][ts],arm=(x,n,col,sh)=>{const m=Math.min(sl,n);Q(x,12,2,m,col);Q(x,12+m,2,n-m,sh?sd:Sk);if(sl>=5)Q(x,12+m-1,2,1,Tl)};
-if(sv){const a=lf?2:rf?-2:0;arm(7+a,6,Td,1);arm(7-a,6,T,0)}else{arm(tx-2,6+(lf?1:rf?-1:0),T,0);arm(tx+tw,6+(rf?1:lf?-1:0),T,0)}
+const sl=ts0==10?0:[3,5,0,2,5,5,5][ts],arm=(x,n,col,sh)=>{const m=Math.min(sl,n);Q(x,12,2,m,col);Q(x,12+m,2,n-m,sh?sd:Sk);if(sl>=5)Q(x,12+m-1,2,1,Tl)};
+if(sv){const a=lf?2:rf?-2:0;arm(7+a,6,Td,1);arm(7-a,6,AC,0)}else{arm(tx-2,6+(lf?1:rf?-1:0),AC,0);arm(tx+tw,6+(rf?1:lf?-1:0),AC,0)}
 if(!(ts==1||ts==5)&&!bk)Q(7,11,2,1,sd);
 FSH.forEach((r,i)=>Q(r[0],3+i,r[1]-r[0]+1,1,i==7?sd:Sk));
 if(!bk&&!sv){Q(FSH[4][0]-1,7,1,2,Sk);Q(FSH[4][1]+1,7,1,2,Sk)}
@@ -435,7 +438,15 @@ else if(hs==7){Q(3,-1,10,1,Hc);Q(2,0,12,5,Hc);Q(2,5,2,4,Hc);Q(12,5,2,4,Hc);Q(5,1
 else{Q(4,1,8,3,Hc);Q(5,0,6,1,Hc);Q(6,1,3,1,Hl);Q(3,3,1,3,Hc);Q(12,3,1,3,Hc);Q(4,4,3,1,Hc);Q(9,4,3,1,Hc);
 if(hs==3){Q(6,-1,4,2,Hc);Q(7,-1,1,1,Hl)}if(hs==4){Q(2,5,2,1,'#ff5a7a');Q(12,5,2,1,'#ff5a7a')}if(hs==6)Q(12,4,2,1,'#ff5a7a');if(hs==1){Q(3,4,2,6,Hc);Q(11,4,2,6,Hc)}}
 if(sv){Q(8,3,5,6,Hc);Q(8,2,5,1,Hc);Q(9,5,2,1,Hl);if(hs==1)Q(9,9,4,5,Hc)}}
-{const hh=o.hat|0,gl=o.gl|0,fx=o.fx|0,ey=o.ey|0,Hl2=Hl;
+{if(F0){const R=(f)=>WD.forEach((w,r)=>f(8-(w>>1),12+r,w,r));
+if(ts0==7)[13,15,17].forEach(y=>Q(8-(WD[y-12]>>1),y,WD[y-12],1,Tl));
+if(ts0==8){Q(7,13,2,5,o.top);Q(6,12,1,3,'#c8c8d8');Q(9,12,1,3,'#c8c8d8');Q(5,16,2,2,'#c8c8d8');Q(6,15,1,1,'#4fd0ff')}
+if(ts0==9){Q(8,13,1,3,'#ffd84a');Q(7,14,3,1,'#ffd84a')}
+if(ts0==11){Q(6,12,4,1,'#fff');Q(7,13,2,1,'#fff');Q(8,14,1,1,Td);Q(8,16,1,1,Td);Q(2,12,3,2,Tl);Q(11,12,3,2,Tl);Q(3,17,2,1,'#fff');Q(11,17,2,1,'#fff')}
+if(ts0==12){Q(9,14,2,2,'#ffd84a');Q(3,16,2,1,o.top);Q(11,16,2,1,o.top);Q(3,17,2,1,o.top);Q(11,17,2,1,o.top)}
+if(ts0==13){R((x0,y,w,r)=>{for(let x=x0;x<x0+w;x++){if((x-x0)%3==1)Q(x,y,1,1,Td);if(y%3==0)Q(x,y,1,1,Tl)}});Q(6,12,1,1,Tl);Q(9,12,1,1,Tl)}
+if(ts0==14){R((x0,y,w,r)=>{Q(x0,y,w,1,'#f4f4f4');if(r>0){Q(x0,y,2,1,o.top);Q(x0+w-2,y,2,1,o.top)}});Q(7,12,2,1,'#f4f4f4');Q(6,12,1,1,'#fff');Q(9,12,1,1,'#fff');Q(8,13,1,1,'#c02a40');Q(8,14,1,3,'#a01a30')}}
+const hh=o.hat|0,gl=o.gl|0,fx=o.fx|0,ey=o.ey|0,Hl2=Hl;
 if(hs0==8)Q(7,-3,2,2,Hc),Q(6,-1,4,3,Hc),Q(7,-3,1,1,Hl);if(hs0==9){Q(2,-1,3,3,Hc);Q(11,-1,3,3,Hc);Q(3,-1,1,1,Hl);Q(12,-1,1,1,Hl)}
 if(hs0==10){if(bk){Q(7,9,2,7,Hc);Q(7,11,2,1,Hd);Q(7,13,2,1,Hd);Q(7,16,2,1,'#ff5a7a')}else{Q(12,5,2,3,Hc);Q(12,8,2,2,Hd);Q(12,10,2,2,Hc);Q(12,12,2,1,'#ff5a7a')}}
 if(hs0==11){Q(2,2,2,7,Hc);Q(12,2,2,7,Hc);Q(3,1,10,2,Hc);Q(2,5,1,1,Hl);Q(13,6,1,1,Hl);Q(3,8,1,1,Hl)}
@@ -2863,8 +2874,8 @@ cs_('hat',1,'Hats','Party Hat',40);cs_('hat',2,'Hats','Cat Ears',55);cs_('hat',3
 cs_('gl',1,'Glasses','Round Glasses',45);cs_('gl',2,'Glasses','Cool Shades',60);cs_('gl',3,'Glasses','Fancy Monocle',55);cs_('gl',4,'Glasses','Brass Goggles',70);
 cs_('fx',1,'Face','Freckles',30);cs_('fx',2,'Face','Whiskers',30);cs_('fx',3,'Face','Sparkle Cheek',35);cs_('fx',4,'Face','Bandage',25);
 cs_('ey',1,'Eyes','Starry Eyes',50);cs_('ey',2,'Eyes','Sleepy Eyes',40);cs_('ey',3,'Eyes','Happy Eyes',40);cs_('ey',4,'Eyes','Wide Eyes',40);
-cs_('bd',1,'Body','Slim Build',40);cs_('bd',2,'Body','Sturdy Build',40);
-cs_('ts',7,'Tops','Striped Tee',50);cs_('ts',8,'Tops','Lab Coat',70);cs_('ts',9,'Tops','Star Hoodie',80);cs_('bs',7,'Bottoms','Plaid Shorts',45);cs_('bs',8,'Bottoms','Rainbow Leggings',55);
+cs_('bd',2,'Body','Sturdy Build',40);cs_('bd',4,'Body','Athletic Build',45);
+cs_('ts',7,'Tops','Striped Tee',50);cs_('ts',8,'Tops','Lab Coat',70);cs_('ts',9,'Tops','Star Hoodie',80);cs_('ts',10,'Tops','Sundress',65);cs_('ts',11,'Tops','Ruffle Blouse',55);cs_('ts',12,'Tops','Varsity Jacket',75);cs_('ts',13,'Tops','Flannel Shirt',50);cs_('ts',14,'Tops','Vest & Tie',65);cs_('bs',7,'Bottoms','Plaid Shorts',45);cs_('bs',8,'Bottoms','Rainbow Leggings',55);cs_('bs',9,'Bottoms','Tennis Skirt',50);cs_('bs',10,'Bottoms','Tulle Skirt',60);cs_('bs',11,'Bottoms','Capri Pants',45);cs_('bs',12,'Bottoms','Track Pants',50);
 const owned=c=>!!OWN()[c.id],CATS=['Hair','Hats','Glasses','Face','Eyes','Body','Tops','Bottoms'];
 const MG_HI=['Heya, Champ! Take a look around. Everything on this shelf is honest and mostly clean.','Welcome back! Coins talk, and I speak fluent coin.','Ah, my favorite customer! Also my only customer. Browse away.'],MG_BUY=['Pleasure doing business!','Sold! No refunds. Okay, maybe small ones.','Ha! That suits you, Champ.'],MG_BROKE=['Pockets look light, Champ. Go whack some monsters.','Not enough coins. I do not do IOUs. Ask the Professor, she tried.'],MG_OWN=['You already own that one!','Already in your closet, Champ.'],MG_MAX=['Your bag cannot hold more than 9 of those!'];
 let SHTAB='acc',SHCAT='Hair',SHTYP=null;
@@ -2884,7 +2895,7 @@ el.querySelectorAll('.coin2').forEach(x=>x.append(iconCv(ITM.pouch,1)));$('#shx'
 function bagOpen(){const v=IV(),m=$('#bagm');m.style.display='flex';let h='<div class="box" style="max-width:560px;width:92%"><p class="y">YOUR BAG - <span class="coin"></span> '+v.c+' coins</p><p><small>Items are used in battle: choose ITEM, answer the tossup correctly, then press E.</small></p><div class="invg">';const L=invList();L.forEach(k=>{const it=ITM[k];h+='<div class="invc"><span class="ico" data-k="'+k+'"></span><b>'+E(it.n)+'</b><i>x'+v.it[k]+'</i><small>'+E(it.d)+'</small></div>'});if(!L.length)h+='<p><small>Empty. Find items on the isles or buy some from Mags.</small></p>';h+='</div><button id="bagx" class="big">CLOSE</button></div>';m.innerHTML=h;m.querySelectorAll('.ico').forEach(x=>x.append(iconCv(ITM[x.dataset.k],3)));m.querySelector('.coin').append(iconCv(ITM.pouch,2));$('#bagx').onclick=()=>m.style.display='none'}
 $('#bgb').onclick=bagOpen;
 /* ---- creator rows (only owned accessories appear) ---- */
-function czOpts(k){const base={hs:HS,fs:FS,ts:TS,bs:BS}[k],o=[];if(base)base.forEach((n,v)=>o.push({v,n}));else o.push({v:0,n:'None'});COS.filter(c=>c.f==k&&owned(c)).forEach(c=>o.push({v:c.v,n:c.n}));return o}
+function czOpts(k){const base={hs:HS,fs:FS,ts:TS,bs:BS}[k],o=[];if(base)base.forEach((n,v)=>o.push({v,n}));else if(k=='bd')o.push({v:0,n:'Average'},{v:1,n:'Slim'},{v:3,n:'Curvy'});else o.push({v:0,n:'None'});COS.filter(c=>c.f==k&&owned(c)).forEach(c=>o.push({v:c.v,n:c.n}));return o}
 function czRows(z){[['hs','Hair'],['fs','Face'],['ts','Top'],['bs','Bottom'],['hat','Hat'],['gl','Glasses'],['fx','Face mark'],['ey','Eyes'],['bd','Body']].forEach(([k,l])=>{const a=czOpts(k);if(a.length<2)return;const r=document.createElement('div'),m=document.createElement('button'),n=document.createElement('button'),t=document.createElement('span');let ix=Math.max(0,a.findIndex(x=>x.v==(P[k]|0)));r.append(l+': ');m.textContent='<';n.textContent='>';t.textContent=a[ix].n;m.onclick=()=>{P[k]=a[(ix+a.length-1)%a.length].v;cz()};n.onclick=()=>{P[k]=a[(ix+1)%a.length].v;cz()};r.append(m,t,n);z.append(r)})}
 
 cz();
