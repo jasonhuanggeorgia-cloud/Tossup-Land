@@ -127,7 +127,7 @@ box-shadow:0 -3px 0 0 var(--edge),0 3px 0 0 var(--edge),-3px 0 0 0 var(--edge),3
 .shc.use{width:190px}.shc canvas{image-rendering:pixelated}.shc b{font-size:9px;line-height:1.5}.shc small{font-size:8px;line-height:1.6;display:block}.shc .y{color:#a05a00}
 .shi{background:#fff8e0;padding:6px;box-shadow:inset 0 0 0 2px var(--edge)}
 .coin2,.coin{display:inline-block;vertical-align:middle;margin-right:4px}
-</style></head><body>
+#goalb{margin:-8px 6px 8px;padding:6px 10px;background:#241a3a;color:#fff3d6;font-size:8px;line-height:1.9;box-shadow:0 -3px 0 0 #000,0 3px 0 0 #000,-3px 0 0 0 #000,3px 0 0 0 #000,inset 0 0 0 2px #4a3a6a}#goalb b{color:var(--gold)}.qrow{background:#fff8e0;padding:6px 8px;margin:6px 0;box-shadow:inset 0 0 0 2px var(--edge);line-height:1.7}.qrow small{font-size:8px}</style></head><body>
 <canvas id="tc"></canvas>
 <canvas id="trc" class="tr"></canvas>
 <button id="slbtn" class="alt">SAVES</button>
@@ -158,13 +158,14 @@ box-shadow:0 -3px 0 0 var(--edge),0 3px 0 0 var(--edge),-3px 0 0 0 var(--edge),3
 
 <div id="map" class="s">
 <div class="box" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:8px 12px"><span id="hud"></span>
-<span><button id="sbk" class="alt">SAIL BACK</button><button id="bgb" class="alt">BAG</button><button id="stb" class="alt">STUDY</button><button id="dbb" class="alt">DATABASE</button><button id="chb" class="alt">CHARACTER</button><button id="stg" class="alt">SETTINGS</button></span></div>
+<span><button id="sbk" class="alt">SAIL BACK</button><button id="bgb" class="alt">BAG</button><button id="qgb" class="alt">QUESTS</button><button id="stb" class="alt">STUDY</button><button id="dbb" class="alt">DATABASE</button><button id="chb" class="alt">CHARACTER</button><button id="stg" class="alt">SETTINGS</button></span></div>
 <canvas id="cv" width="800" height="460"></canvas><small id="hint" style="color:#fff;text-shadow:0 2px 0 var(--plum)"></small>
 <div id="hub" class="box" style="display:none"></div>
 <div id="dp" style="display:none;text-align:center"><button data-k="ArrowLeft">&lt;</button><button data-k="ArrowUp">^</button><button data-k="ArrowDown">v</button><button data-k="ArrowRight">&gt;</button><button id="eb" class="warn">E</button></div>
 </div>
 
 <div id="shop" class="s"></div>
+<div id="qlg" style="display:none;position:fixed;inset:0;z-index:80;background:#000a;align-items:center;justify-content:center;overflow:auto"></div>
 <div id="bagm" style="display:none;position:fixed;inset:0;z-index:80;background:#000a;align-items:center;justify-content:center;overflow:auto"></div>
 <div id="battle" class="s">
 <div id="stage"><canvas id="sbg" width="200" height="90"></canvas>
@@ -300,9 +301,9 @@ const ey=Math.min(gy-3,23);C(16,ey+3.5,5.2,5.2,K0,1);C(16,ey+3.5,4.2,4.2,mixc(dk
 return{S,col}}
 function monRegular(i,b,r,sub,s,bn){const fr=[0,1,2,3,4,5].map(ph=>{const o=monBuf(i,b,r,sub,ph);return sbCanvas(o.S,s,{shadow:[29,11],aura:r>=5?(i<0?'#d050ff':'#ffd84a'):null,ap:ph&1})});const c=document.createElement('canvas');c.width=c.height=32*s;c._born=performance.now();return monReg(c,fr)}
 // ---- Keepers / island bosses / secret bosses / Grand Inquisitor: 48x48, unique silhouettes ----
-function bossBuf(i,ph,sec){const N=48,S=SBuf(N),oy=ph==1?-1:ph==5?1:0,sw=[0,1,0,-1][ph&3],hurt=ph==4,atk=ph==5,blink=ph==3,K0='#1a1024',
+function bossBuf(i,ph,sec,bcol){const N=48,S=SBuf(N),oy=ph==1?-1:ph==5?1:0,sw=[0,1,0,-1][ph&3],hurt=ph==4,atk=ph==5,blink=ph==3,K0='#1a1024',
 Q=(x,y,w,h,c,f)=>S.Q(x,y+oy,w,h,c,f),C=(x,y,rx,ry,c,f)=>S.C(x,y+oy,rx,ry,c,f),P=(p,c,f)=>S.P(p.map(v=>[v[0],v[1]+oy]),c,f),L=(a,b,c,d,col,f,th)=>S.L(a,b+oy,c,d+oy,col,f,th),
-dk=(c,t=.4)=>mixc(c,K0,t),li=(c,t=.4)=>mixc(c,'#fff4d8',t),base=(i<0||i>11)?'#8a3ab0':I[i].c,
+dk=(c,t=.4)=>mixc(c,K0,t),li=(c,t=.4)=>mixc(c,'#fff4d8',t),base=bcol||((i<0||i>11)?'#8a3ab0':I[i].c),
 EYE=(x,y,c1='#ffe060',c2='#fff')=>{if(hurt||blink){Q(x,y+1,3,1,K0,1);return}if(atk){Q(x-1,y-1,5,3,c1,1);Q(x+1,y,1,1,c2,1);return}Q(x,y,3,2,c1,1);Q(x+1,y,1,1,c2,1)},
 BROW=(x,y,d)=>{Q(x,y,3,1,K0,1);Q(x+(d>0?2:-1),y-1,1,1,K0,1)};
 const rob=dk(base,.55),rob2=dk(base,.3),lite=li(base,.45);
@@ -399,12 +400,12 @@ C(24,13,4,4,'#fff',1);if(hurt||blink){Q(20,13,8,1,K0,1)}else{C(24,13,3,3,'#ff204
 Q(14,5,20,2,'#ffd84a');for(let k=0;k<5;k++){const x=15+k*4;Q(x,2+(k%2==0?0:1),3,3,'#ffd84a');C(x+1,2+(k%2==0?0:1),2,1.5,'#e83050',1)}
 Q(5,28,5,3,MASK);Q(38,28,5,3,MASK);[[4,31],[7,31],[10,31]].forEach(p=>Q(p[0],p[1],1,3+((ph+p[0])%2),MASK));[[37,31],[40,31],[43,31]].forEach(p=>Q(p[0],p[1],1,3+((ph+p[0])%2),MASK))}}
 return S}
-function bossCanvas(i,s,bn){const sec=bn&&Object.values(SEC).includes(bn),k=i<0?-1:i,fr=[0,1,2,3,4,5].map(ph=>{const S=bossBuf(i<0?99:i,ph,sec);return sbCanvas(S,s,{shadow:[46,14],aura:sec?'#38f0ff':(i<0?'#d050ff':mixc(I[i].c,'#ffffff',.2)),ap:ph&1,k:'#1a1024'})}),c=document.createElement('canvas');c.width=c.height=48*s;c._born=performance.now();return monReg(c,fr)}
+function bossCanvas(i,s,bn){const qe=bn&&QEN[bn],sec=bn&&(qe||Object.values(SEC).includes(bn)),k=i<0?-1:i,fr=[0,1,2,3,4,5].map(ph=>{const S=bossBuf(i<0?99:i,ph,sec,qe&&qe.col);return sbCanvas(S,s,{shadow:[46,14],aura:qe?qe.aura:sec?'#38f0ff':(i<0?'#d050ff':mixc(I[i].c,'#ffffff',.2)),ap:ph&1,k:'#1a1024'})}),c=document.createElement('canvas');c.width=c.height=48*s;c._born=performance.now();if(qe&&qe.hue!=null)fr.forEach(f=>hueShift(f,qe.hue,qe.sat,qe.lum));return monReg(c,fr)}
 function mon(i,b,r,sub,s,bn){return(bn||i<0)?bossCanvas(i,s,bn):monRegular(i,b,r,sub,s,bn)}
 function hero(s,o=P){return heroF(s,o,0,0)}
 const PROF_={hair:'#eeeeee',skin:'#f2c9a0',top:'#7a3fbf',bot:'#3a3f7a',hs:1,fs:1,ts:4,bs:0},MAGS={hair:'#b58cff',skin:'#d9a070',top:'#e8e0d0',bot:'#4a5a8a',hs:3,fs:4,ts:5,bs:4,bd:2,gl:4,mg:1};
 function heroF(s,o,fr=0,dir=0){const W=18,H=30,B=[],Q=(x,y,w,h,c)=>{for(let j=y+4;j<y+4+h;j++)for(let i=x+1;i<x+1+w;i++)if(i>=0&&i<W&&j>=0&&j<H)B[j*W+i]=c},
-Hc=o.hair,Sk=o.skin,T=(o.ts|0)==8?'#f0f0f6':o.top,AC=(o.ts|0)==12?'#f2f2f2':(o.ts|0)==8?'#f0f0f6':(o.ts|0)==14?'#f4f4f4':o.top,Bt=o.bot,sd=mixc(Sk,'#000000',.13),Td=mixc(T,'#000000',.22),Tl=lt(T),Bd=mixc(Bt,'#000000',.25),Bl=lt(Bt),Hl=lt(Hc),Hd=mixc(Hc,'#000000',.3),ts0=o.ts|0,bs0=o.bs|0,hs0=o.hs|0,ts=ts0>=7?[0,4,1,3,0,4,0,0][ts0-7]:ts0,bs=bs0>=7?[1,5,2,2,0,4][bs0-7]:bs0,hs=hs0>=8?(hs0==8?5:0):hs0,fs=o.fs,F0=dir==0,bk=dir==1,sv=dir==2,dr=ts==3||ts==6,lf=fr==1,rf=fr==3,ED='#1a1a2a',
+Hc=o.hair,Sk=o.skin,T=(o.ts|0)==8?'#f0f0f6':o.top,AC=(o.ts|0)==12?'#f2f2f2':(o.ts|0)==8?'#f0f0f6':(o.ts|0)==14?'#f4f4f4':o.top,Bt=o.bot,sd=mixc(Sk,'#000000',.13),Td=mixc(T,'#000000',.22),Tl=lt(T),Bd=mixc(Bt,'#000000',.25),Bl=lt(Bt),Hl=lt(Hc),Hd=mixc(Hc,'#000000',.3),ts0=o.ts|0,bs0=o.bs|0,hs0=o.hs|0,ts=ts0>=7?[0,4,1,3,0,4,0,0,1,6][ts0-7]:ts0,bs=bs0>=7?[1,5,2,2,0,4][bs0-7]:bs0,hs=hs0>=8?(hs0==8?5:0):hs0,fs=o.fs,F0=dir==0,bk=dir==1,sv=dir==2,dr=ts==3||ts==6,lf=fr==1,rf=fr==3,ED='#1a1a2a',
 FSH=[[[5,10],[4,11],[4,11],[4,11],[4,11],[4,11],[5,10],[6,9]],[[5,10],[5,10],[5,10],[5,10],[5,10],[5,10],[6,9],[6,9]],[[4,11],[4,11],[4,11],[4,11],[4,11],[4,11],[4,11],[5,10]],[[5,10],[4,11],[4,11],[4,11],[4,11],[5,10],[5,10],[6,9]],[[4,11],[4,11],[4,11],[4,11],[5,10],[5,10],[6,9],[7,8]]][fs]||[[5,10],[4,11],[4,11],[4,11],[4,11],[4,11],[5,10],[6,9]];
 if(hs==1)Q(3,4,10,bk?11:10,bk?Hc:Hd);if(hs==4&&!bk){Q(2,5,2,7,Hd);Q(12,5,2,7,Hd)}if(hs==6&&!bk){Q(11,4,3,2,Hd);Q(12,6,2,7,Hd)}if(hs==7)Q(2,0,12,9,Hd);
 const cv=dr?0:(bs0==11?3:[5,2,0,0,5,5,5][bs]),shoe=dr||bs==1||bs==2||bs==3?'#7a3050':'#3a3a4a',
@@ -467,6 +468,10 @@ if(hh==3){const W_='#4a3a9a';Q(2,0,12,1,W_);Q(4,-1,8,1,W_);Q(5,-2,6,1,W_);Q(6,-3
 if(hh==4){Q(4,-1,8,2,'#ffd84a');Q(4,-2,1,1,'#ffd84a');Q(7,-2,2,1,'#ffd84a');Q(11,-2,1,1,'#ffd84a');Q(4,-1,8,1,'#fff0a0');if(!bk)Q(8,0,1,1,'#ff3050')}
 if(hh==5){Q(9,-1,1,3,'#ff5a7a');Q(11,-1,1,3,'#ff5a7a');Q(10,0,1,1,'#c02a4a');Q(9,-1,3,1,'#ff8aa0')}
 if(hh==6){Q(3,-1,10,3,'#3a7acc');Q(3,2,10,1,'#2a5a9a');Q(6,-2,4,1,'#3a7acc');Q(7,-3,2,1,'#fff')}
+if(hh==7){Q(4,-1,8,2,'#e8d8a8');Q(3,1,10,1,'#e8d8a8');Q(4,0,8,1,'#4a7acc')}
+if(hh==8){[[3,0],[4,-1],[11,-1],[12,0],[3,2],[12,2],[5,-1],[10,-1]].forEach(p=>Q(p[0],p[1],1,2,'#5ab04a'));Q(8,-1,1,1,'#e02a40')}
+if(hh==9){Q(6,-4,4,1,'#ffe880');Q(5,-3,1,1,'#ffe880');Q(10,-3,1,1,'#ffe880');Q(6,-2,4,1,'#ffe880');Q(6,-3,4,1,'#fff8c0')}
+if(ts0==15&&F0){Q(5,16,6,1,'#c08a3a');Q(8,17,1,3,'#c08a3a')}
 if(o.mg){Q(tx,13,tw,7,'#9a6a3a');Q(tx+1,12,1,1,'#7a4a2a');Q(tx+tw-2,12,1,1,'#7a4a2a');Q(tx+1,16,3,2,'#d0a050');Q(tx+1,16,3,1,'#f0d080');Q(tx-2,16,2,3,'#d0a030');Q(tx-2,16,2,1,'#fff0a0')}}
 const O=B.slice();for(let j=0;j<H;j++)for(let i=0;i<W;i++)if(!B[j*W+i]&&((i>0&&B[j*W+i-1])||(i<W-1&&B[j*W+i+1])||(j>0&&B[(j-1)*W+i])||(j<H-1&&B[(j+1)*W+i])))O[j*W+i]='#241520';
 const c=document.createElement('canvas');c.width=W*s;c.height=H*s;const x=c.getContext('2d');O.forEach((col,n)=>{if(col){x.fillStyle=col;x.fillRect((n%W)*s,Math.floor(n/W)*s,s,s)}});return c}
@@ -591,7 +596,7 @@ try{const L=k=>JSON.parse(localStorage[k]||'null');db=L('tl_db3')||[];G=L('tl_g'
    write is mirrored into the ACTIVE SLOT, which lives in IndexedDB (a separate database, so there is no practical slot limit; it falls
    back to localStorage if IndexedDB is blocked). Updating index.html never touches slots: they are versioned (GAME_VER), missing keys
    fall back to defaults, and EXPORT saves any slot to a file as a backup. Add new save keys to SLOT_KEYS and they are covered. */
-let CZM=null;const GAME_VER=1,SLOT_KEYS=['tl_db3','tl_g','tl_m','tl_s','tl_p2','tl_u','tl_bd','tl_sb','tl_st','tl_arr','tl_diff','tl_inv','tl_own','tl_pk','tl_mg'];
+let CZM=null;const GAME_VER=1,SLOT_KEYS=['tl_db3','tl_g','tl_m','tl_s','tl_p2','tl_u','tl_bd','tl_sb','tl_st','tl_arr','tl_diff','tl_inv','tl_own','tl_pk','tl_mg','tl_qs','tl_qc'];
 const LIVE={};SLOT_KEYS.forEach(k=>{try{if(localStorage[k]!=null)LIVE[k]=localStorage[k]}catch(e){}});
 let SLOT=null,snapT=0,SDBH=null,SLOT_OK=true;
 const uid=()=>'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -922,7 +927,7 @@ function mxStinger(key,opt){opt=opt||{};if(!MX.ok||!ac||mute)return 0;const T0=S
 function mxSetI(i){if(i==MT.I)return;MT.I=i;const TI=MT.cur;if(!TI)return;const now=MX.c.currentTime;for(const id in TI.gates){TI.gates[id].gain.cancelScheduledValues(now);TI.gates[id].gain.setTargetAtTime(mx_gateOn(TI.T.L[id],i)?1:0,now,.35)}}
 function mxLoop(){if(!MX.ok||!ac)return;const c=MX.c,now=c.currentTime;if(MT.cur)mx_sched(MT.cur,now+.2);MT.old=MT.old.filter(o=>{if(o.stg&&!o.done)mx_sched(o,now+.2);if(now>o.dead){try{o.g.disconnect();(o.lfo||[]).forEach(l=>{try{l.stop()}catch(e){}})}catch(e){}return false}return true})}
 function wantTrk(){const on=id=>$(id)&&$(id).classList.contains('on');if(on('#title'))return'title';if(on('#story'))return window.STK||'story';if(on('#battle'))return battleTrk();if(on('#map'))return HB?'lab':mode=='isle'?'i'+cur:'sea';return'lab'}
-function battleTrk(){if(!F)return'f0';if(F.i<0)return'boss';if(F.secret)return'secret';if(F.boss)return'b'+F.i;return'f'+F.i}
+function battleTrk(){if(!F)return'f0';if(F.mt)return F.mt;if(F.i<0)return'boss';if(F.secret)return'secret';if(F.boss)return'b'+F.i;return'f'+F.i}
 function wantI(){if(!$('#battle').classList.contains('on')||!F||!F.mx)return 0;const r=F.mh/F.mx;let i=0;if(r<.7||hp<55)i=1;if(r<.35||hp<30||(F.p2))i=2;return i}
 let MXT=null,MXW='';
 function mxStart(){if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)()}AUD();if(!MUSG||MUSG.context!==ac){MUSG=ac.createGain();MUSG.connect(MG);if(window.applyMus)applyMus()}mxInit(ac,MUSG);if(ac.state=='suspended')ac.resume();if(!MXT)MXT=setInterval(()=>{if(!MX.ok||!ac)return;try{if(!SET.mus){if(MT.cur){try{MT.cur.g.disconnect()}catch(e){}MT.cur=null;MXW=null}return}const w=wantTrk();if(w!=MXW&&!(MXW=='f'&&0)){const fast=/^(f|b|boss|secret)/.test(w)&&!/^(i|sea)/.test(MXW);MXW=w;mxPlay(w,{fade:fast?.35:1.4})}mxSetI(wantI());mxLoop()}catch(e){console.error('music',e)}},25)}
@@ -1076,7 +1081,7 @@ $('#vol').value=Math.round(VOL*100);
 $('#vol').addEventListener('input',e=>{VOL=e.target.value/100;try{localStorage.tl_vol=VOL}catch(x){}applyVol()});
 $('#mu').onclick=()=>{mute=!mute;applyVol();$('#mu').textContent=mute?'SOUND OFF':'SOUND ON'};
 // ---- story ----
-function story(lines,cb){show('story');let i=0;$('#sp').replaceChildren(hero(6,{hair:'#eeeeee',skin:'#f2c9a0',top:'#7a3fbf',bot:'#3a3f7a',hs:1,fs:1,ts:4,bs:0}));STY&&STY.stop();const go=()=>{const l=lines[i],s=storySpk(l);$('#sp').replaceChildren(heroF(6,s=='Quartermaster Mags'?MAGS:PROF_,0,0));STY=vxType($('#stx'),l,s?voiceOf(s):NARR)};go();$('#snx').onclick=()=>{if(STY&&!STY.done()){STY.skip();return}STY&&STY.stop();beep(520,.05);if(++i>=lines.length)cb();else go()}}
+function story(lines,cb){show('story');let i=0;$('#sp').replaceChildren(hero(6,{hair:'#eeeeee',skin:'#f2c9a0',top:'#7a3fbf',bot:'#3a3f7a',hs:1,fs:1,ts:4,bs:0}));STY&&STY.stop();const go=()=>{const l=lines[i],s=storySpk(l);$('#sp').replaceChildren(portrait(s));STY=vxType($('#stx'),l,s?voiceOf(s):NARR)};go();$('#snx').onclick=()=>{if(STY&&!STY.done()){STY.skip();return}STY&&STY.stop();beep(520,.05);if(++i>=lines.length)cb();else go()}}
 $('#go').onclick=async()=>{await READY;await SLOTS_READY;P.name=$('#nm').value.trim()||'Hero';save('tl_p2',P);if(CZM){czClose(CZM);return}dOpen('new')};
 function czOpen(){const cur=document.querySelector('.s.on'),id=cur&&cur.id;slClose();if(id=='title'||!cur)return;if(id!='map'){return}CZM=id;$('#nm').value=P.name;cz();pv();$('#go').textContent='SAVE CHARACTER >';$('#cxl').style.display='';show('title')}
 function czClose(to){CZM=null;$('#cxl').style.display='none';slStat();show(to||'map')}
@@ -1485,24 +1490,24 @@ GP.sort((a,b)=>a.y-b.y);PCF=[0,1,2].map(d=>[0,1,2,3].map(f=>outl(heroF(1,P_(),f,
 const P_=()=>P;
 const inIsK=(x,y)=>{const u=(x-CX)/AX,v=(y-CY)/AY;return Math.hypot(u,v)<.76*ed(Math.atan2(v,u),cur)};
 const ok=(x,y)=>inIsK(x,y)&&!PD.some(p=>((x-p.x)/(p.rx+3))**2+((y-p.y)/(p.ry+3))**2<1)&&!BL.some(b=>Math.hypot(b[0]-x,(b[1]-y)*1.3)<b[2])&&!(x>BX-54&&x<BX+54&&y>BY-32&&y<BY+10)&&!(Math.abs(x-SX())<40&&y>SY()-12&&y<SY()+4);
-const OB=()=>[...NP.map(n=>({t:'n',x:n.x,y:n.y,n})),{t:'h',x:BX,y:BY+22},...pkActive().map(s=>({t:'k',x:s.x,y:s.y,s})),{t:'b',x:SX(),y:SY()+14},...(secOn()?[{t:'x',x:XX(),y:XY()}]:[])],near=()=>OB().filter(o=>Math.hypot(o.x-pl.x,(o.y-pl.y)*1.2)<34).sort((a,b)=>Math.hypot(a.x-pl.x,a.y-pl.y)-Math.hypot(b.x-pl.x,b.y-pl.y))[0];
+const OB=()=>[...NP.map(n=>({t:'n',x:n.x,y:n.y,n})),{t:'h',x:BX,y:BY+22},...qObjs(),...pkActive().map(s=>({t:'k',x:s.x,y:s.y,s})),{t:'b',x:SX(),y:SY()+14},...(secOn()?[{t:'x',x:XX(),y:XY()}]:[])],near=()=>OB().filter(o=>Math.hypot(o.x-pl.x,(o.y-pl.y)*1.2)<34).sort((a,b)=>Math.hypot(a.x-pl.x,a.y-pl.y)-Math.hypot(b.x-pl.x,b.y-pl.y))[0];
 function isle(t,dt){const o=I[cur],B=BIO[cur],VW=400,VH=230,cx=Math.round(Math.max(0,Math.min(WW-VW,pl.x-VW/2))),cy=Math.round(Math.max(0,Math.min(WH-VH,pl.y-VH/2+10)));
 let mv=0;if(!HB){const dx=(K.ArrowRight||K.d?1:0)-(K.ArrowLeft||K.a?1:0),dy=(K.ArrowDown||K.s?1:0)-(K.ArrowUp||K.w?1:0);mv=dx||dy;if(mv){const m=Math.hypot(dx,dy),sp=96*dt,nx=pl.x+dx/m*sp,ny=pl.y+dy/m*sp;if(ok(nx,pl.y))pl.x=nx;if(ok(pl.x,ny))pl.y=ny;pd=dx&&Math.abs(dx)>=Math.abs(dy)?(dx<0?2:3):(dy<0?1:0);wp+=dt*9;const f=Math.floor(wp)%4;if(f!=ls&&(f&1)){step();DUST.push({x:pl.x,y:pl.y,t:0})}ls=f}else{wp=0;ls=0}}
 waves(t,cx,cy);wl.drawImage(GC,cx,cy,VW,VH,0,0,VW,VH);
 const L=[],vis=(x,y)=>x>cx-60&&x<cx+VW+60&&y>cy-20&&y<cy+VH+130,nr=near();
 GP.forEach(p=>{if(vis(p.x,p.y))L.push([p.y,()=>{const im=p.c,x=Math.round(p.x-cx-im.ax),y=Math.round(p.y-cy-im.ay),sw=p.sw?Math.round(Math.sin(t/800+p.x*.07)*p.sw*.7):0;if(sw&&im.height>20){const h=Math.floor(im.height*.55);wl.drawImage(im,0,0,im.width,h,x+sw,y,im.width,h);wl.drawImage(im,0,h,im.width,im.height-h,x,y+h,im.width,im.height-h)}else wl.drawImage(im,x,y)}])});
 NP.forEach((p,j)=>{if(!vis(p.x,p.y))return;L.push([p.y,()=>{PE(wl,p.x-cx,p.y-cy+1,13,4,'#0000003a');const fr=monIdle(p.cv,t),by=Math.round(p.y-cy-fr.height+4+Math.sin(t/300+j)*0),bx=Math.round(p.x-cx-fr.width/2);wl.drawImage(fr,bx,by);txt(p.s,p.x-cx,p.y-cy+12,nr&&nr.n==p?'#ffd84a':'#fff8e8')}])});
-pkDraw(L,t,cx,cy,vis);L.push([BY+8,()=>drawLab(BX-cx,BY+8-cy,t)]);L.push([SY()+6,()=>drawShrine(SX()-cx,SY()+6-cy,t)]);
+pkDraw(L,t,cx,cy,vis);qDraw(L,t,cx,cy,vis,nr);L.push([BY+8,()=>drawLab(BX-cx,BY+8-cy,t)]);L.push([SY()+6,()=>drawShrine(SX()-cx,SY()+6-cy,t)]);
 if(secOn())L.push([XY(),()=>{const x=XX()-cx,y=XY()-cy;for(let j=0;j<3;j++)for(let a=0;a<14;a++){const an=t/300*(j&1?-1:1)+a*.45;RC(wl,x+Math.cos(an)*(14+j*6),y+Math.sin(an)*(5+j*2),2,2,['#d050ff','#8a3ab0','#e8a0ff'][j])}bmp(wl,ICN.ques,x-2,y-16+Math.round(Math.sin(t/250)*2),'#e8a0ff')}]);
 L.push([pl.y,()=>{const fr=mv?Math.floor(wp)%4:0,im=PCF[pd==3?2:pd][fr],x=Math.round(pl.x-cx),y=Math.round(pl.y-cy);PE(wl,x,y,8,3,'#00000044');wl.save();wl.translate(x,y+1-(fr&1));if(pd==3)wl.scale(-1,1);wl.drawImage(im,-Math.floor(im.width/2),-im.height+1);wl.restore()}]);
 DUST=DUST.filter(d=>(d.t+=dt)<.35);L.push([-1,()=>DUST.forEach(d=>{const a=d.t/.35,r=1+Math.floor(a*3);RC(wl,d.x-cx-r,d.y-cy-Math.floor(a*3),r,r,a<.6?'#ffffffbb':'#ffffff66');RC(wl,d.x-cx+r,d.y-cy-Math.floor(a*2),r,r,a<.6?'#ffffffbb':'#ffffff66')})]);
 L.sort((a,b)=>a[0]-b[0]).forEach(a=>a[1]());
 ambStep(t,dt,cur);const T=dayfx(t);
-let msg='';if(nr)msg=nr.t=='k'?'E: pick up '+(ITM[nr.s.id].t=='coin'?'Coin Pouch':ITM[nr.s.id].n):nr.t=='h'?'E: enter the Lab (shop, teleport, study, sail)':nr.t=='b'?(BD[cur]?'The '+LK[cur].pc+' is safe. The shrine rests.':mast(cur)?'E: challenge '+BN[cur]+'!':'Shrine sealed: '+Math.round(pr(cur)*100)+'% mastered'):nr.t=='x'?'E: ??? A secret presence stirs...':'E: challenge '+nr.n.s+' - L'+(nr.n.rk+1)+' '+LYN[nr.n.rk];else if(TOAST&&(TOAST.t-=dt)>0)msg=TOAST.m;
+let msg='';if(nr)msg=nr.t=='q'?'E: talk to '+QN[nr.n].nm:nr.t=='s'?nr.s.msg:nr.t=='k'?'E: pick up '+(ITM[nr.s.id].t=='coin'?'Coin Pouch':ITM[nr.s.id].n):nr.t=='h'?'E: enter the Lab (shop, teleport, study, sail)':nr.t=='b'?(BD[cur]?'The '+LK[cur].pc+' is safe. The shrine rests.':mast(cur)?'E: challenge '+BN[cur]+'!':'Shrine sealed: '+Math.round(pr(cur)*100)+'% mastered'):nr.t=='x'?'E: ??? A secret presence stirs...':'E: challenge '+nr.n.s+' - L'+(nr.n.rk+1)+' '+LYN[nr.n.rk];else if(TOAST&&(TOAST.t-=dt)>0)msg=TOAST.m;
 if(msg)plate(msg)}
-function trigger(o){if(!o||HB)return;beep(660,.08);if(o.t=='h')labChoice();else if(o.t=='k')pickUp(o.s);else if(o.t=='b'){if(BD[cur])say(LK[cur].done);else if(!mast(cur)&&!ADM())say(LK[cur].sealed+' ('+Math.round(pr(cur)*100)+'%)');else bossIntro(cur,()=>fight(cur,'*',2,BN[cur]))}else if(o.t=='x')story([SEC[cur]+' steps out of the shadows!',SECRET_LORE[SEC[cur]]||'A leftover draft of the Inquisitor\'s plan.'],()=>fight(cur,'*',2,SEC[cur],1));else fight(cur,o.n.s,o.n.b)}
+function trigger(o){if(!o||HB)return;beep(660,.08);if(o.t=='h')labChoice();else if(o.t=='k')pickUp(o.s);else if(o.t=='q')npcTalk(o.n);else if(o.t=='s')siteAct(o.s);else if(o.t=='b'){if(BD[cur])say(LK[cur].done);else if(!mast(cur)&&!ADM())say(LK[cur].sealed+' ('+Math.round(pr(cur)*100)+'%)');else bossIntro(cur,()=>fight(cur,'*',2,BN[cur]))}else if(o.t=='x')story([SEC[cur]+' steps out of the shadows!',SECRET_LORE[SEC[cur]]||'A leftover draft of the Inquisitor\'s plan.'],()=>fight(cur,'*',2,SEC[cur],1));else fight(cur,o.n.s,o.n.b)}
 const ADM=()=>{try{return btoa(P.name||'')==='Tm9vYkF0RXZlcnl0aGluZw=='}catch(e){return false}},GMK=[0,0,0,0,'thorn','leech','leech','leech',0,'thorn',0,0];
-function seaAct(){const k=nearIsle();if(k<0){if(bc()>=12&&Math.hypot(235-bt.x,107-bt.y)<28)story([GI.shrine[0],FILL(GI.shrine[1]),'The Grand Inquisitor: "'+GI.intro+'"','The Grand Inquisitor: "'+GI.motive+'"'],()=>fight(-1,'*',2,'The Grand Inquisitor'));return}
+function seaAct(){const k=nearIsle();if(k<0){if(bc()>=12&&Math.hypot(235-bt.x,107-bt.y)<28)story([GI.shrine[0],FILL(GI.shrine[1]),'The Grand Inquisitor: "'+GI.intro+'"','The Grand Inquisitor: "'+GI.motive+'"',...giExtra().map(FILL)],()=>fight(-1,'*',2,'The Grand Inquisitor'));return}
 if(!U.length){U=[k];save('tl_u',U)}else if(!U.includes(k)){if(fuel()>0){U.push(k);save('tl_u',U);seq([392,523,659,784],'triangle')}else{beep(150,.2,'sawtooth');return}}beep(660,.08);sail(k)}
 const act=()=>mode=='isle'?trigger(near()):seaAct();
 setInterval(()=>{if(!ac||mute||!SET.amb||!$('#map').classList.contains('on'))return;const n=tint(performance.now()).n,t=ac.currentTime,sa=mode=='sea';ns(t,.9,sa?.022:.012);
@@ -1599,8 +1604,8 @@ hd('ADMIN: every enemy');I.forEach((o,k)=>subs(k).forEach(s=>mb(E(s),()=>fight(k
 $('#sbk').onclick=()=>{mode='sea';hud()};
 document.querySelectorAll('#dp [data-k],#dp2 [data-k]').forEach(b=>{b.onpointerdown=e=>{e.preventDefault();K[b.dataset.k]=1};b.onpointerup=b.onpointerleave=()=>K[b.dataset.k]=0});$('#eb').onclick=act;
 // ---- battle ----
-async function fight(i,sub,b,bn,sec){if(i<0)await Promise.all(Object.keys(IDX).filter(k=>IDX[k].n>=100).sort(()=>Math.random()-.5).slice(0,12).map(k=>loadSub(...k.split('|'))));else if(bn)await Promise.all(subs(i).map(sb=>loadSub(I[i].n,sb)));else await loadSub(I[i].n,sub);
-const rk=(i<0||bn)?5:ADRK>=0&&ADM()?ADRK:RK(sub);F={i,sub,b,rk,mx:i<0?520:bn?300:40+rk*20,ed:i<0?15:6+rk*2,boss:!!bn,secret:sec,nm:bn||rnd(I[i].mn)+' '+rnd(['Sage','Wraith','Imp','Golem']),last:'',gm:i<0?'thorn':GMK[i]};F.mh=F.mx;hp=100;BFreset();trk=i<0?'boss':bn?'b'+i:'f'+i+'_'+(hsh(sub)%4);
+async function fight(i,sub,b,bn,sec,qo){if(i<0)await Promise.all(Object.keys(IDX).filter(k=>IDX[k].n>=100).sort(()=>Math.random()-.5).slice(0,12).map(k=>loadSub(...k.split('|'))));else if(bn)await Promise.all(subs(i).map(sb=>loadSub(I[i].n,sb)));else await loadSub(I[i].n,sub);
+const rk=(i<0||bn)?5:ADRK>=0&&ADM()?ADRK:RK(sub);F={i,sub,b,rk,mx:i<0?420:bn?240:36+rk*16,ed:i<0?15:6+rk*2,boss:!!bn,secret:sec,nm:bn||rnd(I[i].mn)+' '+rnd(['Sage','Wraith','Imp','Golem']),last:'',gm:i<0?'thorn':GMK[i]};F.mh=F.mx;if(qo){F.mx=F.mh=qo.mx;F.mt=qo.mt;F.qe=qo.id}hp=100;BFreset();trk=i<0?'boss':bn?'b'+i:'f'+i+'_'+(hsh(sub)%4);
 $('#mon').replaceChildren(mon(i,b,rk,sub,msc(bn?(i<0?7:6):6),bn));stageBG(i);$('#hs').replaceChildren(hero(4));
 $('#mn').innerHTML=`${E(F.nm)} <small>${bn?(i<0?'FINAL BOSS | all categories':(sec?'SECRET BOSS':'BOSS')+' | '+E(I[i].n)):E(sub)+' | L'+(rk+1)+' '+LYN[rk]+' ('+dLbl(rk)+')'}</small>`;$('#pn').innerHTML=`<span class="pnp" style="--ec:${P.top}">${E(P.name)}</span>`;bars();show('battle');q()}
 const bars=()=>{const h=$('#hpt');if(h)h.textContent=Math.max(0,hp)+'/100 HP';$('#mh').style.width=Math.max(0,F.mh/F.mx*100)+'%';$('#ph').style.width=Math.max(0,hp/100*100)+'%';const pb=$('#ph');if(pb){pb.classList.toggle('low',hp<=30);if(hp<LH){pb.classList.add('hit');setTimeout(()=>pb.classList.remove('hit'),160)}}LH=hp;bfRender()};
@@ -1658,12 +1663,12 @@ function ansClock(t){$('#tm').textContent=t;clearInterval(tt);tt=setInterval(()=
 function ask(){state='ans';$('#bz').style.display='none';$('#af').style.display='';$('#ai').value='';$('#ai').focus();ansClock(Math.max(4,10+(BF.time[1]>0?BF.time[0]:0)))}
 function miss(){if(!M.some(m=>m.q==d.q)){M.push({q:d.q,a:d.a,l:d.l,c:F.i<0?'Mixed':I[F.i].n,s:F.i<0?'Mixed':F.boss?'Boss':F.sub,src:d.src});if(M.length>250)M.shift();save('tl_m',M)}}
 function learn(msg,ok){$('#lr').innerHTML=msg+`<p>Answer: <span class="y">${E(d.a)}</span></p><small>${E(d.l)}</small>`+(ok&&!power?'<p><small>Tip: buzz before the (*) mark to score POWER.</small></p>':'')+`<details><summary>Study the full tossup</summary><small>${E(d.q.replace('(*)','[POWER]'))}</small></details>`;
-$('#af').style.display='none';$('#bz').style.display='none';$('#nx').style.display='';$('#nx').textContent=F.mh<=0?(F.grp?'DOWN!':'CAPTURE!'):RS=='ok'?'NEXT':'DODGE!'}
+$('#af').style.display='none';$('#bz').style.display='none';$('#nx').style.display='';$('#nx').textContent=F.mh<=0?(F.grp?'DOWN!':'CAPTURE!'):'DODGE!'}
 let TU=0;function submit(){if(state!='ans')return;const tu=TU;TU=0;const v=$('#ai').value.trim(),jr=judge(v,d.K);
 if(jr=='prompt'&&!tu&&!d.pr){d.pr=1;clearInterval(tt);beep(600,.08,'triangle');$('#lr').innerHTML='<p class="y">PROMPT: be more specific!</p><small>You are on the right track. Try again (8 seconds).</small>';$('#ai').value='';$('#ai').focus();ansClock(8);return}
 clearInterval(tt);state='res';const ok=jr=='ok';let msg;
-if(ok){bzUp();if(!IM)fireLines(power);let dm=power?15:10;if(IM)dm=0;else{dm+=BF.atk[1]>0?BF.atk[0]:0;if(BF.mult>0){dm*=2;BF.mult--}if(BF.atk[1]>0)BF.atk[1]--;if(BF.steal[1]>0){hp=Math.min(100,hp+BF.steal[0]);BF.steal[1]--}}F.mh=Math.max(0,F.mh-dm);RS='ok';M=M.filter(m=>m.q!=d.q);save('tl_m',M);try{SFX.good(power)}catch(e){seq([523,659,784],'square')}if(!IM){$('#mon').classList.add('hit');(F.grp&&F.cm&&F.cm.cv?F.cm.cv:$('#mon').firstChild).dataset.st='hurt';setTimeout(()=>{const e=(F.grp&&F.cm&&F.cm.cv?F.cm.cv:$('#mon').firstChild);if(e)e.dataset.st=''},700)}msg=IM?`<p class="g">${power?'POWER! ':''}Correct! Your bag opens${power?' (POWER: use two items!)':''}.</p>`:`<p class="g">${power?'POWER! ':''}Correct! ${E(F.nm)} takes ${dm}!</p>`}
-else if(early){RS='neg';bzGrey();miss();let ngd=F.nm=='Neg-a-tron'?15:F.gm=='thorn'?10:5,fg='';if(BF.forg>0){BF.forg--;ngd=0;fg=' (Forgiven!)'}hp-=ngd;if(F.gm=='leech')F.mh=Math.min(F.mx,F.mh+5);try{SFX.neg()}catch(e){seq([196,147],'sawtooth')}msg=`<p class="b">NEG!${fg} ${v?'Wrong: '+E(v):'No answer.'} You lose ${ngd} HP${F.gm=='leech'?' and it heals 5':''}, then ${E(F.nm)} attacks! Saved to your Study Hut.</p>`}
+if(ok){bzUp();if(!IM)fireLines(power);let dm=power?22:14;if(IM)dm=0;else{dm+=BF.atk[1]>0?BF.atk[0]:0;if(BF.mult>0){dm*=2;BF.mult--}if(BF.atk[1]>0)BF.atk[1]--;if(BF.steal[1]>0){hp=Math.min(100,hp+BF.steal[0]);BF.steal[1]--}}F.mh=Math.max(0,F.mh-dm);RS='ok';qAns(power);M=M.filter(m=>m.q!=d.q);save('tl_m',M);try{SFX.good(power)}catch(e){seq([523,659,784],'square')}if(!IM){$('#mon').classList.add('hit');(F.grp&&F.cm&&F.cm.cv?F.cm.cv:$('#mon').firstChild).dataset.st='hurt';setTimeout(()=>{const e=(F.grp&&F.cm&&F.cm.cv?F.cm.cv:$('#mon').firstChild);if(e)e.dataset.st=''},700)}msg=IM?`<p class="g">${power?'POWER! ':''}Correct! Your bag opens${power?' (POWER: use two items!)':''}.</p>`:`<p class="g">${power?'POWER! ':''}Correct! ${E(F.nm)} takes ${dm}!</p>`}
+else if(early){RS='neg';bzGrey();miss();let ngd=F.nm=='Neg-a-tron'?15:F.gm=='thorn'?10:5,fg='';if(BF.forg>0){BF.forg--;ngd=0;fg=' (Forgiven!)'}if(ngd>0)F.hits=(F.hits||0)+1;hp-=ngd;if(F.gm=='leech')F.mh=Math.min(F.mx,F.mh+5);try{SFX.neg()}catch(e){seq([196,147],'sawtooth')}msg=`<p class="b">NEG!${fg} ${v?'Wrong: '+E(v):'No answer.'} You lose ${ngd} HP${F.gm=='leech'?' and it heals 5':''}, then ${E(F.nm)} attacks! Saved to your Study Hut.</p>`}
 else{RS='dead';bzGrey();miss();try{SFX.neg()}catch(e){seq([196,147],'sawtooth')}msg=`<p class="b">DEAD (0). ${v?'Wrong: '+E(v):'Time up!'} ${E(F.nm)} attacks! Saved to your Study Hut.</p>`}
 setTimeout(()=>$('#mon').classList.remove('hit'),400);bfAfterQ();bars();learn(msg,ok);if(ok&&IM)invOpen(power?2:1)}
 const ar=$('#ar'),ag=ar.getContext('2d');/* NO-TEXT RULE: all arena text is disabled on purpose. ONLY EXCEPTION: Word Storm (FR.wordstorm), which draws the question's own words via ARENA_TEXT. Do not use ARENA_TEXT in any other attack. */const ARENA_TEXT=ag.fillText.bind(ag);ag.fillText=ag.strokeText=()=>{},LB={rain:'CLUE RAIN!',aim:'AIMED CLUE!',ring:'ANSWER RING!',spiral:'SPIRAL OF DOUBT!',sweep:'SWEEPING WALL!',curtain:'CURTAIN FALL!',beam:'f(x) BEAM!',zone:'INTEGRAL ZONE!',orbit:'ORBITING CLUES!',bounce:'BOUNCING FACTS!',homing:'SEEKING DOUBT!',cross:'CROSS LASERS!',snake:'SERPENT WAVE!'};
@@ -2667,8 +2672,8 @@ const g=cv.getContext('2d');g.imageSmoothingEnabled=false;let x=(r.left+A.x*r.wi
 try{g.drawImage(HD,Math.round(x-9),Math.round(y-6))}catch(e){}
 if(y<cv.height+14){requestAnimationFrame(f);return}
 AT=null;K={};ar.style.display='none';document.body.classList.remove('inarena');$('#dp2').style.display='none';$('#qb').style.display='';bars();hp=100;back();if(mode=='isle')pl={x:BX,y:BY+50};$('#hint').textContent=faintMsg();ov.style.opacity=0;setTimeout(()=>ov.remove(),600)})(t0)}
-function hit(A,v){if(A.fin||A.dying)return;v=bfHit(A,v);if(v<0)return;hp-=v;bars();A.iv=BF.spd>0?1.6:1;A.fl=.25;A.hk=.25;BURST(A.x,A.y,['#ff4060','#ffffff','#ffb0b8'],10,90,.4,2);RINGFX(A.x,A.y,'#ff4060',30,.3);ar.style.transform=!SET.shake?'':'translate('+((Math.random()-.5)*16)+'px,'+((Math.random()-.5)*16)+'px)';setTimeout(()=>ar.style.transform='',90);if(!mute&&ac){try{if(window.SFX&&typeof SFX.hurt=='function')SFX.hurt(v);else{beep(110,.2,'sawtooth',.08);ns(ac.currentTime,.12,.06)}}catch(e){}}bars();$('#me').classList.add('hit');setTimeout(()=>$('#me').classList.remove('hit'),300)}
-function tick(now){const A=AT;if(!A)return;requestAnimationFrame(tick);const dt=Math.min(.05,(now-A.l)/1000),dg=dt*A.ts;A.l=now;A.t+=dg;A.iv-=dt;A.fl-=dt;A.hk=(A.hk||0)-dt;const rk=A.rk,v=A.v,dm=Math.max(6,(F.i<0?34:Math.round(7+rk*2.6))+(F.boss&&F.i>=0?10:0)+A.dmx);A.dm=dm;
+function hit(A,v){if(A.fin||A.dying)return;v=bfHit(A,v);if(v<0)return;F.hits=(F.hits||0)+1;hp-=v;bars();A.iv=BF.spd>0?1.6:1;A.fl=.25;A.hk=.25;BURST(A.x,A.y,['#ff4060','#ffffff','#ffb0b8'],10,90,.4,2);RINGFX(A.x,A.y,'#ff4060',30,.3);ar.style.transform=!SET.shake?'':'translate('+((Math.random()-.5)*16)+'px,'+((Math.random()-.5)*16)+'px)';setTimeout(()=>ar.style.transform='',90);if(!mute&&ac){try{if(window.SFX&&typeof SFX.hurt=='function')SFX.hurt(v);else{beep(110,.2,'sawtooth',.08);ns(ac.currentTime,.12,.06)}}catch(e){}}bars();$('#me').classList.add('hit');setTimeout(()=>$('#me').classList.remove('hit'),300)}
+function tick(now){const A=AT;if(!A)return;requestAnimationFrame(tick);const dt=Math.min(.05,(now-A.l)/1000),dg=dt*A.ts;A.l=now;A.t+=dg;A.iv-=dt;A.fl-=dt;A.hk=(A.hk||0)-dt;const rk=A.rk,v=A.v,dm=Math.max(5,Math.round(((F.i<0?34:Math.round(7+rk*2.6))+(F.boss&&F.i>=0?10:0)+A.dmx)*.85));A.dm=dm;
 let dx=(K.ArrowRight||K.d?1:0)-(K.ArrowLeft||K.a?1:0),dy=(K.ArrowDown||K.s?1:0)-(K.ArrowUp||K.w?1:0);A.mv=!!(dx||dy);if(A.inv){dx=-dx;dy=-dy}const m=Math.hypot(dx,dy)||1,sp=(K.Shift?85:175)*(A.slow?.45:1),ox=A.x,oy=A.y;
 A.x=cl(A.x+dx/m*sp*dt,10,390);A.y=cl(A.y+dy/m*sp*dt,10,190);A.vx=(A.vx||0)*.6+(A.x-ox)/Math.max(dt,.001)*.4;A.vy=(A.vy||0)*.6+(A.y-oy)/Math.max(dt,.001)*.4;
 if(dx||dy){A.tr.push({x:A.x,y:A.y,a:.35});if(A.tr.length>5)A.tr.shift()}A.tr.forEach(q=>q.a-=dt);
@@ -2759,8 +2764,8 @@ const o=document.createElement('canvas');o.width=_icc[key].width;o.height=_icc[k
 /* ---- item data. t: food/tool/rare/coin. src: shop (buyable) / find (found on isles) / drop (enemy drop only) / boss (boss drop only). fx keys drive the buff engine. ---- */
 const ITM={};
 const mk_=(id,n,t,ic,heal,fx,d,buy,src,w)=>{ITM[id]={id,n,t,ic,heal:heal||0,fx:fx||{},d,buy:buy||0,src,w:w||1}};
-mk_('apple','Apple Slice','food',['apple','#e8403a'],8,0,'Crisp and honest.',10,'shop');
-mk_('pizza','Cafeteria Pizza','food',['pizza','#ffb02e','#e0602a'],22,0,'Lukewarm. Still the best thing in the building.',30,'shop');
+mk_('apple','Apple Slice','food',['apple','#e8403a'],10,0,'Crisp and honest.',10,'shop');
+mk_('pizza','Cafeteria Pizza','food',['pizza','#ffb02e','#e0602a'],26,0,'Lukewarm. Still the best thing in the building.',30,'shop');
 mk_('pretzel','Power Pretzel','food',['pretzel','#c98a3a'],10,{atk:[3,3]},'Salt-crusted strength.',35,'shop');
 mk_('jam','Brain Berry Jam','food',['jar','#8a3ab0'],6,{time:[4,3]},'Tastes like extra thinking time.',28,'shop');
 mk_('ramen','Spicy Ramen','food',['cup','#e0502a','#ffd84a'],14,{atk:[5,2]},'Your eyes water. Your attacks hit harder.',45,'shop');
@@ -2770,13 +2775,13 @@ mk_('tea','Mint Tea','food',['bottle','#5ad0a0'],4,{regen:[5,4]},'Warm and calmi
 mk_('toast','Honey Toast','food',['bread','#e8b04a'],10,{pw:[3,3]},'Sweet focus: a longer POWER window for 3 questions.',38,'shop');
 mk_('gelato','Gelato','food',['cone','#ffb0d0','#e07aa0'],28,{time:[-3,1]},'Huge heal, but brain freeze: 3s less on the next answer.',40,'shop');
 mk_('soda','Sparkling Soda','food',['bottle','#4fd0ff'],4,{spd:3},'Fizzy reflexes: longer safety after hits for 3 attacks.',30,'shop');
-mk_('stale','Stale Bread','food',['bread','#b08a5a'],6,0,'It has seen things.',0,'drop');
-mk_('noodle','Noodle Cup','food',['cup','#e8d060','#c0402a'],9,0,'Left behind by a hungry monster.',0,'drop');
-mk_('cheese','Cheese Wheel','food',['cheese'],15,0,'Found in the open. Smells like victory.',0,'find');
-mk_('mooncake','Moon Cake','food',['cake','#d8a050','#f4e0a0'],18,0,'Imprinted with a tiny owl.',0,'find');
+mk_('stale','Stale Bread','food',['bread','#b08a5a'],8,0,'It has seen things.',0,'drop');
+mk_('noodle','Noodle Cup','food',['cup','#e8d060','#c0402a'],11,0,'Left behind by a hungry monster.',0,'drop');
+mk_('cheese','Cheese Wheel','food',['cheese'],18,0,'Found in the open. Smells like victory.',0,'find');
+mk_('mooncake','Moon Cake','food',['cake','#d8a050','#f4e0a0'],22,0,'Imprinted with a tiny owl.',0,'find');
 mk_('berries','Wild Berries','food',['berry','#a03a8a'],5,0,'Growing wild. Probably safe.',0,'find');
 mk_('honeycomb','Honeycomb','food',['honey','#ffc030'],7,{shield:1},'Sticky! Blocks the next hit.',0,'find');
-mk_('feast','Feast Platter','food',['feast','#e0a050','#a05a2a'],60,0,'A whole feast. Rare drop.',0,'drop');
+mk_('feast','Feast Platter','food',['feast','#e0a050','#a05a2a'],70,0,'A whole feast. Rare drop.',0,'drop');
 mk_('golden','Golden Apple','food',['apple','#ffd84a','#d0a020'],0,{full:1},'Restores ALL HP. Rare drop.',0,'drop');
 mk_('chili','Dragon Pepper','food',['pepper','#e02a2a'],8,{atk:[8,1]},'One monstrous bite: +8 damage on the next hit.',0,'drop');
 mk_('apron','Dirty Apron','tool',['apron','#9a8a6a','#6a5a3a'],3,0,'Smells like chalk dust. Heals a tiny bit.',0,'find');
@@ -2796,6 +2801,8 @@ mk_('quill','Ancient Quill','rare',['feather','#c0a0ff','#7a5ac0'],0,{atk:[10,3]
 mk_('spare','Quentin\'s Spare Buzzer','rare',['buzz','#4fd0ff'],0,{pw:[8,3]},'A huge POWER window for 3 questions. Rare drop.',0,'drop');
 mk_('bandage','Titan\'s Bandage','rare',['bandage'],45,{shield:2},'Heals 45 and blocks the next 2 hits. Rare drop.',0,'drop');
 mk_('void','Void Lozenge','rare',['loz','#6a2ab0','#c080ff'],0,{shield:2,red:[.5,2]},'Boss drop only. Blocks 2 hits, then halves damage for 2 attacks.',0,'boss');
+mk_('locket','Chorister\'s Locket','rare',['badge','#ffd84a','#c09020'],0,{shield:1,regen:[4,4]},'A keepsake from a rescued Voice. Blocks a hit and heals over time. Quest reward.',0,'quest');
+mk_('page','Torn Page','coin',['note','#fff8e8','#7a6a8a'],0,0,'',0,'quest');
 mk_('pouch','Coin Pouch','coin',['pouch','#c98a3a'],0,0,'Coins!',0,'find');
 const FOUND=['apple','berries','cheese','mooncake','honeycomb','apron','apron','pencil','sticky','stale','noodle','pouch','pouch','pouch','pretzel','cookie'],DROPC=['stale','noodle','sticky','apple','berries','cookie','pencil','apron'],DROPR=['feast','golden','phoenix','quill','spare','bandage','chili'],DROPB=['void','phoenix','quill','spare','bandage','golden'];
 function fxText(it){const f=it.fx||{},a=[];if(it.heal)a.push('Heal '+it.heal);if(f.full)a.push('Full heal');if(f.atk)a.push('+'+f.atk[0]+' dmg x'+f.atk[1]);if(f.mult)a.push('Next hit x2');if(f.shield)a.push('Block '+f.shield+' hit'+(f.shield>1?'s':''));if(f.red)a.push('-'+Math.round(f.red[0]*100)+'% dmg x'+f.red[1]);if(f.time)a.push((f.time[0]>0?'+':'')+f.time[0]+'s answer x'+f.time[1]);if(f.forg)a.push('Forgive '+f.forg+' neg');if(f.regen)a.push('+'+f.regen[0]+' HP/question x'+f.regen[1]);if(f.pw)a.push('+'+f.pw[0]+' power words x'+f.pw[1]);if(f.steal)a.push('+'+f.steal[0]+' HP per hit x'+f.steal[1]);if(f.spd)a.push('Safer dodging x'+f.spd);if(f.smoke)a.push('Skip an attack');if(f.slow)a.push('Slow attacks x'+f.slow);if(f.hint)a.push('Answer hint');if(it.pas)a.push('Auto-revive');return a.join(' | ')}
@@ -2822,30 +2829,35 @@ function bfAfterQ(){if(BF.time[1]>0)BF.time[1]--;if(BF.pw[1]>0)BF.pw[1]--;if(BF.
 function bannerShow(lines,ids){let b=$('#bnr');if(!b){b=document.createElement('div');b.id='bnr';document.body.append(b)}b.innerHTML='';(ids||[]).forEach(id=>{const it=ITM[id];if(it)b.append(iconCv(it,4))});const t=document.createElement('div');t.innerHTML=lines.join('<br>');b.append(t);b.classList.remove('off');b.style.display='flex';clearTimeout(bannerShow.t);bannerShow.t=setTimeout(()=>{b.classList.add('off');setTimeout(()=>{b.style.display='none'},400)},4200)}
 /* ---- ACTION MENU: ATTACK WITH BUZZER / ITEM / FLEE (shown before every tossup) ---- */
 function q(){if(F.grp&&!selWho())return;menu()}
-function menuBtns(){const n=bagCount(),A=[['atk','ATTACK WITH BUZZER','Buzz in. Right answers hurt it.','buzz','#e02a40'],['item','ITEM'+(n?' ('+n+')':''),n?'Answer right, then open your bag.':'Your bag is empty.','bag','#c98a3a'],['flee','FLEE','Run away. No tossup is read.','boot','#8a7a6a']];return A}
+function menuBtns(){const n=bagCount(),A=[['atk','ATTACK WITH BUZZER','Buzz in. Right answers hurt it.','buzz','#e02a40'],['item','ITEM'+(n?' ('+n+')':''),n?'Use an item (takes your turn).':'Your bag is empty.','bag','#c98a3a'],['flee','FLEE','Run away. No tossup is read.','boot','#8a7a6a']];return A}
 function menu(){state='menu';$('#bzc').style.display='none';clearInterval(timer);clearInterval(tt);IM=0;drawBz(0);$('#qt').textContent='';$('#qt').style.display='';$('#qi').style.display='';$('#lr').innerHTML='';$('#af').style.display='none';$('#nx').style.display='none';$('#bz').style.display='none';$('#inv').style.display='none';
 $('#qi').textContent=F.nm+(F.boss?' stands before you.':' blocks the way.')+' What will you do?';const am=$('#am');am.style.display='flex';am.innerHTML='';
 menuBtns().forEach((b,i)=>{const d=document.createElement('div');d.className='amb'+(i==AMI?' on':'')+(b[0]=='item'&&!bagCount()?' dis':'');d.style.setProperty('--ac',b[4]);d.append(iconCv({ic:[b[3],b[4]]},5));d.insertAdjacentHTML('beforeend','<b>'+b[1]+'</b><small>'+b[2]+'</small><i>'+(i+1)+'</i>');d.onclick=()=>{AMI=i;menuPick(b[0])};d.onmouseenter=()=>{AMI=i;am.querySelectorAll('.amb').forEach((x,j)=>x.classList.toggle('on',j==i))};am.append(d)})}
 function menuPick(k){if(state!='menu')return;if(k=='flee'){clearInterval(timer);clearInterval(tt);state='res';$('#am').style.display='none';try{seq([440,330,247,196],'square')}catch(e){}say('You got away safely!');back();return}
 if(k=='item'&&!bagCount()){ISFX.no();$('#qi').textContent='Your bag is empty! Find or buy some items first.';return}
-$('#am').style.display='none';IM=k=='item'?1:0;q0()}
+$('#am').style.display='none';IM=0;if(k=='item'){invOpen();return}q0()}
 document.addEventListener('keydown',e=>{if(!$('#battle').classList.contains('on'))return;const k=e.key.length>1?e.key:e.key.toLowerCase();
 if(state=='menu'){const l=['atk','item','flee'];if(k=='ArrowLeft'||k=='ArrowUp'||k=='ArrowRight'||k=='ArrowDown'){e.preventDefault();AMI=(AMI+(k=='ArrowLeft'||k=='ArrowUp'?2:1))%3;ISFX.sel();$('#am').querySelectorAll('.amb').forEach((x,j)=>x.classList.toggle('on',j==AMI))}
 else if(k=='1'||k=='2'||k=='3'){e.preventDefault();AMI=k-1;menuPick(l[AMI])}else if((k=='e'||k=='Enter'||k=='z'||k==' ')&&!e.repeat){e.preventDefault();menuPick(l[AMI])}}
-else if(state=='inv'){const L=invList();if(k=='ArrowLeft'||k=='ArrowUp'||k=='ArrowRight'||k=='ArrowDown'){e.preventDefault();if(L.length){INVSEL=(INVSEL+(k=='ArrowLeft'||k=='ArrowUp'?L.length-1:1))%L.length;ISFX.sel();invDraw()}}else if((k=='e'||k=='Enter')&&!e.repeat){e.preventDefault();invUse()}}});
-/* ---- INVENTORY after a correct answer in ITEM mode ---- */
-const invList=()=>Object.keys(IV().it).filter(k=>ITM[k]&&IV().it[k]>0).sort((a,b)=>(ITM[a].t>ITM[b].t?1:-1));
-function invOpen(uses){state='inv';$('#bzc').style.display='none';INVLEFT=uses;INVSEL=0;$('#nx').textContent='SKIP';$('#inv').style.display='block';invDraw()}
-function invDraw(msg){const L=invList(),el=$('#inv');if(INVSEL>=L.length)INVSEL=Math.max(0,L.length-1);let h='<div class="invh"><b>YOUR BAG</b><span>Uses left: '+INVLEFT+'</span></div><div class="invg">';
-L.forEach((k,i)=>{const it=ITM[k];h+='<div class="invc'+(i==INVSEL?' on':'')+(it.pas?' dis':'')+'" data-i="'+i+'"><span class="ico" data-k="'+k+'"></span><b>'+E(it.n)+'</b><i>x'+IV().it[k]+'</i></div>'});
+else if(state=='inv'){const L=invList();if(INVUSED){if(k=='e'||k=='Enter'||k=='z'||k==' '){e.preventDefault();if(!e.repeat)$('#nx').click()}return}
+if(k=='ArrowLeft'||k=='ArrowUp'||k=='a'||k=='w'){e.preventDefault();if(L.length){INVSEL=(INVSEL+L.length-1)%L.length;ISFX.sel();invDraw()}}else if(k=='ArrowRight'||k=='ArrowDown'||k=='d'||k=='s'){e.preventDefault();if(L.length){INVSEL=(INVSEL+1)%L.length;ISFX.sel();invDraw()}}else if((k=='e'||k=='Enter'||k=='z')&&!e.repeat){e.preventDefault();invUse()}else if(k=='Escape'||k=='Backspace'||k=='x'){e.preventDefault();invBack()}}});
+/* ---- ITEM turn (Undertale style): pick ITEM, choose with arrows, E to use. Using an item is your whole turn, then the enemy attacks. ---- */
+let INVUSED=0;
+const invList=()=>Object.keys(IV().it).filter(k=>ITM[k]&&IV().it[k]>0).sort((a,b)=>(ITM[a].t>ITM[b].t?1:ITM[a].t<ITM[b].t?-1:0));
+function invOpen(){state='inv';INVLEFT=1;INVUSED=0;INVSEL=0;$('#bzc').style.display='none';$('#qt').textContent='';$('#lr').innerHTML='';$('#qi').textContent='ITEM: arrows to choose, E to use. Using an item is your whole turn: the enemy attacks afterward.';$('#nx').style.display='none';$('#inv').style.display='block';invDraw()}
+function invDraw(msg){const L=invList(),el=$('#inv');if(INVSEL>=L.length)INVSEL=Math.max(0,L.length-1);let h='<div class="invh"><b>YOUR BAG</b><span>'+(INVUSED?'Item used':'Pick one item')+'</span></div>';
+if(!INVUSED){h+='<div class="invg">';L.forEach((k,i)=>{const it=ITM[k];h+='<div class="invc'+(i==INVSEL?' on':'')+(it.pas?' dis':'')+'" data-i="'+i+'"><span class="ico" data-k="'+k+'"></span><b>'+E(it.n)+'</b><i>x'+IV().it[k]+'</i></div>'});
 if(!L.length)h+='<p><small>The bag is empty.</small></p>';h+='</div>';const s=ITM[L[INVSEL]];
-h+='<div class="invd">'+(msg?'<p class="g">'+msg+'</p>':s?'<p><b>'+E(s.n)+'</b><br><small>'+E(s.d)+'</small><br><span class="y">'+fxText(s)+'</span></p>':'')+'</div><div class="invb"><button id="iuse" class="big"'+(s&&!s.pas&&INVLEFT>0?'':' disabled')+'>USE (E)</button></div>';
-el.innerHTML=h;el.querySelectorAll('.ico').forEach(x=>x.append(iconCv(ITM[x.dataset.k],3)));el.querySelectorAll('.invc').forEach(x=>{x.onclick=()=>{INVSEL=+x.dataset.i;ISFX.sel();invDraw()}});const u=$('#iuse');if(u)u.onclick=invUse}
-function invUse(){if(state!='inv'||INVLEFT<=0)return;const L=invList(),id=L[INVSEL],it=ITM[id];if(!it||it.pas){ISFX.no();return}
+h+='<div class="invd">'+(s?'<p><b>'+E(s.n)+'</b><br><small>'+E(s.d)+'</small><br><span class="y">'+fxText(s)+'</span></p>':'')+'</div><div class="invb"><button id="iuse" class="big"'+(s&&!s.pas?'':' disabled')+'>USE (E)</button><button id="iback" class="alt">BACK (Esc)</button></div>'}
+else h+='<div class="invd"><p class="g">'+msg+'</p></div>';
+el.innerHTML=h;el.querySelectorAll('.ico').forEach(x=>x.append(iconCv(ITM[x.dataset.k],3)));el.querySelectorAll('.invc').forEach(x=>{x.onclick=()=>{INVSEL=+x.dataset.i;ISFX.sel();invDraw()};x.ondblclick=()=>{INVSEL=+x.dataset.i;invUse()}});const u=$('#iuse');if(u)u.onclick=invUse;const bk=$('#iback');if(bk)bk.onclick=invBack}
+function invBack(){if(state!='inv'||INVUSED)return;$('#inv').style.display='none';menu()}
+function invUse(){if(state!='inv'||INVUSED)return;const L=invList(),id=L[INVSEL],it=ITM[id];if(!it||it.pas){ISFX.no();return}
 const v=IV();v.it[id]--;if(v.it[id]<=0)delete v.it[id];IVs();const f=it.fx||{},r=[];
 if(f.full){hp=100;r.push('HP fully restored!')}else if(it.heal){const b=hp;hp=Math.min(100,hp+it.heal);r.push('+'+(hp-b)+' HP')}
 if(f.atk)BF.atk=[f.atk[0],f.atk[1]];if(f.mult)BF.mult=f.mult;if(f.shield)BF.shield+=f.shield;if(f.red)BF.red=[f.red[0],f.red[1]];if(f.time)BF.time=[f.time[0],f.time[1]];if(f.forg)BF.forg+=f.forg;if(f.regen)BF.regen=[f.regen[0],f.regen[1]];if(f.pw)BF.pw=[f.pw[0],f.pw[1]];if(f.steal)BF.steal=[f.steal[0],f.steal[1]];if(f.spd)BF.spd=f.spd;if(f.smoke)BF.smoke+=f.smoke;if(f.slow)BF.slow=f.slow;if(f.hint)BF.hint=f.hint;
-const fx=fxText({fx:f,heal:0});if(fx)r.push(fx);INVLEFT--;try{it.heal||f.full?ISFX.heal():ISFX.fx();ISFX.eat()}catch(e){}bars();$('#nx').textContent='NEXT';invDraw('Used '+E(it.n)+'! '+E(r.join(' | ')||'...')+(INVLEFT<=0?'':' You can use another.'))}
+const fx=fxText({fx:f,heal:0});if(fx)r.push(fx);INVUSED=1;RS='item';try{it.heal||f.full?ISFX.heal():ISFX.fx();ISFX.eat()}catch(e){}bars();
+invDraw('You used '+E(it.n)+'! '+E(r.join(' | ')||'...'));$('#nx').style.display='';$('#nx').textContent=BF.smoke>0?'GO':'DODGE!'}
 /* ---- original tossup start (renamed q0): the menu decides whether it is read ---- */
 /* ---- map pickups: sparkling items you walk up to and press E ---- */
 const PKN=()=>Math.floor(Date.now()/(8*60*1000)),PK={k:-1,a:[]};
@@ -2856,7 +2868,7 @@ function pickUp(s){const it=ITM[s.id],T=TPK();T[cur+'_'+s.i]=PKN();lset('tl_pk',
 const _icp={};function pkIcon(id){return _icp[id]||(_icp[id]=iconCv(ITM[id],1))}
 function pkDraw(L,t,cx,cy,vis){pkActive().forEach(s=>{if(!vis(s.x,s.y))return;L.push([s.y,()=>{const x=Math.round(s.x-cx),y=Math.round(s.y-cy),b=Math.round(Math.sin(t/260+s.i)*1.5);PE(wl,x,y,6,2,'#00000044');wl.drawImage(pkIcon(s.id),x-4,y-10+b);for(let k=0;k<3;k++){const a=t/380+s.i*2+k*2.1,r=7+Math.sin(t/190+k)*2,on=Math.floor(t/170+k*3+s.i)%3==0;if(on)RC(wl,x+Math.cos(a)*r,y-6+Math.sin(a)*r*.7,2,2,k?'#ffffff':'#ffe880')}}])})}
 /* ---- enemy drops + coins ---- */
-function rewardNow(){if(F.grp)return;const L=[],ids=[];let c=F.boss?(F.i<0?200:60+(F.secret?30:0)):4+F.rk*3+Math.floor(Math.random()*5);const v=IV();v.c+=c;L.push('<b>+'+c+' coins</b>');
+function rewardNow(){if(F.grp)return;const L=[],ids=[];let c=F.boss?(F.i<0?250:80+(F.secret?40:0)):6+F.rk*4+Math.floor(Math.random()*6);const v=IV();v.c+=c;L.push('<b>+'+c+' coins</b>');
 const give=id=>{addItem(id);ids.push(id);L.push('Dropped: <b>'+E(ITM[id].n)+'</b>')};
 if(F.boss){give(rnd(DROPB));if(F.i<0){give(rnd(DROPR));give('golden')}else if(Math.random()<.5)give(rnd(DROPR))}else{if(Math.random()<.07+F.rk*.012)give(rnd(DROPR));else if(Math.random()<.3)give(rnd(DROPC))}
 IVs();ISFX.coin();setTimeout(()=>bannerShow(L,ids),500)}
@@ -2866,7 +2878,11 @@ function labChoice(){const h=$('#hub');HB=1;h.style.display='block';
 if(!LIVE.tl_mg){HB=0;h.style.display='none';story(MAGS_INTRO.map(FILL),()=>{lset('tl_mg','1');mode='isle';show('map');labChoice()});return}
 h.innerHTML='<p class="y">LAB DOOR</p><p><small>Professor Power and Pip are inside. Mags minds the shop.</small></p>';
 const b=(t,f)=>{const x=document.createElement('button');x.innerHTML=t;x.onclick=()=>{HB=0;h.style.display='none';f()};h.append(x)};
-b('KEEPERS, BOSSES &amp; PRACTICE<br><small>The Lab menu</small>',hub);b('VISIT MAGS<br><small>Shop: accessories &amp; useful things</small>',shopOpen);b('LEAVE',()=>{})}
+b('KEEPERS, BOSSES &amp; PRACTICE<br><small>The Lab menu</small>',hub);b('TALK TO PROFESSOR POWER<br><small>Goals, quests &amp; tips</small>',profTalk);b('VISIT MAGS<br><small>Shop: accessories &amp; useful things</small>',shopOpen);b('LEAVE',()=>{})}
+const PTIPS=['Buzz BEFORE the (*) mark in a tossup to score POWER: more damage.','Every turn: ATTACK, ITEM or FLEE. The enemy always strikes back after your turn, so dodge!','Using an item takes your whole turn. Heal when you are low, not when you are full.','Staying still never works in the arena. Keep moving and read each attack pattern.','Some items only drop from monsters. Mags will never sell those.','Look for glints on the map: press E near them to pick up free items.','Shield and Forgiveness items are great right before a boss.','Study the Database between fights. A wrong answer still costs you HP!','Quests pay coins, items and new clothes. Talk to everyone you meet.','Bosses get serious below half health. Save your best items for then.'];let PTI=0;
+function profTalk(){let L=[];try{L=goalLines()}catch(e){}const hp_=hp;let qn=0;try{qn=Object.keys(QD).filter(k=>qStat(k)==1).length}catch(e){}
+const s=['Professor Power: "Ah, '+(P.name||'Champ')+'! Let me remind you of the plan."'];if(L.length)s.push('Professor Power: "Your goal: '+L.join(' Also: ')+'"');if(qn)s.push('Professor Power: "You have '+qn+' quest'+(qn>1?'s':'')+' in progress. Check the QUESTS button for details."');else s.push('Professor Power: "No active quests right now. Folks around the islands could use a hand."');
+s.push('Professor Power: "Tip: '+PTIPS[PTI++%PTIPS.length]+'"');story(s,()=>{labChoice()})}
 /* ---- shop ---- */
 const COS=[];const cs_=(f,v,cat,n,p)=>COS.push({id:'c_'+f+v,f,v,cat,n,p});
 cs_('hs',8,'Hair','Mohawk',60);cs_('hs',9,'Hair','Twin Buns',50);cs_('hs',10,'Hair','Side Braid',55);cs_('hs',11,'Hair','Curly Bob',45);
@@ -2876,6 +2892,7 @@ cs_('fx',1,'Face','Freckles',30);cs_('fx',2,'Face','Whiskers',30);cs_('fx',3,'Fa
 cs_('ey',1,'Eyes','Starry Eyes',50);cs_('ey',2,'Eyes','Sleepy Eyes',40);cs_('ey',3,'Eyes','Happy Eyes',40);cs_('ey',4,'Eyes','Wide Eyes',40);
 cs_('bd',2,'Body','Sturdy Build',40);cs_('bd',4,'Body','Athletic Build',45);
 cs_('ts',7,'Tops','Striped Tee',50);cs_('ts',8,'Tops','Lab Coat',70);cs_('ts',9,'Tops','Star Hoodie',80);cs_('ts',10,'Tops','Sundress',65);cs_('ts',11,'Tops','Ruffle Blouse',55);cs_('ts',12,'Tops','Varsity Jacket',75);cs_('ts',13,'Tops','Flannel Shirt',50);cs_('ts',14,'Tops','Vest & Tie',65);cs_('bs',7,'Bottoms','Plaid Shorts',45);cs_('bs',8,'Bottoms','Rainbow Leggings',55);cs_('bs',9,'Bottoms','Tennis Skirt',50);cs_('bs',10,'Bottoms','Tulle Skirt',60);cs_('bs',11,'Bottoms','Capri Pants',45);cs_('bs',12,'Bottoms','Track Pants',50);
+const cq_=(f,v,cat,n)=>COS.push({id:'c_'+f+v,f,v,cat,n,p:0,q:1});cq_('hat',7,'Hats','Fisher\'s Cap');cq_('hat',8,'Hats','Laurel Wreath');cq_('hat',9,'Hats','Choir Halo');cq_('ts',15,'Tops','Monk Robe');cq_('ts',16,'Tops','Choir Robe');
 const owned=c=>!!OWN()[c.id],CATS=['Hair','Hats','Glasses','Face','Eyes','Body','Tops','Bottoms'];
 const MG_HI=['Heya, Champ! Take a look around. Everything on this shelf is honest and mostly clean.','Welcome back! Coins talk, and I speak fluent coin.','Ah, my favorite customer! Also my only customer. Browse away.'],MG_BUY=['Pleasure doing business!','Sold! No refunds. Okay, maybe small ones.','Ha! That suits you, Champ.'],MG_BROKE=['Pockets look light, Champ. Go whack some monsters.','Not enough coins. I do not do IOUs. Ask the Professor, she tried.'],MG_OWN=['You already own that one!','Already in your closet, Champ.'],MG_MAX=['Your bag cannot hold more than 9 of those!'];
 let SHTAB='acc',SHCAT='Hair',SHTYP=null;
@@ -2887,7 +2904,7 @@ const tabs=el.querySelector('.shtabs'),mt=(l,on,f)=>{const b=document.createElem
 mt('ACCESSORIES',SHTAB=='acc',()=>{SHTAB='acc';shopDraw()});mt('USEFUL THINGS',SHTAB=='use',()=>{SHTAB='use';shopDraw()});
 const g=el.querySelector('.shg');
 if(SHTAB=='acc'){const st=document.createElement('div');st.className='shsub';CATS.forEach(c=>{const b=document.createElement('button');b.textContent=c.toUpperCase();b.className=SHCAT==c?'sel':'alt';b.onclick=()=>{SHCAT=c;shopDraw()};st.append(b)});g.before(st);
-COS.filter(c=>c.cat==SHCAT).forEach(c=>{const d=document.createElement('div'),have=owned(c),worn=(P[c.f]|0)==c.v;d.className='shc';d.append(heroF(4,Object.assign({},P,{[c.f]:c.v})));d.insertAdjacentHTML('beforeend','<b>'+c.n+'</b><small>'+(have?'OWNED':'<span class="coin2"></span>'+c.p)+'</small>');const b=document.createElement('button');b.textContent=have?(worn?'WORN':'WEAR'):'BUY';if(worn)b.disabled=true;
+COS.filter(c=>c.cat==SHCAT&&!c.q).forEach(c=>{const d=document.createElement('div'),have=owned(c),worn=(P[c.f]|0)==c.v;d.className='shc';d.append(heroF(4,Object.assign({},P,{[c.f]:c.v})));d.insertAdjacentHTML('beforeend','<b>'+c.n+'</b><small>'+(have?'OWNED':'<span class="coin2"></span>'+c.p)+'</small>');const b=document.createElement('button');b.textContent=have?(worn?'WORN':'WEAR'):'BUY';if(worn)b.disabled=true;
 b.onclick=()=>{if(have){P[c.f]=c.v;save('tl_p2',P);shopDraw();shopSay('Looking sharp!');return}if(v.c<c.p){ISFX.no();shopSay(rnd(MG_BROKE));return}v.c-=c.p;IVs();const o=OWN();o[c.id]=1;lset('tl_own',JSON.stringify(o));P[c.f]=c.v;save('tl_p2',P);ISFX.buy();shopDraw();shopSay(rnd(MG_BUY))};d.append(b);g.append(d)})}
 else{Object.values(ITM).filter(i=>i.src=='shop').sort((a,b)=>(a.t>b.t?1:a.t<b.t?-1:a.buy-b.buy)).forEach(it=>{const d=document.createElement('div'),n=v.it[it.id]||0;d.className='shc use';const ic=document.createElement('div');ic.className='shi';ic.append(iconCv(it,5));d.append(ic);d.insertAdjacentHTML('beforeend','<b>'+E(it.n)+'</b><small>'+E(it.d)+'</small><small class="y">'+fxText(it)+'</small><small>'+(n?'In bag: '+n:' ')+'</small><small><span class="coin2"></span>'+it.buy+'</small>');const b=document.createElement('button');b.textContent='BUY';b.onclick=()=>{if(n>=9){ISFX.no();shopSay(rnd(MG_MAX));return}if(v.c<it.buy){ISFX.no();shopSay(rnd(MG_BROKE));return}v.c-=it.buy;IVs();addItem(it.id);ISFX.buy();shopDraw();shopSay(rnd(MG_BUY))};d.append(b);g.append(d)})}
 el.querySelectorAll('.coin2').forEach(x=>x.append(iconCv(ITM.pouch,1)));$('#shx').onclick=()=>{try{PCF=[0,1,2].map(d=>[0,1,2,3].map(f=>outl(heroF(1,P_(),f,d))))}catch(e){}hud();show('map')}}
@@ -2897,6 +2914,131 @@ $('#bgb').onclick=bagOpen;
 /* ---- creator rows (only owned accessories appear) ---- */
 function czOpts(k){const base={hs:HS,fs:FS,ts:TS,bs:BS}[k],o=[];if(base)base.forEach((n,v)=>o.push({v,n}));else if(k=='bd')o.push({v:0,n:'Average'},{v:1,n:'Slim'},{v:3,n:'Curvy'});else o.push({v:0,n:'None'});COS.filter(c=>c.f==k&&owned(c)).forEach(c=>o.push({v:c.v,n:c.n}));return o}
 function czRows(z){[['hs','Hair'],['fs','Face'],['ts','Top'],['bs','Bottom'],['hat','Hat'],['gl','Glasses'],['fx','Face mark'],['ey','Eyes'],['bd','Body']].forEach(([k,l])=>{const a=czOpts(k);if(a.length<2)return;const r=document.createElement('div'),m=document.createElement('button'),n=document.createElement('button'),t=document.createElement('span');let ix=Math.max(0,a.findIndex(x=>x.v==(P[k]|0)));r.append(l+': ');m.textContent='<';n.textContent='>';t.textContent=a[ix].n;m.onclick=()=>{P[k]=a[(ix+a.length-1)%a.length].v;cz()};n.onclick=()=>{P[k]=a[(ix+1)%a.length].v;cz()};r.append(m,t,n);z.append(r)})}
+const PORTS={'Quartermaster Mags':MAGS},QEN={};
+function portrait(s){const p=PORTS[s];if(!p)return heroF(6,PROF_,0,0);return typeof p=='function'?p():heroF(6,p,0,0)}
+const QSC={};
+function qSpot(key,seedN){const ck=cur+'|'+key;if(QSC[ck])return QSC[ck];const R=srnd(5000+seedN*131+cur*977),pk=pkSpots();let best=null;for(let t=0;t<1500&&!best;t++){const x=Math.round(R()*WW),y=Math.round(R()*WH);if(![[0,0],[9,0],[-9,0],[0,7],[0,-6]].every(d=>ok(x+d[0],y+d[1])))continue;if(Math.hypot(x-BX,y-BY)<85||Math.hypot(x-SX(),y-SY())<75)continue;if(NP.some(p=>Math.hypot(p.x-x,p.y-y)<36))continue;if(pk.some(s=>Math.hypot(s.x-x,s.y-y)<40))continue;if(Object.keys(QSC).some(k=>k.startsWith(cur+'|')&&Math.hypot(QSC[k].x-x,QSC[k].y-y)<48))continue;best={x,y}}return QSC[ck]=best||{x:BX+95+seedN*6,y:BY+70}}
+/* ================= STAGE 6: QUESTS, NPCs, HOSTAGES, THE HOLLOW CHOIR STORYLINE ================= */
+const QL=()=>JL('tl_qs'),QCN=()=>JL('tl_qc');
+const qs=id=>QL()[id]||{s:0,n:0,b:0};
+function qset(id,o){const a=QL();a[id]=Object.assign(a[id]||{s:0,n:0,b:0},o);lset('tl_qs',JSON.stringify(a))}
+const qc=k=>QCN()[k]|0;
+function qcSet(k,v){const a=QCN();a[k]=v;lset('tl_qc',JSON.stringify(a))}
+const qcInc=(k,n=1)=>qcSet(k,qc(k)+n);
+/* ---- people (drawn with the hero sprite engine, each with their own look + voice) ---- */
+const QN={
+odette:{nm:'Librarian Odette',i:0,look:{hair:'#6a3a9a',skin:'#f2c9a0',top:'#2a8a7a',bot:'#4a3a2a',hs:3,fs:3,ts:5,bs:3,gl:1,bd:3},v:{f:330,ty:'triangle',len:.05,sp:26,pat:'up'},tm:'tri',idle:['"Shh... oh, you are allowed to talk here. The Blackout changed the rules."','"I shelve the questions you answer wrong. Do not take it personally."']},
+gus:{nm:'Old Gus',i:1,look:{hair:'#eeeeee',skin:'#d9a070',top:'#4a7acc',bot:'#7a5a3a',hs:5,fs:2,ts:4,bs:0,fx:2},v:{f:120,ty:'sawtooth',len:.05,sp:20,pat:'alt'},tm:'gruff',idle:['"In my day, relics talked back. Now they just sit there being old. Like me."','"Fishing\'s slow. History\'s slower. Both pay off, eventually."']},
+penny:{nm:'Dr. Penny',i:2,look:{hair:'#ff5a7a',skin:'#fde3c8',top:'#f0f0f6',bot:'#3a3f7a',hs:2,fs:4,ts:8,bs:0,gl:1,bd:3},v:{f:420,ty:'square',len:.03,sp:30,pat:'warble'},tm:'p12',idle:['"Hypothesis: you will answer faster after snacks. Test pending."','"Do not lick the beakers. Also, do not ask how I know."']},
+bella:{nm:'Maestra Bella',i:3,look:{hair:'#c0392b',skin:'#d9a070',top:'#c08bff',bot:'#3a3f7a',hs:1,fs:4,ts:3,bs:0,bd:3},v:{f:380,ty:'sine',len:.06,sp:22,pat:'up'},tm:'sin',idle:['"Every isle has a chord. Fine Arts has the loveliest one."','"A voice is a muscle. And a promise. Do not lose either."']},
+tom:{nm:'Tom the Hero',i:4,look:{hair:'#3a2a1a',skin:'#f2c9a0',top:'#ffb02e',bot:'#7a5a3a',hs:5,fs:2,ts:2,bs:1,bd:4},v:{f:200,ty:'square',len:.04,sp:26,pat:'rnd'},tm:'sq',idle:['"I will be a legend! After lunch. And a nap."','"Twelve labors? I am on labor number one: stretching."']},
+aru:{nm:'Monk Aru',i:5,look:{hair:'#2a2a3a',skin:'#d9a070',top:'#ff9a3c',bot:'#7a5a3a',hs:5,fs:0,ts:15,bs:0},v:{f:140,ty:'sine',len:.07,sp:18,pat:'flat'},tm:'org',idle:['"Breathe in. Breathe out. Do not neg."','"The still mind hears the answer before the question ends."']},
+zeno:{nm:'Zeno the Pondering',i:6,look:{hair:'#eeeeee',skin:'#f2c9a0',top:'#7a5ac0',bot:'#3a3f7a',hs:1,fs:3,ts:5,bs:0,gl:3},v:{f:260,ty:'triangle',len:.05,sp:28,pat:'warble'},tm:'tri',idle:['"If a tossup is read and no one buzzes, is it a question?"','"I have been walking to the shrine for years. I am still halfway. Always halfway."']},
+mirabel:{nm:'Dr. Mirabel',i:7,look:{hair:'#4a8a5a',skin:'#fde3c8',top:'#ff8fb0',bot:'#f4f4f4',hs:3,fs:4,ts:11,bs:9,bd:3},v:{f:480,ty:'sine',len:.04,sp:26,pat:'up'},tm:'sin',idle:['"Tell me about your relationship with the buzzer. Take your time."','"Everyone neg-s sometimes. It is called being brave."']},
+nell:{nm:'Cartographer Nell',i:8,look:{hair:'#8d5a3a',skin:'#d9a070',top:'#4a8a5a',bot:'#7a5a3a',hs:6,fs:1,ts:12,bs:0},v:{f:310,ty:'square',len:.04,sp:24,pat:'alt'},tm:'p25',idle:['"This map is 40% accurate. The rest is optimism."','"Every isle is a question the sea has been asking for ages."']},
+ludo:{nm:'Ludo the Nerd',i:11,look:{hair:'#3a2a1a',skin:'#f2c9a0',top:'#c0392b',bot:'#3a3f7a',hs:2,fs:0,ts:13,bs:0,gl:1},v:{f:520,ty:'square',len:.03,sp:32,pat:'rnd'},tm:'p12',idle:['"Did you know a power buzz is 15 points?! I know EVERYTHING about it."','"My buzzer is named Kevin. Do not ask about Kevin."']}};
+/* hostages (appear in cutscenes only) */
+const QH={wren:{nm:'Little Wren',look:{hair:'#ffd84a',skin:'#f2c9a0',top:'#ff9a3c',bot:'#3a3f7a',hs:4,fs:0,ts:0,bs:1},v:{f:560,ty:'square',len:.03,sp:30,pat:'up'},tm:'p12'},sol:{nm:'Soprano Sol',look:{hair:'#ffd84a',skin:'#fde3c8',top:'#4fd0ff',bot:'#3a3f7a',hs:1,fs:4,ts:6,bs:0,bd:3},v:{f:620,ty:'sine',len:.05,sp:24,pat:'up'},tm:'sin'},abe:{nm:'Brother Abe',look:{hair:'#2a2a3a',skin:'#8d5a3a',top:'#7dff9a',bot:'#3a3f7a',hs:0,fs:2,ts:1,bs:0,bd:2},v:{f:150,ty:'triangle',len:.06,sp:20,pat:'flat'},tm:'tri'}};
+/* ---- quest-only enemies: separate storyline, own songs, own palettes ---- */
+const QE={
+hush:{nm:'Warden Hush',i:1,col:'#9ab0c8',hue:165,sat:.45,lum:.05,aura:'#bcd0ff',mx:130,mt:'q_hush',host:'wren',atk:['echo','shadow','bookworm','inkblot'],v:{f:170,ty:'sine',len:.07,sp:18,pat:'flat',vol:.8},tm:'sin',
+ intro:[`Warden Hush: "Shhh. Library voices only."`,`Little Wren: "Help! He took my voice and he says singing is against the rules!"`,`Warden Hush: "The Maestro collects Voices, one quiet isle at a time. Buzz if you must... but buzz softly."`],
+ win:[`Warden Hush: "...Loud. So loud. It was... a nice kind of loud."`,`Little Wren: "You did it! My voice is back! Thank you, {p}!"`],pool:{bz:["Shhh.","Quiet. The books are sleeping.","A buzz? Rude. Impressive, but rude."],pw:["POWER?! In MY library?!","That was... loud and early."],ng:["Wrong. Shh.","Neg. Whisper your shame."],dd:["Silence. Now THAT I respect."],lo:["Too... loud... the shelves tremble...","I have been... shushed."],rr:["I used to read aloud. Then the Maestro asked me to stop."]}},
+cadence:{nm:'Cantor Cadence',i:3,col:'#e8a0b8',hue:75,sat:1.1,lum:.04,aura:'#ffd0e0',mx:160,mt:'q_cadence',host:'sol',atk:['crescendo','staff','bell','stage','prism'],v:{f:340,ty:'sawtooth',len:.045,sp:24,pat:'warble',vol:.8},tm:'org',
+ intro:[`Cantor Cadence: "A soprano of such range! I merely borrowed her. Forever."`,`Soprano Sol: "I can hit a high C, and I WILL, right through his hat!"`,`Cantor Cadence: "Then let us duet. Your answers, my tempo."`],
+ win:[`Cantor Cadence: "Off-key... I was off-key all along."`,`Soprano Sol: "Free at last! Tell Maestra Bella I will be at rehearsal!"`],pool:{bz:["Allegro, little buzzer. Faster!","A duet of doom. I lead.","Every answer needs a rhythm."],pw:["POWER! A forte!","Early?! You rush the tempo!"],ng:["Off-key. Again.","Neg! The orchestra winces."],dd:["Silence is a rest. I permit it. Briefly."],lo:["The... baton... snaps...","Encore? No. No encore."],rr:["The Maestro conducts. I only count."]}},
+drone:{nm:'Deacon Drone',i:5,col:'#6a9a6a',hue:-75,sat:.9,lum:-.04,aura:'#a0e0a0',mx:180,mt:'q_drone',host:'abe',atk:['mandala','lantern','smite','chain','gaze'],v:{f:95,ty:'square',len:.08,sp:16,pat:'flat',vol:.85},tm:'gruff',
+ intro:[`Deacon Drone: "Hmmmmmmmm. One note. One truth. Forever."`,`Brother Abe: "He has hummed for three days straight! Please, a rest!"`,`Deacon Drone: "Rest is sin. Buzz, if you dare interrupt the hum."`],
+ win:[`Deacon Drone: "...Silence. I did not know it could be a rest. Not an end."`,`Brother Abe: "Alto Abe, at your service! And I owe you a hymn, {p}."`],pool:{bz:["Hmmmmmm.","The drone does not stop.","Hmm. Hmm. Hmmmm."],pw:["POWER? Hmmmm. Interesting.","A sharp note. Hmm."],ng:["Hmmm. Wrong. Hmmm.","Neg. The drone approves."],dd:["Hmmmmm. You said nothing. A perfect harmony."],lo:["Hmm... mm... m...","The hum... breaks..."],rr:["The Maestro asked me to hold one note. I held it too long."]}},
+maestro:{nm:'The Silent Maestro',i:7,col:'#2a2036',hue:235,sat:.28,lum:-.2,aura:'#e8e0ff',mx:280,mt:'q_maestro',atk:['crescendo','staff','warp','supernova','prophecy','shadow','gaze'],v:{f:75,ty:'sawtooth',len:.07,sp:15,pat:'flat',vol:.9},tm:'saw',
+ intro:[`The Silent Maestro: "You woke the Voices. How loud. How unforgivable."`,`The Silent Maestro: "I did not shatter the Buzzer to hurt anyone. I wanted one beautiful moment where the world stopped shouting."`,`The Silent Maestro: "Now let me conduct your ending, {p}. One last movement."`],
+ win:[`The Silent Maestro: "A rest... at last. Perhaps silence was never the point."`,`Professor Power: "{p}! The Voices are home. The Great Buzzer will sing at full strength now!"`],pool:{bz:["Pianissimo, little buzzer.","I conduct. You merely play.","Quiet. The finale begins."],pw:["POWER! A fortissimo!","Too early. Too eager."],ng:["Wrong. The orchestra sighs.","Neg! A sour note."],dd:["Silence. My favorite instrument."],lo:["The... final... bar...","Rest. Finally... a rest."],rr:["I wrote the letters. The Inquisitor only signed."]}}};
+/* ---- quests ---- */
+const bcN=()=>Object.keys(BD).length;
+const QD={
+bm:{g:'odette',t:'Missing Bookmarks',k:'fetch',need:{sticky:2},ob:'Bring Odette 2 Sticky Notes (found on the isles or dropped by monsters).',o:[`Librarian Odette: "Oh! A visitor! The Blackout scattered my bookmarks and now I cannot find my place."`,`Librarian Odette: "Sticky Notes will do. Two, please. Monsters carry them, and some lie in the grass."`],w:[`Librarian Odette: "Wonderful! Now I can find my place again. Please, take these."`],r:{c:45,it:{hint:2}}},
+hush:{g:'odette',t:'Hush in the Stacks',k:'host',foe:'hush',isl:0,req:()=>qs('bm').s==3,ob:'Warden Hush has taken Little Wren. Find his hideout on Literature Isle.',o:[`Librarian Odette: "Wren, my little apprentice... she sang in the stacks and a Warden took her away. In the name of QUIET."`,`Librarian Odette: "He lurks somewhere on this isle. Please be careful. He is ever so shushy."`],w:[],r:{c:90,it:{locket:1}}},
+relic:{g:'gus',t:'Relic Reel',k:'kill',key:'k1',n:4,ob:'Defeat 4 History enemies.',o:[`Old Gus: "Relics keep wandering off the shelves. Bad manners."`,`Old Gus: "Beat four of those History scoundrels and I will make it worth your while."`],w:[`Old Gus: "Four! Ha! Take this, it kept my head dry through three wars."`],r:{c:60,cos:['c_hat7']}},
+snack:{g:'penny',t:'Snack Run',k:'fetch',need:{cheese:1,mooncake:1},ob:'Bring Dr. Penny a Cheese Wheel and a Moon Cake (found on the isles).',o:[`Dr. Penny: "Experiment 12 requires a Cheese Wheel and a Moon Cake. Do not ask why. The why is classified."`,`Dr. Penny: "Both are found lying around the isles, if you look. Sparkles. Look for sparkles."`],w:[`Dr. Penny: "Perfect! The experiment is a success! The sandwich will be legendary."`],r:{c:70,it:{badge:1,guide:1}}},
+soprano:{g:'bella',t:'The Missing Soprano',k:'host',foe:'cadence',isl:3,req:()=>bcN()>=1,ob:'Cantor Cadence holds Soprano Sol. Find his stage on Fine Arts Isle.',o:[`Maestra Bella: "My lead soprano, Sol, vanished mid-aria. A Cantor with a baton led her away."`,`Maestra Bella: "He is hiding on this isle. If you beat him, the show goes on. And so do you."`],w:[],r:{c:120,cos:['c_ts16'],it:{quill:1}}},
+hero:{g:'tom',t:'Hero in Training',k:'ans',n:12,ob:'Answer 12 tossups correctly in battle.',o:[`Tom the Hero: "I want to be a hero! Heroes know EVERYTHING. Answer twelve tossups in battle and show me how it is done."`],w:[`Tom the Hero: "Twelve! You are my hero. Wear this, it is a laurel. I stole it from a statue."`],r:{c:60,cos:['c_hat8'],it:{pretzel:2}}},
+calm:{g:'aru',t:'A Calm Mind',k:'flaw',n:1,ob:'Defeat an enemy without taking damage (no hits, no negs).',o:[`Monk Aru: "A calm mind is untouched. Defeat one monster without taking a single hit and I will teach you my way."`],w:[`Monk Aru: "Not a scratch. You walk lightly. Take this robe, and this soup."`],r:{c:70,cos:['c_ts15'],it:{soup:2}}},
+drone:{g:'aru',t:'The Endless Hum',k:'host',foe:'drone',isl:5,req:()=>qs('calm').s==3,ob:'Deacon Drone holds Brother Abe. Find him on Religion Isle.',o:[`Monk Aru: "A Deacon has been humming one note for three days, and Brother Abe is trapped inside the sound."`,`Monk Aru: "He is out on the isle. I cannot approach: I would start humming too."`],w:[],r:{c:130,it:{golden:1}}},
+forged:{g:'zeno',t:'The Forged Letters',k:'pages',n:3,req:()=>bcN()>=3,ob:'Find the 3 Torn Pages (Philosophy, Social Science and Geography isles).',o:[`Zeno the Pondering: "The Boss letters. Have you looked at the handwriting? Each hand is... not the Inquisitor's."`,`Zeno the Pondering: "Three torn pages fell off them when they shattered. They lie on the Philosophy, Social Science and Geography isles. Find them. The truth will not read itself."`],w:[`Zeno the Pondering: "A conductor's baton, not a quill... Whoever wrote the letters wanted silence, and wanted the Inquisitor to take the blame."`,`Zeno the Pondering: "Remember this. The goal has changed, {p}: it is not only about the Inquisitor any more."`],r:{c:150,it:{quill:1},f:'forged'}},
+deliv:{g:'mirabel',t:'Special Delivery',k:'talk',to:'gus',ob:'Deliver Dr. Mirabel\'s parcel to Old Gus (History Isle).',o:[`Dr. Mirabel: "I wrote Old Gus a letter. A proper one. About his feelings. Could you deliver it? He avoids me."`],dl:[`Old Gus: "A letter? From Mirabel? ...Hmph. 'Dear Gus, you are doing great.' ...Hmph. Tell her thanks."`],r:{c:55,it:{soda:2}}},
+maps:{g:'nell',t:'Cartographer\'s Lunch',k:'fetch',need:{berries:2,noodle:1},ob:'Bring Nell 2 Wild Berries and a Noodle Cup.',o:[`Cartographer Nell: "I have been drawing for hours. Two Wild Berries and a Noodle Cup, please. Berries grow wild. Noodle Cups drop off monsters."`],w:[`Cartographer Nell: "Delicious. Here, this should help you get around. And take my stopwatch."`],r:{c:55,it:{watch:1}}},
+power:{g:'ludo',t:'Power Player',k:'pans',n:5,ob:'Answer 5 tossups with a POWER buzz.',o:[`Ludo the Nerd: "Buzz BEFORE the (*) mark for POWER. Do it five times and I will give you my most precious thing. Not Kevin. The other thing."`],w:[`Ludo the Nerd: "Five powers! You are a true buzzer sage! Take it. It is a golden apple. I found it in a dumpster. It is fine."`],r:{c:90,it:{golden:1}}}};
+const QORDER=Object.keys(QD);
+/* ---- rewards ---- */
+const rText=r=>[r.c?r.c+' coins':'',...Object.keys(r.it||{}).map(k=>(r.it[k]>1?r.it[k]+'x ':'')+ITM[k].n),...(r.cos||[]).map(id=>(COS.find(c=>c.id==id)||{n:id}).n+' (new accessory!)')].filter(Boolean).join(', ');
+function qGive(r,msg){const v=IV(),ids=[],L=[];if(r.c){v.c+=r.c}Object.keys(r.it||{}).forEach(k=>{v.it[k]=Math.min(9,(v.it[k]||0)+r.it[k]);ids.push(k)});IVs();(r.cos||[]).forEach(id=>{const o=OWN();o[id]=1;lset('tl_own',JSON.stringify(o))});
+if(r.f==='forged')qcSet('forged',2);try{ISFX.coin();setTimeout(()=>seq([523,659,784,1046],'triangle'),150)}catch(e){}setTimeout(()=>bannerShow(['<b>'+(msg||'QUEST COMPLETE!')+'</b>','Reward: '+E(rText(r))],ids),500)}
+/* ---- progress ---- */
+const bits=n=>[0,1,2].filter(i=>n>>i&1).length,haveN=k=>IV().it[k]|0;
+function qProg(id){const d=QD[id],st=qs(id);if(d.k=='fetch'){const ks=Object.keys(d.need);return[ks.reduce((a,k)=>a+Math.min(haveN(k),d.need[k]),0),ks.reduce((a,k)=>a+d.need[k],0)]}
+if(d.k=='kill')return[Math.min(d.n,qc(d.key)-st.b),d.n];if(d.k=='ans')return[Math.min(d.n,qc('ans')-st.b),d.n];if(d.k=='pans')return[Math.min(d.n,qc('pans')-st.b),d.n];if(d.k=='flaw')return[Math.min(d.n,qc('flaw')-st.b),d.n];
+if(d.k=='pages')return[bits(st.n),3];return[st.n?1:0,1]}
+function qStat(id){const d=QD[id],st=qs(id);if(st.s==3)return 3;if(st.s==1){if(d.k=='host'||d.k=='talk')return 1;const p=qProg(id);return p[0]>=p[1]?2:1}return(!d.req||d.req())?0:-1}
+/* ---- counters hooks ---- */
+function qWin(){qcInc('k_all');qcInc('k'+F.i);if(!F.boss&&!(F.hits>0))qcInc('flaw')}
+function qAns(pw){qcInc('ans');if(pw)qcInc('pans')}
+/* ---- choice box + dialogue helpers ---- */
+function choiceBox(title,desc,yes,no){let m=$('#chb2');if(!m){m=document.createElement('div');m.id='chb2';m.style.cssText='position:fixed;inset:0;z-index:90;background:#000a;display:flex;align-items:center;justify-content:center';document.body.append(m)}
+m.style.display='flex';m.innerHTML='<div class="box" style="max-width:520px;width:92%;text-align:center"><p class="y">NEW QUEST</p><p><b>'+E(title)+'</b></p><p><small>'+desc+'</small></p><button id="cby" class="big">ACCEPT</button><button id="cbn" class="alt">NOT NOW</button></div>';$('#cby').onclick=()=>{m.style.display='none';yes()};$('#cbn').onclick=()=>{m.style.display='none';if(no)no()}}
+function qTalk(lines,cb,song){let dn=0;window.STK=song||null;story(lines.map(FILL),()=>{if(dn)return;dn=1;window.STK=null;mode='isle';show('map');cb&&cb()})}
+/* ---- NPC conversation ---- */
+function npcTalk(nid){const N=QN[nid],ids=QORDER.filter(q=>QD[q].g==nid);
+const dq=QORDER.find(q=>QD[q].k=='talk'&&QD[q].to==nid&&qs(q).s==1);if(dq){const d=QD[dq];qset(dq,{s:3});qTalk(d.dl.map(l=>l),()=>{qGive(d.r)});return}
+const ready=ids.find(q=>qStat(q)==2);if(ready){const d=QD[ready];qTalk(d.w,()=>{if(d.k=='fetch')Object.keys(d.need).forEach(k=>{const v=IV();v.it[k]=(v.it[k]||0)-d.need[k];if(!(v.it[k]>0))delete v.it[k];IVs()});qset(ready,{s:3});qGive(d.r)});return}
+const act=ids.find(q=>qStat(q)==1);if(act){const d=QD[act],p=qProg(act);say(N.nm+': '+d.t+' ('+p[0]+'/'+p[1]+') - '+d.ob);qTalk([N.nm+': "Still working on it? '+d.ob.replace(/"/g,'')+' ('+p[0]+'/'+p[1]+')"']);return}
+const av=ids.find(q=>qStat(q)==0);if(av){const d=QD[av];qTalk(d.o,()=>{choiceBox(d.t,E(d.ob)+'<br><span class="y">Reward: '+E(rText(d.r))+'</span>',()=>{const key=d.k=='kill'?d.key:d.k=='ans'?'ans':d.k=='pans'?'pans':d.k=='flaw'?'flaw':'';qset(av,{s:1,n:0,b:key?qc(key):0});try{seq([523,659,784],'square')}catch(e){}bannerShow(['<b>QUEST ACCEPTED</b>',E(d.t)]);goalRender()})});return}
+const i=(qc('talk_'+nid))%N.idle.length;qcInc('talk_'+nid);qTalk([N.nm+': '+N.idle[i]])}
+/* ---- sites: hostage hideouts, torn pages, the Hush Chamber ---- */
+const PGI=[6,7,8];
+function qSites(){const a=[];QORDER.forEach(q=>{const d=QD[q];if(d.k=='host'&&qs(q).s==1&&d.isl==cur)a.push({k:'host',q,x:0,y:0,msg:'E: confront '+QE[d.foe].nm+'!'});if(d.k=='pages'&&qs(q).s==1)PGI.forEach((isl,p)=>{if(isl==cur&&!(qs(q).n>>p&1))a.push({k:'page',q,p,msg:'E: pick up the glinting Torn Page'})})});
+if(cur==6&&qc('voices')>=3&&!qc('maestro'))a.push({k:'boss',q:'maestro',msg:'E: enter the Hush Chamber...'});
+a.forEach((s,j)=>{const sp=qSpot(s.k+(s.q||'')+(s.p||0),QORDER.indexOf(s.q)+3+(s.p||0)*7+(s.k=='boss'?90:0));s.x=sp.x;s.y=sp.y});return a}
+const PAGE=['.oooooo.','owwwwwwo','owbbbbwo','owwwwwwo','owbbbwwo','owwwwwwo','.oooooo.'];
+const CAP={};function capSpr(id){return CAP[id]||(CAP[id]=outl(heroF(1,QH[id].look,0,0)))}
+const CPT={};function captor(k){if(!CPT[k]){const e=QE[k];CPT[k]=mon(e.i,0,5,'*',1,e.nm)}return CPT[k]}
+function siteAct(s){if(s.k=='host')hostStart(s.q);else if(s.k=='page')pageGet(s);else maestroStart()}
+function hostStart(q){const d=QD[q],e=QE[d.foe],h=QH[e.host];qTalk(e.intro,()=>fight(e.i,'*',2,e.nm,1,{id:q,mx:e.mx,mt:e.mt}),'choir')}
+const PGTXT=[`A torn page. The ink is lilac and the margins are marked in tiny beats: "...counted in fours. A baton, not a quill."`,`A torn page. "Let no one hear the Voices. A silent world makes no mistakes." The signature has been scratched out.`,`A torn page. At the bottom, a conductor's flourish, and a note: "Sign it as the Inquisitor. He will not remember."`];
+function pageGet(s){const st=qs(s.q),n=st.n|(1<<s.p);qset(s.q,{n});ISFX.pick();bannerShow(['Found a <b>Torn Page</b>!',bits(n)+'/3 collected'],['page']);qTalk([PGTXT[s.p]],()=>{if(bits(n)==3)say('All three pages found! Return to Zeno the Pondering.')})}
+function maestroStart(){const e=QE.maestro,ex=qc('forged')==2?[`The Silent Maestro: "You read the pages, I see. Yes, it was my hand. A conductor's hand."`]:[];qTalk([`Professor Power: "{p}, this is the Hush Chamber. Whatever waits inside has been conducting every Blackout."`,...e.intro.slice(0,1),...ex,...e.intro.slice(1)],()=>fight(e.i,'*',2,e.nm,1,{id:'maestro',mx:e.mx,mt:e.mt}),'choir')}
+/* ---- a quest fight was won ---- */
+const GOALREV=[null,[`Professor Power: "{p}! The Lamp just flickered... and hummed a note. A VOICE. The Great Buzzer is not only twelve pieces. It has Voices too!"`,`Professor Power: "The Silent Maestro took three of them. Free them all, and the Buzzer can sing again. The goal has changed: FREE THE THREE VOICES."`],[`Professor Power: "Two Voices free! The Lamp burns warmer. One more, {p}!"`],[`Professor Power: "Three Voices free! The Lamp is SINGING! I traced the Maestro: the Hush Chamber on Philosophy Isle has opened. End this."`]];
+function qeWin(){const q=F.qe;if(q=='maestro'){const e=QE.maestro;qcSet('maestro',1);qTalk(e.win,()=>{qGive({c:300,it:{phoenix:1,golden:1},cos:['c_hat9']},'THE MAESTRO IS SILENCED!');goalRender()},'choir');return}
+const d=QD[q],e=QE[d.foe],h=QH[e.host];qTalk(e.win,()=>{qset(q,{s:3});qcInc('voices');const v=qc('voices');qGive(d.r,'VOICE FREED: '+h.nm+'!');qTalk(GOALREV[v],()=>{goalRender()},'choir')},'choir')}
+/* ---- goal text (the story goal changes with certain quests) ---- */
+function goalLines(){const v=qc('voices'),a=[];if(bcN()<12&&!(v||qc('forged')))a.push('Master the isles and beat the 12 Bosses.');
+if(v>=1&&v<3)a.push('NEW GOAL: Free the three Voices ('+v+'/3). The Great Buzzer needs them.');else if(v>=3&&!qc('maestro'))a.push('NEW GOAL: Find the Silent Maestro in the Hush Chamber (Philosophy Isle).');
+if(qs('forged').s==1)a.push('Zeno: find the 3 Torn Pages ('+bits(qs('forged').n)+'/3).');else if(qc('forged')==2&&!qc('maestro'))a.push('Truth: someone with a conductor\'s hand wrote the letters.');
+if(!a.length||(bcN()>=12))a.push(qc('maestro')?'The Voices are free. Face the Grand Inquisitor.':'Face the Grand Inquisitor at the Final Shrine.');
+if(bcN()<12&&(v||qc('forged'))&&v<3)a.push('Also: Beat the 12 Bosses ('+bcN()+'/12).');return a}
+function goalRender(){const e=$('#goalb');if(e)e.innerHTML='<b>GOAL</b> '+goalLines().map(E).join(' &nbsp;|&nbsp; ')}
+const _hud0=hud;hud=function(){_hud0();goalRender()};
+function giExtra(){return(qc('forged')==2?[`The Grand Inquisitor: "...You have read the pages. Then you know I did not write the letters. I only signed what I was handed."`]:[]).concat(qc('maestro')?[`The Grand Inquisitor: "And the Voices... they are singing. I cannot stop that now. But I will try to stop YOU."`]:[])}
+function endExtra(){const a=[];if(qc('forged')==2)a.push(`The Grand Inquisitor: "The letters were never mine. Thank you for reading the pages."`);if(qc('maestro'))a.push(`The Great Buzzer rings, and the three Voices sing with it: Wren, Sol and Abe, in a chord the isles have not heard in forty years.`,`Moderator Moe: "...New record: Loudest Victory. The ruling stands."`);return a.map(FILL)}
+/* ---- map: NPC + site drawing, interaction, quest log ---- */
+const NPCV={};function npcSpr(id){return NPCV[id]||(NPCV[id]=outl(heroF(1,QN[id].look,0,0)))}
+function qNpcs(){if(mode!='isle'||!GC)return[];return Object.keys(QN).filter(k=>QN[k].i==cur).map(k=>{const sp=qSpot('n_'+k,Object.keys(QN).indexOf(k)+1);return{k,x:sp.x,y:sp.y}})}
+function qMark(id){return QORDER.filter(q=>QD[q].g==id).reduce((m,q)=>{const s=qStat(q);return s==2?2:(s==0&&m<1?1:m)},0)}
+function qObjs(){if(mode!='isle'||!GC)return[];return[...qNpcs().map(n=>({t:'q',x:n.x,y:n.y,n:n.k})),...qSites().map(s=>({t:'s',x:s.x,y:s.y,s}))]}
+function qDraw(L,t,cx,cy,vis,nr){qNpcs().forEach(n=>{if(!vis(n.x,n.y))return;L.push([n.y,()=>{const im=npcSpr(n.k),x=Math.round(n.x-cx),y=Math.round(n.y-cy),bob=Math.round(Math.sin(t/500+n.x)*.6);PE(wl,x,y,7,2.5,'#00000044');wl.drawImage(im,x-Math.floor(im.width/2),y-im.height+1+bob);const mk=qMark(n.k);if(mk){const bb=Math.round(Math.sin(t/180)*1.5);bmp(wl,mk==2?ICN.ques:ICN.bang,x-1,y-im.height-6+bb,mk==2?'#4fd0ff':'#ffd84a')}txt(QN[n.k].nm,n.x-cx,n.y-cy+11,nr&&nr.n==n.k?'#ffd84a':'#fff8e8')}])});
+qSites().forEach(s=>{if(!vis(s.x,s.y))return;L.push([s.y,()=>{const x=Math.round(s.x-cx),y=Math.round(s.y-cy);
+if(s.k=='host'){const e=QE[QD[s.q].foe],cv=captor(QD[s.q].foe),fr=monIdle(cv,t);PE(wl,x,y,16,5,'#00000055');wl.drawImage(fr,Math.round(x-fr.width/2)+14,y-fr.height+4);const h=capSpr(e.host);wl.drawImage(h,x-22,y-h.height+2);for(let k=0;k<6;k++){RC(wl,x-26+k*2+((k&1)?0:0),y-h.height+2,1,h.height,'#7a5a3a')}RC(wl,x-28,y-h.height+2,14,1,'#7a5a3a');RC(wl,x-28,y+1,14,1,'#7a5a3a');txt(e.nm,x+10,y+12,'#ff9a9a');if(Math.sin(t/300)>0)bmp(wl,ICN.bang,x-18,y-h.height-6,'#ff5a7a')}
+else if(s.k=='page'){const pg=Math.round(Math.sin(t/260+s.p)*1.5);PE(wl,x,y,6,2,'#00000044');bmp(wl,PAGE,x-4,y-10+pg,'#fff8e8');RC(wl,x-3,y-8+pg,1,1,'#7a6a8a');for(let k=0;k<3;k++){const a=t/380+k*2.1,r=8+Math.sin(t/190+k)*2;if(Math.floor(t/170+k*3)%3==0)RC(wl,x+Math.cos(a)*r,y-6+Math.sin(a)*r*.7,2,2,'#ffffff')}}
+else{for(let j=0;j<3;j++)for(let a=0;a<16;a++){const an=t/300*(j&1?-1:1)+a*.4;RC(wl,x+Math.cos(an)*(16+j*6),y+Math.sin(an)*(6+j*2.2),2,2,['#e8e0ff','#6a5a9a','#2a2036'][j])}bmp(wl,ICN.ques,x-2,y-16+Math.round(Math.sin(t/250)*2),'#e8e0ff');txt('Hush Chamber',x,y+16,'#e8e0ff')}}])})}
+function qlOpen(){const m=$('#qlg');m.style.display='flex';let h='<div class="box" style="max-width:640px;width:94%;max-height:86vh;overflow:auto"><p class="y">QUEST LOG</p><p><small>'+goalLines().map(E).join('<br>')+'</small></p>';
+const sec=(l,f)=>{const L=QORDER.filter(f);if(!L.length)return;h+='<p class="y" style="margin-top:12px">'+l+'</p>';L.forEach(q=>{const d=QD[q],p=qProg(q),stt=qStat(q);h+='<div class="qrow"><b>'+E(d.t)+'</b> <small>('+E(QN[d.g].nm)+', '+E(I[QN[d.g].i].n)+')</small><br><small>'+E(d.ob)+(stt==1&&d.k!='host'&&d.k!='talk'?' <span class="y">['+p[0]+'/'+p[1]+']</span>':'')+(stt==2?' <span class="y">READY: return to '+E(QN[d.g].nm)+'</span>':'')+'</small><br><small>Reward: '+E(rText(d.r))+'</small></div>'})};
+sec('ACTIVE',q=>qs(q).s==1);sec('AVAILABLE (talk to the person marked !)',q=>qStat(q)==0);sec('COMPLETED',q=>qs(q).s==3);
+if(qc('voices')>=3&&!qc('maestro'))h+='<p class="y" style="margin-top:12px">ACTIVE</p><div class="qrow"><b>Silence the Maestro</b><br><small>Enter the Hush Chamber on Philosophy Isle.</small></div>';
+h+='<p><small>Voices freed: '+qc('voices')+'/3 | Torn Pages: '+(qs('forged').s?bits(qs('forged').n):0)+'/3</small></p><button id="qlx" class="big">CLOSE</button></div>';m.innerHTML=h;$('#qlx').onclick=()=>m.style.display='none'}
+$('#qgb').onclick=qlOpen;document.addEventListener('keydown',e=>{if(e.key=='q'&&$('#map').classList.contains('on')&&!HB&&!e.repeat&&$('#qlg').style.display!='flex'&&$('#bagm').style.display!='flex')qlOpen()});
+
+function hueShift(c,h,s,l){const x=c.getContext('2d'),im=x.getImageData(0,0,c.width,c.height),d=im.data;for(let k=0;k<d.length;k+=4){if(!d[k+3])continue;let r=d[k]/255,g=d[k+1]/255,b=d[k+2]/255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),L=(mx+mn)/2,dl=mx-mn;let H=0,S=0;if(dl){S=dl/(1-Math.abs(2*L-1));H=mx==r?((g-b)/dl)%6:mx==g?(b-r)/dl+2:(r-g)/dl+4;H*=60;if(H<0)H+=360}
+H=(H+h+360)%360;S=Math.min(1,S*s);const L2=Math.max(0,Math.min(1,L+l)),C=(1-Math.abs(2*L2-1))*S,X=C*(1-Math.abs((H/60)%2-1)),m=L2-C/2;let R,G,B;if(H<60)[R,G,B]=[C,X,0];else if(H<120)[R,G,B]=[X,C,0];else if(H<180)[R,G,B]=[0,C,X];else if(H<240)[R,G,B]=[0,X,C];else if(H<300)[R,G,B]=[X,0,C];else[R,G,B]=[C,0,X];d[k]=(R+m)*255;d[k+1]=(G+m)*255;d[k+2]=(B+m)*255}x.putImageData(im,0,0)}
 
 cz();
 const _sA=startAtk;startAtk=function(){if(BF.smoke>0){BF.smoke--;bfRender();$('#qt').style.display='';$('#qi').style.display='';$('#qb').style.display='';state='res';bannerShow(['<b>SMOKE BOMB!</b>',E(F.nm)+'\'s attack whiffs in the smoke.'],['bomb']);setTimeout(q,900);return}
@@ -2904,10 +3046,10 @@ _sA();if(BF.slow>0&&AT){AT.ts*=.8;BF.slow--}if(BF.red[1]>0)BF.red[1]--;if(BF.spd
 
 const back=()=>{mode=F.i<0?'sea':'isle';if(mode=='isle')refresh();show('map')};
 $('#nx').onclick=()=>{$('#nx').blur();if(state==='dlg'){dlgNext();return}if(F.cm)F.cm.mh=F.mh;if(F.mh<=0){SFX.win(F.boss&&F.i>=0,F.i<0);if(F.grp){if(F.grp.every(m=>m.mh<=0)){say('Practice cleared! (Practice does not change your progress.)');back()}else q();return}
-rewardNow();if(F.boss&&F.i>=0){bossWin();return}if(F.i<0){story(ENDLINES(),()=>{mode='sea';show('map')});return}
+if(F.qe){qeWin();return}rewardNow();if(F.boss&&F.i>=0){bossWin();return}if(F.i<0){story([...endExtra(),...ENDLINES()],()=>{mode='sea';show('map')});return}
 const b4=mcount();if(!db.some(c=>c.a==d.a))db.push({n:F.nm,k:F.i,b:F.b,s:F.sub,a:d.a,f:d.l,rk:F.rk});save('tl_db3',db);G[F.sub]=Math.min(6,(G[F.sub]||0)+1);save('tl_g',G);
 if(mcount()>b4)story(MASTER(F.i),back);else back()}
-else if(RS=='ok')q();else enemySpeak(startAtk)};
+else enemySpeak(startAtk)};
 // ---- enemy dialogue: many pools, rare lines, typewriter ----
 /*DLG-START*/
 /* ================= ENEMY DIALOGUE (Stage 3) =================
@@ -3129,5 +3271,15 @@ const tsv=L=>'#separator:tab\n#html:true\n#tags column:3\n'+L.map(m=>[E(m.q.repl
 async function exp(L){if(!L.length)return;const t=tsv(L);let dl=null;try{dl=await window.claude.use('downloads')}catch(e){}
 if(dl){try{await dl.save({filename:'tossup-land-anki.txt',data:t});return}catch(e){if(e&&e.code=='declined')return}}try{const u=URL.createObjectURL(new Blob([t],{type:'text/plain'})),a=document.createElement('a');a.href=u;a.download='tossup-land-anki.txt';a.click()}catch(e){}$('#xo').value=t;$('#xo').style.display='block'}
 $('#se').onclick=()=>exp(ST.L);$('#sy').onclick=()=>exp(M);
+
+Object.keys(QE).forEach(k=>{const e=QE[k];SECP[e.nm]=e.atk;SBP[e.nm]=e.pool;VT[e.nm]=e.v;VTM[e.nm]=e.tm;PORTS[e.nm]=()=>mon(e.i,0,5,'*',2,e.nm);QEN[e.nm]=e});
+Object.keys(QN).forEach(k=>{const n=QN[k];VT[n.nm]=n.v;VTM[n.nm]=n.tm;PORTS[n.nm]=n.look});Object.keys(QH).forEach(k=>{const n=QH[k];VT[n.nm]=n.v;VTM[n.nm]=n.tm;PORTS[n.nm]=n.look});
+/* ---- songs for the side storyline ---- */
+SONGS.q_hush=mkBat({root:53,mode:'phr',bpm:84,lead:'musicbox',l2:'ooh',comp:'harp',cs:{ord:'alb'},bass:'cello',gr:'march',bl:'bell',bc:'flute',chA:'1 2 1 6 1 2 1 6',chB:'6 2 1 1 6 2 5 1',mA:'1:4 2:2 3:2 5:4 3:4 | 6:4 5:2 3:2 2:8 | 1:2 2:2 3:2 5:2 6:4 5:4 | 3:4 2:4 1:8',mB:'5^:4 3^:4 2^:4 1^:4 | 6:4 1^:4 3^:8 | 2^:6 1^:2 7:4 5:4 | 1^:12 r:4'},1);
+SONGS.q_cadence=mkBat({root:57,mode:'min',bpm:108,spb:12,lead:'violin',l2:'celesta',comp:'pizz',cs:{ord:'up'},bass:'ubass',gr:'waltz',bl:'organ',bc:'choir',chA:'1 6 7 1 1 6 7 5',chB:'4 6 7 1 4 6 7 1',mA:'5:6 6:2 5:2 3:2 | 1^:4 7:4 6:4 | 5:4 3:4 5:4 | 6:6 5:6',mB:'3^:6 2^:2 1^:4 | 7:4 6:4 5:4 | 6:4 1^:4 3^:4 | 2^:6 1^:6'},1);
+SONGS.q_drone=mkBat({root:45,mode:'dor',bpm:96,lead:'organ',l2:'cello',comp:'harp',cs:{ord:'ud'},bass:'cello',gr:'march',bl:'dist',bc:'choir',chA:'1 1 1 7 1 1 4 1',chB:'1 7 4 1 1 7 4 1',mA:'1:8 1:4 2:4 | 1:8 3:4 2:4 | 5:4 5:4 4:4 3:4 | 2:4 1:4 1:8',mB:'1^:4 1^:4 7:4 6:4 | 5:8 3:4 5:4 | 4:4 4:4 3:4 2:4 | 1:16'},1);
+SONGS.q_maestro=mkBat({root:50,mode:'hmin',bpm:132,lead:'violin',l2:'cello',comp:'harp',cs:{ord:'ud'},bass:'cello',gr:'march',bl:'saw',bc:'str',bb:'str',chA:'1 4 5 1 1 6 5 1',chB:'6 5 1 1 6 5 1 1',mA:'1^:2 7:2 6:2 5:2 4:4 5:4 | 6:4 7:4 1^:8 | 2^:2 1^:2 7:2 6:2 5:4 3:4 | 4:4 5:4 6:2 7:2 1^:4',mB:'3^:4 2^:4 1^:4 7:4 | 6:2 7:2 1^:4 2^:8 | 3^:2 4^:2 5^:4 6^:4 5^:4 | 4^:4 3^:4 2^:4 1^:4'},1);
+SONGS.choir=mkMap({root:60,mode:'maj',bpm:72,lead:'choir',l2:'bell',comp:'harp',cs:{ord:'alb'},bass:'cello',gr:'none',chA:'1 5 6m 4 1 5 4 1',chB:'4 1 5 6m 4 1 5 1',mA:'3:8 5:4 3:4 | 2:8 1:8 | 3:4 5:4 6:4 5:4 | 3:16',mB:'5^:8 3^:4 5^:4 | 4^:8 3^:8 | 2^:4 3^:4 4^:4 2^:4 | 1^:16'});
+['q_hush','q_cadence','q_drone','q_maestro'].forEach(k=>{const L=SONGS[k].L;for(const id in L)L[id].v=(L[id].v==null?1:L[id].v)*.6});
 
 </script></body></html>
